@@ -1,9 +1,15 @@
 RPG style, in abandoned space station
 
-Stats
-Health
 
-health, oxygen, temperature
+Actions:
+
+Move
+Survey
+Interact
+Take
+Use
+Help
+Exit
 
 
 Inventory
