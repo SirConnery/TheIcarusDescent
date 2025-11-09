@@ -1,6 +1,6 @@
-from game_classes import Game, Room, Item, Interactable, UseTarget, Scenery
+from game_classes import Player, Room, Item, Interactable, UseTarget, Scenery
 
-game = Game()
+player = Player()
 
 ## Rooms
 
@@ -63,23 +63,28 @@ def initial_rooms_setup():
 ## Items
 
 initial_items = {
-    "Backpack": Item(name="Backpack", keywords = ["backpack", "pack", "bag"],
+    "backpack": Item(name="Backpack", keywords = ["backpack", "pack", "bag"],
         description="Brown utility backpack",
         on_look="is a durable, brown canvas backpack, clearly built for field utility rather than comfort."),
-     "Radio": Item(name="Radio", keywords = ["radio"],
+     "radio": Item(name="Radio", keywords = ["radio"],
         description="Radio broken down",),
-     "MaintenanceJack": Item(name="Maintenance Jack", keywords = ["maintenance jack", "jack", "maintenancejack"],
+     "maintenancejack": Item(name="Maintenance Jack", keywords = ["maintenance jack", "jack", "maintenancejack"],
         description="Medium sized maintenance tool for turning things",)   
 }
+
+Backpack = initial_items["backpack"]
+
+def initial_items_setup():
+    CrewLockers.items['backpack'] = Backpack
 
 
 # Interactables functions
 
 def interacted_cryo_terminal():
-    game.output="You interacted with the cryo terminal"
+    player.output="You interacted with the cryo terminal"
 
 def interacted_test_terminal():
-    game.output="You interacted with the test terminal"
+    player.output="You interacted with the test terminal"
 
 
 # Interactables data
@@ -136,5 +141,6 @@ sceneries = {}
 def run_all_setups():
     initial_rooms_setup()
     initial_interactables_setup()
+    initial_items_setup()
 
 run_all_setups()

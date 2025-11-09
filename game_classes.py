@@ -1,17 +1,21 @@
+class Game:
+    def __init__(self):
+        self.running = True
+        self.cur_act = 1
+
 class Player:
     def __init__(self):
         self.cur_room = None
         self.output = ""
         self.output_debug = ""
         self.output_error = ""
-        self.running = True
-        self.cur_act = 1
 
         self.name = "Natalie"
         self.status = "Healthy"
         self.warmth = "Cold"
         self.heartrate = "Calm"
         self.inventory = []
+        self.inventory_names = []
 
     # Helpers
 
@@ -65,9 +69,19 @@ class Player:
 
     def take(self, keyword):
         self.output_debug = "Take"
+        
+        item = None
         for obj in self.cur_room.items.values():
             if keyword in obj.keywords:
-                obj.on_interact()
+                item = obj
+                break
+
+        if item:
+            item.pick_up(self, self.cur_room)
+            self.output_debug = f"You have taken {item.name}."
+        else:
+            self.output_error = f"No item named {keyword} here."
+
 
 class Room:
     def __init__(self, name, description,
@@ -105,6 +119,11 @@ class Room:
             self.has_been_visited = True
             return self.on_first_enter
         return self.on_revisit
+    
+    def remove_item(self, item):
+        item_name = item.name.lower()
+        if item_name in self.items:
+            del self.items[item_name]
         
 
     # Helpers
@@ -134,6 +153,10 @@ class Item:
 
         # Utility
         self.can_take = can_take
+
+    def pick_up(self, player, room):
+        player.add_item(self)
+        room.remove_item(self)
 
 class Interactable:
     def __init__(self, name, description, keywords, on_interact, on_look=""):

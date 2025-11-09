@@ -7,13 +7,17 @@ import pyfiglet
 
 console = Console()
 
-from game_data import initial_rooms, game
+from game_data import initial_rooms, player
+from game_classes import Game
+
+game = Game()
 
 def draw_HUD():
+    inventory_names = ", ".join(sorted([item.name for item in player.inventory])) if player.inventory else "(empty)"
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
-    [green]Status: Healthy[/green], [blue]Warmth: Cold[/blue], [magenta]Heartrate: Calm[/magenta], [yellow]Location: {game.cur_room.name}[/yellow]
-    [white]Inventory: (empty)[/white]
-    [white]Commands:[/white] Move, Survey, Interact, Look, Take, Use, Help"""
+    [green]Status: {player.status}[/green], [blue]Warmth: {player.warmth}[/blue], [magenta]Heartrate: {player.heartrate}[/magenta], [yellow]Location: {player.cur_room.name}[/yellow]
+    [white]Inventory: {inventory_names}[/white]
+    [white]Commands:[/white] Move, Survey, Interact, Look, Take, Use, Help, Quit"""
 
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)
@@ -35,11 +39,14 @@ def r_text(text, style="cyan", delay=0.00):
         r_text("Returned 'None'", style="red")
 
 
-## Command Parser
+# Other functions
 
-def check_quit(input):
-    if input in ["quit", "exit", "abort"]:
-        r_text("Game has been quit. Your fate remains a mystery...")
+def quit_game():
+    game.running = False
+    clear_screen()
+    r_text("Game has been quit. Your fate remains a mystery...")
+
+## Command Parser
 
 def process_input(user_input):
     input = user_input.lower().strip().split()    
@@ -69,50 +76,35 @@ def process_input(user_input):
 
     match action:
             case "forward"|"backward"|"left"|"right"|"f"|"b"|"l"|"r"|"w"|"s"|"a"|"d":
-                game.move(action)
+                player.move(action)
             case "interact":
-                game.interact(obj)
+                player.interact(obj)
             case "survey":
-                game.survey()
+                player.survey()
             case "look":
-                game.look(obj)
+                player.look(obj)
             case "take":
-                pass
+                player.take(obj)
             case "use":
                 pass
             case "help":
                 pass
-            case "quit"|"exit"|"abort":
-                pass
             case _:
-                game.output_error = "Unrecognized command."
+                player.output_error = "Unrecognized command."
                 return None
 
-# Helpers
 
-
-## Main logic
-
-# while game_is_running:
-#     command = console.input("[white]\n> [/white]").lower().strip()
-
-#     clear_screen()
-#     draw_HUD()
-
-#     process_input(command)
-
-#     if check_quit(command):
-#         game_is_running = False
-
+## Game intro
 
 if game.cur_act == 1:
-    game.cur_room = initial_rooms["CryoBay"]
-    game.enter_room(initial_rooms["CryoBay"])
+    player.cur_room = initial_rooms["CryoBay"]
+    player.enter_room(initial_rooms["CryoBay"])
     clear_screen()
     draw_HUD()
-    r_text(game.output)
-    game.output=""
+    r_text(player.output)
+    player.output=""
 
+# Main loop
 
 while game.running:
     command = console.input("[white]\n> [/white]").lower().strip()
@@ -121,18 +113,18 @@ while game.running:
     clear_screen()
     draw_HUD()
 
-    if game.output:
-        r_text(game.output)
+    if player.output:
+        r_text(player.output)
 
-    if game.output_debug:
-        r_text(game.output_debug, style="yellow")
+    if player.output_debug:
+        r_text(player.output_debug, style="yellow")
 
-    if game.output_error:
-        r_text(game.output_error, style="red")
+    if player.output_error:
+        r_text(player.output_error, style="red")
 
-    game.output = ""
-    game.output_debug = ""
-    game.output_error = ""
-
-    if check_quit(command):
-        game_is_running = False
+    player.output = ""
+    player.output_debug = ""
+    player.output_error = ""
+    
+    if command == "quit":
+        quit_game()
