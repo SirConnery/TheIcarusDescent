@@ -73,13 +73,6 @@ def enter_room(room_moved_to):
 
 ## Main logic
 
-def test():
-    for obj in cur_room.interactables.values():
-        print(obj.name)
-    print(cur_room.name)
-
-test()
-
 while game_is_running:
      command = input("\n> ").lower().strip()
      process_input(command)

@@ -3,7 +3,7 @@ class Room:
                  forward=None, backward=None, left=None, right=None, 
                  on_first_enter=None, on_revisit=None, has_been_visited=False, 
                  on_survey=None,
-                 items = {}, interactables = {}, use_targets = {}):
+                 items = None, interactables = None, use_targets = None):
         
         # Descriptions
         self.name = name
@@ -22,9 +22,9 @@ class Room:
         self.on_survey = on_survey
 
         # Items
-        self.items = items
-        self.interactables = interactables
-        self.use_targets = use_targets
+        self.items = {}
+        self.interactables = {}
+        self.use_targets = {}
         
         # Functions
 

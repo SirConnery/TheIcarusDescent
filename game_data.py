@@ -118,22 +118,8 @@ def initial_use_targets_setup():
 
 sceneries = {}
 
-# Run all and build keymap
-
-keyword_map =  {}
-
 def run_all_setups():
     initial_rooms_setup()
     initial_interactables_setup()
-
-
-# Deprecated array inside a dict for mapping multiple duplicate keywords
-
-# def build_object_keymap(item_list):
-#     for item in item_list.values():
-#         for keyword in item.keywords:
-#             if keyword not in keyword_map:
-#                 keyword_map[keyword] = []
-#             keyword_map[keyword].append(item)
 
 run_all_setups()
