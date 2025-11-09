@@ -38,11 +38,11 @@ def connect_all_initial_rooms():
 
 
 def c_on_enter_text_for_all_initial_rooms():
-    CryoBay.on_first_enter = "You awaken to silence… \nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
+    CryoBay.on_first_enter = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
     CryoVestibule.on_first_enter = "You have entered CryoVestibule"
 
 def c_on_survey_text_for_all_initial_rooms():
-    CryoBay.on_survey = "You awaken... You are lying down in some kind of cryochamber wearing noth-ing but long underwear and a thin shirt. You carefully get up and feel a soft sensation of cold air flowing on your skin. Around you see a mostly white room full of neon-blue metallic cryochambers arranged around a grayish central pil-lar. The walls look softly padded with white plates. Embedded on the walls are some bulky-looking computer screens. The other cryochambers are empty and their lids are raised. Maybe the others awoke before you?"
+    CryoBay.on_survey = "You survey the room."
     
 
 def initial_rooms_setup():
@@ -79,7 +79,7 @@ initial_interactables = {
         name="Cryo Bay Terminal",
         keywords=["terminal", "console", "terminal console", "cryo terminal"],
         description="Act 1 Broken down door, open with jack",
-        on_look="The terminal console is dark and coated with condensation, its screen flickering with amber error codes.",
+        on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
         on_interact=interacted_cryo_terminal
     ),
     "TestTerminal": Interactable(

@@ -1,9 +1,24 @@
+class Game:
+    def __init__(self):
+        self.cur_room = None
+        self.last_output = ""
+
+    def enter_room(self, room_moved_to):
+        self.cur_room = room_moved_to
+        self.last_output = self.cur_room.get_entry_event()
+
+    def process_input(self, command):
+        # Example: delegate to the current room
+        result = self.cur_room.handle_command(command)
+        if result:
+            self.last_output = result
+
 class Room:
     def __init__(self, name, description,
                  forward=None, backward=None, left=None, right=None, 
                  on_first_enter=None, on_revisit=None, has_been_visited=False, 
                  on_survey=None,
-                 items = None, interactables = None, use_targets = None):
+                 items = None, interactables = None, use_targets = None, sceneries = None):
         
         # Descriptions
         self.name = name
@@ -25,6 +40,7 @@ class Room:
         self.items = {}
         self.interactables = {}
         self.use_targets = {}
+        self.sceneries = {}
         
     # Functions
 
