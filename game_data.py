@@ -39,15 +39,11 @@ def connect_all_initial_rooms():
 
 def c_text_for_all_initial_rooms():
     CryoBay.on_first_enter = "This is your first time here"
-
     CryoVestibule.on_first_enter = "You have entered CryoVestibule"
 
 def initial_rooms_setup():
     connect_all_initial_rooms()
     c_text_for_all_initial_rooms()
-
-def add_object_keywords_to_room():
-    pass
 
 ## Items
 
@@ -67,20 +63,36 @@ initial_items = {
 def interacted_cryo_terminal():
     print("You interacted with the cryo terminal")
 
+def interacted_test_terminal():
+    print("You interacted with the test terminal")
+
+
 # Interactables data
 
 initial_interactables = {
-    "CryoBayTerminal": Interactable(name="Cryo Bay Terminal,",
-        keywords = ["terminal", "console", "terminal console", "cryo terminal"],
+    "CryoBayTerminal": Interactable(
+        name="Cryo Bay Terminal",
+        keywords=["terminal", "console", "terminal console", "cryo terminal"],
         description="Act 1 Broken down door, open with jack",
-        on_look="The terminal console is dark and coated with a thin layer of condensation, its screen flickering with amber error codes.",
-        on_interact=interacted_cryo_terminal),
+        on_look="The terminal console is dark and coated with condensation, its screen flickering with amber error codes.",
+        on_interact=interacted_cryo_terminal
+    ),
+    "TestTerminal": Interactable(
+        name="Test Terminal",
+        keywords=["terminal", "console", "terminal console"],
+        description="Testing",
+        on_look="Test",
+        on_interact=interacted_test_terminal
+    ),
 }
 
 CryoBayTerminal = initial_interactables["CryoBayTerminal"]
+TestTerminal = initial_interactables["TestTerminal"]
 
 def initial_interactables_setup():
     CryoBay.interactables['CryoBayTerminal'] = CryoBayTerminal
+    Galley.interactables['TestTerminal'] = TestTerminal
+
 
 # use_targets functions
 def mess_hall_blast_door_used():
@@ -101,27 +113,27 @@ MessHallBlastDoor = initial_use_targets["MessHallBlastDoor"]
 def initial_use_targets_setup():
     Galley.use_targets['MessHallBlastDoor'] = MessHallBlastDoor
 
+
+# Sceneries
+
 sceneries = {}
 
+# Run all and build keymap
+
+keyword_map =  {}
 
 def run_all_setups():
     initial_rooms_setup()
     initial_interactables_setup()
-    build_key_list(initial_items)
-
-keyword_map = {}
-
-def build_key_list(item_list):
-    temp_keywords = {}
-
-    for item in item_list:
-        temp_keywords[]
 
 
-    global keyword_map
-    keyword_map = temp_keywords
+# Deprecated array inside a dict for mapping multiple duplicate keywords
 
-
-
+# def build_object_keymap(item_list):
+#     for item in item_list.values():
+#         for keyword in item.keywords:
+#             if keyword not in keyword_map:
+#                 keyword_map[keyword] = []
+#             keyword_map[keyword].append(item)
 
 run_all_setups()

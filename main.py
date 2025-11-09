@@ -1,4 +1,4 @@
-from game_data import initial_rooms, initial_items, initial_interactables, sceneries
+from game_data import initial_rooms
 
 game_is_running = True
 cur_room = initial_rooms["CryoBay"]
@@ -10,15 +10,19 @@ def move(direction):
     new_room = cur_room.get_exits(direction)
     if new_room:
         enter_room(new_room)
+        print(cur_room.name)
     else:
         print("Unrocognized or invalid direction")
 
-def interact(object):
+def interact(keyword):
     print("Interacted")
-    if object in cur_room.interactables:
-        print("object found")
-        target = cur_room.interactables[object]
-        target.on_interact
+    for obj in cur_room.interactables.values():
+        if keyword in obj.keywords:
+            obj.on_interact()
+            return
+
+    print(f"No interactable '{keyword}' in this room.")
+
 
 
 ## Command Parser
@@ -27,14 +31,20 @@ def check_quit(input):
     if input in ["quit", "exit", "abort"]:
         print("Game has been quit. Your fate remains a mystery...")
 
-def process_input(input):
-    input = input.lower().strip().split()
+def process_input(user_input):
+    input = user_input.lower().strip().split()
+    
+    if not input:
+        return None, []
+
     action = input[0]
-    object = input[1]
+    object = ""
+    if len(input) == 2:
+        object = input[1]
 
     match action:
             case "forward"|"backward"|"left"|"right"|"f"|"b"|"l"|"r"|"w"|"s"|"a"|"d":
-                move(input)
+                move(action)
             case "interact":
                 interact(object)
             case "survey":
@@ -63,10 +73,16 @@ def enter_room(room_moved_to):
 
 ## Main logic
 
+def test():
+    for obj in cur_room.interactables.values():
+        print(obj.name)
+    print(cur_room.name)
+
+test()
+
 while game_is_running:
      command = input("\n> ").lower().strip()
      process_input(command)
 
      if check_quit(command):
         break
-
