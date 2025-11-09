@@ -1,4 +1,6 @@
-from game_classes import Room, Item, Interactable, UseTarget, Scenery
+from game_classes import Game, Room, Item, Interactable, UseTarget, Scenery
+
+game = Game()
 
 ## Rooms
 
@@ -39,7 +41,15 @@ def connect_all_initial_rooms():
 
 def c_on_enter_text_for_all_initial_rooms():
     CryoBay.on_first_enter = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
-    CryoVestibule.on_first_enter = "You have entered CryoVestibule"
+    CryoBay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
+    CryoVestibule.on_first_enter = "You've never been here before."
+    CryoVestibule.on_revisit = "You're back."
+    Galley.on_first_enter = "You've never been here before."
+    Galley.on_revisit = "You're back."
+    CrewLockers.on_first_enter = "You've never been here before."
+    CrewLockers.on_revisit = "You're back."
+    Deck4MidAftPassage.on_first_enter = "You've never been here before."
+    Deck4MidAftPassage.on_revisit = "You're back."
 
 def c_on_survey_text_for_all_initial_rooms():
     CryoBay.on_survey = "You survey the room."
@@ -66,10 +76,10 @@ initial_items = {
 # Interactables functions
 
 def interacted_cryo_terminal():
-    print("You interacted with the cryo terminal")
+    game.output="You interacted with the cryo terminal"
 
 def interacted_test_terminal():
-    print("You interacted with the test terminal")
+    game.output="You interacted with the test terminal"
 
 
 # Interactables data

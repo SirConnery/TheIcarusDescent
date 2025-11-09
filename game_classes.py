@@ -1,17 +1,73 @@
-class Game:
+class Player:
     def __init__(self):
         self.cur_room = None
-        self.last_output = ""
+        self.output = ""
+        self.output_debug = ""
+        self.output_error = ""
+        self.running = True
+        self.cur_act = 1
+
+        self.name = "Natalie"
+        self.status = "Healthy"
+        self.warmth = "Cold"
+        self.heartrate = "Calm"
+        self.inventory = []
+
+    # Helpers
+
+    def add_item(self, item):
+        self.inventory.append(item)
+    def remove_item(self, item):
+        if item in self.inventory:
+            self.inventory.remove(item)
+    
+    # Actions
 
     def enter_room(self, room_moved_to):
         self.cur_room = room_moved_to
-        self.last_output = self.cur_room.get_entry_event()
+        self.output += self.cur_room.get_entry_event()
 
-    def process_input(self, command):
-        # Example: delegate to the current room
-        result = self.cur_room.handle_command(command)
-        if result:
-            self.last_output = result
+    def move(self, direction):
+        if not self.cur_room:
+            self.output_error = "You are nowhere!"
+            return
+
+        new_room = self.cur_room.get_exits(direction)
+        if new_room:
+            self.output += f"You enter {new_room.name}. \n\n"
+            self.enter_room(new_room)
+        else:
+            self.output_error = "Unrecognized or invalid direction"
+
+    def survey(self):
+        self.output = self.cur_room.on_survey
+
+    def interact(self, keyword):
+        self.output_debug = "Interacted."
+        for obj in self.cur_room.interactables.values():
+            if keyword in obj.keywords:
+                obj.on_interact()
+                return
+        self.output_error = f"No interactable {keyword} in this room."
+
+    def look(self, keyword):
+        self.output_debug = "Looked"
+
+        sources = [self.cur_room.interactables, self.cur_room.items, self.cur_room.sceneries]
+
+        for source in sources:
+            for obj in source.values():
+                if keyword in obj.keywords:
+                    self.output=obj.on_look
+                    return
+
+        self.output_error=f"No interesting {keyword} in this room."
+
+    def take(self, keyword):
+        self.output_debug = "Take"
+        for obj in self.cur_room.items.values():
+            if keyword in obj.keywords:
+                obj.on_interact()
 
 class Room:
     def __init__(self, name, description,
@@ -45,7 +101,6 @@ class Room:
     # Functions
 
     def get_entry_event(self):
-        # print("DEBUG Executing room entered function")
         if not self.has_been_visited:
             self.has_been_visited = True
             return self.on_first_enter

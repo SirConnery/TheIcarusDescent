@@ -7,12 +7,13 @@ import pyfiglet
 
 console = Console()
 
-from game_data import initial_rooms
+from game_data import initial_rooms, game
 
 def draw_HUD():
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
-    [green]Status: Healthy[/green], [blue]Warmth: Cold[/blue], [magenta]Heartrate: Calm[/magenta], [yellow]Location: {cur_room.name}[/yellow]
-    [white]Inventory: (empty)[/white]"""
+    [green]Status: Healthy[/green], [blue]Warmth: Cold[/blue], [magenta]Heartrate: Calm[/magenta], [yellow]Location: {game.cur_room.name}[/yellow]
+    [white]Inventory: (empty)[/white]
+    [white]Commands:[/white] Move, Survey, Interact, Look, Take, Use, Help"""
 
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)
@@ -20,15 +21,9 @@ def draw_HUD():
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-## Game variables
-
-game_is_running = True
-cur_act = 1
-last_action_output = ""
-
 # Rich text conversion
 
-def r_text(text, style="cyan", delay=0.00, ):
+def r_text(text, style="cyan", delay=0.00):
     if text:
         for char in text:
             if style:
@@ -37,56 +32,8 @@ def r_text(text, style="cyan", delay=0.00, ):
                 console.print(char, end="")
             time.sleep(delay)
     else:
-        r_text_error("Returned 'None'")
+        r_text("Returned 'None'", style="red")
 
-def r_text_error(text):
-    r_text(text, style="red")
-
-def r_text_debug(text):
-    r_text(text, style="yellow")
-
-# Actions
-
-def move(direction):
-    new_room = cur_room.get_exits(direction)
-    if new_room:
-        enter_room(new_room)
-        r_text(cur_room.name)
-    else:
-        r_text_error("Unrocognized or invalid direction")
-
-def enter_room(room_moved_to):
-    global cur_room
-    cur_room = room_moved_to
-    room_enter_text = cur_room.get_entry_event()
-    global last_action_output
-    last_action_output = room_enter_text
-
-def interact(keyword):
-    r_text_debug("Interacted")
-    for obj in cur_room.interactables.values():
-        if keyword in obj.keywords:
-            obj.on_interact()
-            return
-
-    r_text_error(f"No interactable {keyword} in this room.")
-
-def survey():
-    survey_text = cur_room.on_survey
-    r_text(survey_text)
-
-def look(keyword):
-    r_text_debug("Looked")
-
-    sources = [cur_room.interactables, cur_room.items, cur_room.sceneries]
-
-    for source in sources:
-        for obj in source.values():
-            if keyword in obj.keywords:
-                r_text(obj.on_look)
-                return
-
-    r_text_debug(f"No interesting {keyword} in this room.")
 
 ## Command Parser
 
@@ -109,24 +56,26 @@ def process_input(user_input):
     if not filtered:
         return None
 
-    action = filtered[0]
+    action = filtered[0] if filtered else ""
     obj = ""
     obj_2 = ""
     if len(filtered) == 2:
         obj = filtered[1]
+        print(filtered)
+        print(obj)
     if len(filtered) == 3:
         obj = filtered[2]
         obj_2 = filtered[3]
 
     match action:
             case "forward"|"backward"|"left"|"right"|"f"|"b"|"l"|"r"|"w"|"s"|"a"|"d":
-                move(action)
+                game.move(action)
             case "interact":
-                interact(obj)
+                game.interact(obj)
             case "survey":
-                survey()
+                game.survey()
             case "look":
-                look(obj)
+                game.look(obj)
             case "take":
                 pass
             case "use":
@@ -136,14 +85,11 @@ def process_input(user_input):
             case "quit"|"exit"|"abort":
                 pass
             case _:
-                r_text_error("Unrecognized command.")
+                game.output_error = "Unrecognized command."
                 return None
 
 # Helpers
 
-if cur_act == 1:
-    cur_room = initial_rooms["CryoBay"]
-    enter_room(initial_rooms["CryoBay"])
 
 ## Main logic
 
@@ -158,14 +104,35 @@ if cur_act == 1:
 #     if check_quit(command):
 #         game_is_running = False
 
-while game_is_running:
+
+if game.cur_act == 1:
+    game.cur_room = initial_rooms["CryoBay"]
+    game.enter_room(initial_rooms["CryoBay"])
+    clear_screen()
+    draw_HUD()
+    r_text(game.output)
+    game.output=""
+
+
+while game.running:
     command = console.input("[white]\n> [/white]").lower().strip()
     process_input(command)
 
     clear_screen()
     draw_HUD()
 
-    r_text(last_action_output)
+    if game.output:
+        r_text(game.output)
+
+    if game.output_debug:
+        r_text(game.output_debug, style="yellow")
+
+    if game.output_error:
+        r_text(game.output_error, style="red")
+
+    game.output = ""
+    game.output_debug = ""
+    game.output_error = ""
 
     if check_quit(command):
         game_is_running = False
