@@ -26,7 +26,7 @@ class Room:
         self.interactables = {}
         self.use_targets = {}
         
-        # Functions
+    # Functions
 
     def get_entry_event(self):
         # print("DEBUG Executing room entered function")
