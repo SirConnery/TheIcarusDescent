@@ -3,6 +3,7 @@ import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
+from rich.align import Align
 import pyfiglet
 
 console = Console()
@@ -13,7 +14,10 @@ from game_classes import Game
 game = Game()
 
 def draw_HUD():
-    inventory_names = ", ".join(sorted([item.name for item in player.inventory])) if player.inventory else "(empty)"
+    inventory_names = (", ".join(sorted([item.name for item in player.inventory.values()]))
+    if player.inventory
+    else "(empty)")
+
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
     [green]Status: {player.status}[/green], [blue]Warmth: {player.warmth}[/blue], [magenta]Heartrate: {player.heartrate}[/magenta], [yellow]Location: {player.cur_room.name}[/yellow]
     [white]Inventory: {inventory_names}[/white]
@@ -25,7 +29,9 @@ def draw_HUD():
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# Rich text conversion
+## Rich text conversion
+
+# All normal text
 
 def r_text(text, style="cyan", delay=0.00):
     if text:
@@ -37,6 +43,19 @@ def r_text(text, style="cyan", delay=0.00):
             time.sleep(delay)
     else:
         r_text("Returned 'None'", style="red")
+
+# Acts change title text
+
+def r_text_act_change(act_number, style="bold white", font="slant", delay=0.8):
+    ascii_text = pyfiglet.figlet_format(f"ACT {act_number}", font=font)
+    styled_text = f"[{style}]{ascii_text}[/{style}]"
+    panel = Panel(Align.center(styled_text, vertical="middle"), expand=False, border_style=style)
+
+    console.print(panel)
+    
+    if delay > 0:
+        time.sleep(delay)
+
 
 
 # Other functions
@@ -86,9 +105,14 @@ def process_input(user_input):
             case "take":
                 player.take(obj)
             case "use":
-                pass
+                player.use(obj,obj_2)
             case "help":
+                player.help()
+            case "quit":
+                #handled in main loop
                 pass
+            case "debug_drop":
+                player.drop(obj)
             case _:
                 player.output_error = "Unrecognized command."
                 return None
@@ -97,10 +121,12 @@ def process_input(user_input):
 ## Game intro
 
 if game.cur_act == 1:
+    player.output_act_title = "ACT 1"
     player.cur_room = initial_rooms["CryoBay"]
     player.enter_room(initial_rooms["CryoBay"])
     clear_screen()
     draw_HUD()
+    r_text_act_change("1")
     r_text(player.output)
     player.output=""
 
@@ -113,18 +139,26 @@ while game.running:
     clear_screen()
     draw_HUD()
 
-    if player.output:
-        r_text(player.output)
-
     if player.output_debug:
         r_text(player.output_debug, style="yellow")
 
     if player.output_error:
         r_text(player.output_error, style="red")
+    
+    if player.output_help:
+        r_text(player.output_help, style="white")
+
+    if player.output_act_title:
+        r_text_act_change(player.output_act_title)
+
+    if player.output:
+        r_text(player.output)
 
     player.output = ""
     player.output_debug = ""
     player.output_error = ""
+    player.output_help = ""
+    player.output_act_title = ""
     
     if command == "quit":
         quit_game()

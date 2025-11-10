@@ -40,6 +40,7 @@ def connect_all_initial_rooms():
 
 
 def c_on_enter_text_for_all_initial_rooms():
+    # Act 1
     CryoBay.on_first_enter = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
     CryoBay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
     CryoVestibule.on_first_enter = "You've never been here before."
@@ -50,6 +51,9 @@ def c_on_enter_text_for_all_initial_rooms():
     CrewLockers.on_revisit = "You're back."
     Deck4MidAftPassage.on_first_enter = "You've never been here before."
     Deck4MidAftPassage.on_revisit = "You're back."
+    # Act 2
+    
+
 
 def c_on_survey_text_for_all_initial_rooms():
     CryoBay.on_survey = "You survey the room."
@@ -65,7 +69,7 @@ def initial_rooms_setup():
 initial_items = {
     "backpack": Item(name="Backpack", keywords = ["backpack", "pack", "bag"],
         description="Brown utility backpack",
-        on_look="is a durable, brown canvas backpack, clearly built for field utility rather than comfort."),
+        on_look="It is a durable, brown canvas backpack, clearly built for field utility rather than comfort."),
      "radio": Item(name="Radio", keywords = ["radio"],
         description="Radio broken down",),
      "maintenancejack": Item(name="Maintenance Jack", keywords = ["maintenance jack", "jack", "maintenancejack"],

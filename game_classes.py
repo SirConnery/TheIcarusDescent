@@ -9,21 +9,26 @@ class Player:
         self.output = ""
         self.output_debug = ""
         self.output_error = ""
+        self.output_help = ""
+        self.output_act_title = ""
 
         self.name = "Natalie"
         self.status = "Healthy"
         self.warmth = "Cold"
         self.heartrate = "Calm"
-        self.inventory = []
+        self.inventory = {}
         self.inventory_names = []
 
     # Helpers
 
     def add_item(self, item):
-        self.inventory.append(item)
+        item_name = item.name.lower()
+        self.inventory[item_name] = item
     def remove_item(self, item):
-        if item in self.inventory:
-            self.inventory.remove(item)
+        item_name = item.name.lower()
+        if item_name in self.inventory:
+            del self.inventory[item_name]
+
     
     # Actions
 
@@ -48,39 +53,83 @@ class Player:
 
     def interact(self, keyword):
         self.output_debug = "Interacted."
-        for obj in self.cur_room.interactables.values():
-            if keyword in obj.keywords:
-                obj.on_interact()
-                return
-        self.output_error = f"No interactable {keyword} in this room."
+        sources = [self.cur_room.interactables]
 
+        obj = get_object_by_keyword(sources, keyword)
+        if obj:
+            obj.on_interact()
+        else:
+            self.output_error = f"No interactable {keyword} in this room."
+
+    
     def look(self, keyword):
         self.output_debug = "Looked"
+        sources = [self.cur_room.interactables, self.cur_room.items, self.cur_room.sceneries, self.inventory]
 
-        sources = [self.cur_room.interactables, self.cur_room.items, self.cur_room.sceneries]
-
-        for source in sources:
-            for obj in source.values():
-                if keyword in obj.keywords:
-                    self.output=obj.on_look
-                    return
-
-        self.output_error=f"No interesting {keyword} in this room."
+        obj = get_object_by_keyword(sources, keyword)
+        if obj:
+            self.output = obj.on_look
+        else:
+            self.output_error = f"No interesting {keyword} in this location."
 
     def take(self, keyword):
         self.output_debug = "Take"
-        
-        item = None
-        for obj in self.cur_room.items.values():
-            if keyword in obj.keywords:
-                item = obj
-                break
 
+        sources = [self.cur_room.items]
+
+        item = get_object_by_keyword(sources, keyword)
         if item:
             item.pick_up(self, self.cur_room)
             self.output_debug = f"You have taken {item.name}."
         else:
-            self.output_error = f"No item named {keyword} here."
+            self.output_error = f"No item named {keyword} in this location."
+    
+    def drop(self, keyword):
+        self.output_debug = "Drop"
+
+        sources = [self.inventory]
+
+        item = get_object_by_keyword(sources, keyword)
+        if item:
+            item.drop(self, self.cur_room)
+            self.output_debug = f"You have dropped {item.name}."
+        else:
+            self.output_error = f"No item named {keyword} in your inventory."    
+    
+    def help(self):
+        self.output_help = f"""
+            Use commands like below:
+
+            1. Move: move in 4 directions. You can use either WASD or f,b,l,r.
+            Example: move w
+            Usage: move [w,a,s,d,forward,backward,left,right,f,b,l,r]
+
+            2. Survey: observe your surroundings.
+            Usage: survey
+
+            3. Interact: interact with objects in the room or your inventory.
+            Example: interact terminal
+            Usage: interact [object]
+
+            4. Look: examine objects in the room or inventory.
+            Example: look object
+            Usage: look [object]
+
+            5. Take: pick up objects from the room.
+            Example: take object
+            Usage: take [object]
+
+            6. Use: use objects from your inventory on objects in the room.
+            Example: use keycard on terminal
+            Usage: use [inventory_item] [object]
+
+            7. Help: shows this command list.
+            Usage: help
+
+            8. Quit: quit the game.
+            Usage: quit
+            """
+
 
 
 class Room:
@@ -120,6 +169,10 @@ class Room:
             return self.on_first_enter
         return self.on_revisit
     
+    def add_item(self, item):
+        item_name = item.name.lower()
+        self.items[item_name] = item
+
     def remove_item(self, item):
         item_name = item.name.lower()
         if item_name in self.items:
@@ -127,6 +180,7 @@ class Room:
         
 
     # Helpers
+
     def get_exits(self, direction):
         direction = direction.upper()
         
@@ -157,6 +211,12 @@ class Item:
     def pick_up(self, player, room):
         player.add_item(self)
         room.remove_item(self)
+    
+    def drop(self, player, room):
+        player.remove_item(self)
+        room.add_item(self)
+
+    
 
 class Interactable:
     def __init__(self, name, description, keywords, on_interact, on_look=""):
@@ -190,3 +250,13 @@ class Scenery:
         self.keywords = keywords
         self.description = description
         self.on_look = on_look
+
+
+
+# Universal helper
+def get_object_by_keyword(sources, keyword):
+    for source in sources:
+        for obj in source.values():
+            if hasattr(obj, "keywords") and keyword in obj.keywords:
+                return obj
+    return None
