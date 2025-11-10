@@ -1,16 +1,18 @@
 class Game:
     def __init__(self):
         self.running = True
-        self.cur_act = 1
 
 class Player:
     def __init__(self):
         self.cur_room = None
         self.output = ""
+        self.output_slow = ""
+        self.output_fast = ""
         self.output_debug = ""
         self.output_error = ""
         self.output_help = ""
-        self.output_act_title = ""
+        self.output_act_number = ""
+        self.output_act_subtitle = ""
 
         self.name = "Natalie"
         self.status = "Healthy"
@@ -18,6 +20,8 @@ class Player:
         self.heartrate = "Calm"
         self.inventory = {}
         self.inventory_names = []
+
+        self.has_flashlight = False
 
     # Helpers
 
@@ -34,6 +38,13 @@ class Player:
 
     def enter_room(self, room_moved_to):
         self.cur_room = room_moved_to
+        if self.cur_room.is_event_trigger:
+            self.cur_room.is_event_trigger = False
+            self.cur_room.room_event()
+        if self.cur_room.is_act_event_trigger:
+            self.output_act_number = self.cur_room.act_number
+            self.output_act_subtitle = self.cur_room.act_subtitle
+            self.cur_room.is_act_event_trigger = False
         self.output += self.cur_room.get_entry_event()
 
     def move(self, direction):
@@ -43,8 +54,11 @@ class Player:
 
         new_room = self.cur_room.get_exits(direction)
         if new_room:
-            self.output += f"You enter {new_room.name}. \n\n"
-            self.enter_room(new_room)
+            if new_room.is_open:
+                self.output += f"You enter {new_room.name}. \n\n"
+                self.enter_room(new_room)
+            else:
+                self.output += new_room.locked_description
         else:
             self.output_error = "Unrecognized or invalid direction"
 
@@ -61,10 +75,9 @@ class Player:
         else:
             self.output_error = f"No interactable {keyword} in this room."
 
-    
     def look(self, keyword):
         self.output_debug = "Looked"
-        sources = [self.cur_room.interactables, self.cur_room.items, self.cur_room.sceneries, self.inventory]
+        sources = [self.cur_room.interactables, self.cur_room.use_targets, self.cur_room.items, self.cur_room.sceneries, self.inventory]
 
         obj = get_object_by_keyword(sources, keyword)
         if obj:
@@ -84,6 +97,25 @@ class Player:
         else:
             self.output_error = f"No item named {keyword} in this location."
     
+    def use(self, obj, obj_2):
+        self.output_debug = "use"
+
+        source_1 = [self.inventory]
+        item = get_object_by_keyword(source_1, obj)
+        if item:
+            self.output_debug += "Item is in inventory"
+            source_2 = [self.cur_room.use_targets]
+            use_target = get_object_by_keyword(source_2, obj_2)
+            if use_target:
+                self.output_debug += "Use target found"
+                use_target.on_use(item)
+
+
+
+        else:
+            self.output_error += "{obj} not found in inventory."
+
+
     def drop(self, keyword):
         self.output_debug = "Drop"
 
@@ -135,8 +167,11 @@ class Player:
 class Room:
     def __init__(self, name, description,
                  forward=None, backward=None, left=None, right=None, 
-                 on_first_enter=None, on_revisit=None, has_been_visited=False, 
+                 on_first_enter=None, on_revisit=None, has_been_visited=False,
+                 is_event_trigger=False, room_event=None,
+                 is_act_event_trigger= False, act_number=None, act_subtitle=None,
                  on_survey=None,
+                 is_open = True, locked_description = None,
                  items = None, interactables = None, use_targets = None, sceneries = None):
         
         # Descriptions
@@ -149,11 +184,22 @@ class Room:
         self.left = left
         self.right = right
 
-        # Actions and events
+        # Enter text
         self.on_first_enter = on_first_enter
         self.on_revisit = on_revisit
         self.has_been_visited = has_been_visited
+
+        # Event triggers
+        self.is_event_trigger = is_event_trigger
+        self.room_event = room_event
+        self.is_act_event_trigger = is_act_event_trigger
+        self.act_number = act_number
+        self.act_subtitle = act_subtitle
+
+        # Misc
         self.on_survey = on_survey
+        self.is_open = is_open
+        self.locked_description = locked_description
 
         # Items
         self.items = {}
@@ -231,7 +277,7 @@ class Interactable:
         self.on_interact = on_interact
 
 class UseTarget:
-     def __init__(self, name, description, keywords, on_use, on_look=""):
+    def __init__(self, name, description, keywords, use_func, on_look=""):
         
         # Descriptions
         self.name = name
@@ -239,8 +285,15 @@ class UseTarget:
         self.keywords = keywords
         self.on_look = on_look
 
-        # Interact
-        self.on_use = on_use
+        # Use
+        self.use_func = use_func
+        self.usable_items = {}
+
+    def on_use(self, item):
+        if item in self.usable_items.values():
+            print("Found item in door dict")
+            self.use_func()
+
 
 class Scenery:
     def __init__(self, name, keywords, description, on_look=""):

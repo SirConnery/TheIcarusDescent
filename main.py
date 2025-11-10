@@ -33,7 +33,7 @@ def clear_screen():
 
 # All normal text
 
-def r_text(text, style="cyan", delay=0.00):
+def r_text(text, delay=0.00, style="cyan"):
     if text:
         for char in text:
             if style:
@@ -44,19 +44,29 @@ def r_text(text, style="cyan", delay=0.00):
     else:
         r_text("Returned 'None'", style="red")
 
-# Acts change title text
+# Acts title text
 
-def r_text_act_change(act_number, style="bold white", font="slant", delay=0.8):
+def r_text_act_change(act_number="", subtitle="", style="bold white", font="xsbookb",
+                      subtitle_font="cyberlarge", subtitle_style="bold cyan",
+                      delay=0.0, line_delay=0.0):
     ascii_text = pyfiglet.figlet_format(f"ACT {act_number}", font=font)
-    styled_text = f"[{style}]{ascii_text}[/{style}]"
-    panel = Panel(Align.center(styled_text, vertical="middle"), expand=False, border_style=style)
-
-    console.print(panel)
+    
+    panel = Panel(
+        Align.center(f"[{style}]{ascii_text}[/{style}]", vertical="middle"),
+        expand=False,
+        border_style=style
+    )
+    console.print(Align.center(panel, vertical="middle"))
+    
+    if subtitle:
+        subtitle_text = pyfiglet.figlet_format(subtitle, font=subtitle_font)
+        for line in subtitle_text.splitlines():
+            console.print(Align.center(f"[{subtitle_style}]{line}[/{subtitle_style}]"))
+            time.sleep(line_delay)
     
     if delay > 0:
         time.sleep(delay)
-
-
+        
 
 # Other functions
 
@@ -90,8 +100,8 @@ def process_input(user_input):
         print(filtered)
         print(obj)
     if len(filtered) == 3:
-        obj = filtered[2]
-        obj_2 = filtered[3]
+        obj = filtered[1]
+        obj_2 = filtered[2]
 
     match action:
             case "forward"|"backward"|"left"|"right"|"f"|"b"|"l"|"r"|"w"|"s"|"a"|"d":
@@ -120,15 +130,19 @@ def process_input(user_input):
 
 ## Game intro
 
-if game.cur_act == 1:
-    player.output_act_title = "ACT 1"
-    player.cur_room = initial_rooms["CryoBay"]
-    player.enter_room(initial_rooms["CryoBay"])
+def game_start():
+    player.cur_room = initial_rooms["deck_4_med_env_corridor"]
+    player.enter_room(initial_rooms["deck_4_med_env_corridor"])
     clear_screen()
     draw_HUD()
-    r_text_act_change("1")
+    # r_text_act_change("1'", "The Beginning")
+    r_text_act_change(player.output_act_number, player.output_act_subtitle)
     r_text(player.output)
     player.output=""
+    player.output_act_number=""
+    player.output_act_subtitle=""
+
+game_start()
 
 # Main loop
 
@@ -139,26 +153,27 @@ while game.running:
     clear_screen()
     draw_HUD()
 
-    if player.output_debug:
-        r_text(player.output_debug, style="yellow")
+    if player.output_act_number and player.output_act_subtitle:
+         r_text_act_change(player.output_act_number, player.output_act_subtitle)
 
-    if player.output_error:
-        r_text(player.output_error, style="red")
-    
-    if player.output_help:
-        r_text(player.output_help, style="white")
+    outputs = [
+    (player.output_debug, {"style": "yellow"}),
+    (player.output_error, {"style": "red"}),
+    (player.output_help, {"style": "white"}),
+    (player.output, {}),
+    (player.output_slow, {"delay": 0.05}),
+    (player.output_fast, {"delay": 0.02}),]
 
-    if player.output_act_title:
-        r_text_act_change(player.output_act_title)
-
-    if player.output:
-        r_text(player.output)
+    for text, kwargs in outputs:
+        if text:
+            r_text(text, **kwargs)
 
     player.output = ""
     player.output_debug = ""
     player.output_error = ""
     player.output_help = ""
-    player.output_act_title = ""
-    
+    player.output_act_number = ""
+    player.output_act_subtitle = ""
+
     if command == "quit":
         quit_game()
