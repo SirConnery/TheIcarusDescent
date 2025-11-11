@@ -145,8 +145,8 @@ def get_directions():
 ## Game intro
 
 def game_start():
-    player.cur_room = initial_rooms["deck_4_med_env_corridor"]
-    player.enter_room(initial_rooms["deck_4_med_env_corridor"])
+    player.cur_room = initial_rooms["cargo_staging_room"]
+    player.enter_room(initial_rooms["cargo_staging_room"])
     clear_screen()
     draw_HUD()
     r_text_act_change(player.output_act_number, player.output_act_subtitle)
@@ -182,6 +182,10 @@ while game.running:
     for text, kwargs in outputs:
         if text:
             r_text(text, **kwargs)
+    
+    # if player.cur_room.is_event_trigger:
+    #     player.cur_room.room_event()
+    #     player.cur_room.is_event_trigger = False
 
     player.output = f""
     player.output_debug = f""

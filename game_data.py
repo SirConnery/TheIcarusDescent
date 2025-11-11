@@ -37,10 +37,18 @@ initial_rooms = {
         description="MSC Room 1 divided by mirror."),
     "msc_2": Room(name="MSC2 Main Service Control 2",
         description="MSC Room 2 divided by mirror. Alien encounter here."),
+    "msc_2_b_storage_drums": Room(name="MSC2 (behind power storage drums)",
+        description="MSC Room 2 behind power storage drums."),
+    "msc_2_b_console_desk": Room(name="MSC2 (behind console desk)",
+        description="MSC Room 2 behind console desk."),
+    "msc_2_b_power_conduit": Room(name="MSC2 (behind power conduit manifold)",
+        description="MSC Room 2 behind power conduit manifold."),
     "msc_vent": Room(name="MSC2 Ventilation Shaft",
         description="MSC2 ventilation shaft."),
     "service_control_junction_3f": Room(name="Service Control Junction 3F",
         description="The door before entering. Act 4."),
+    "executive_access_corridor": Room(name="Executive Access Corridor",
+        description="Act 4 starting corridor.")
 }
 
 # Act 1
@@ -62,10 +70,13 @@ deck_5_secure_pathway = initial_rooms["deck_5_secure_pathway"]
 service_access_hatchway = initial_rooms["service_access_hatchway"]
 msc_1 = initial_rooms["msc_1"]
 msc_2 = initial_rooms["msc_2"]
+msc_2_b_storage_drums = initial_rooms["msc_2_b_storage_drums"]
+msc_2_b_console_desk = initial_rooms["msc_2_b_console_desk"]
+msc_2_b_power_conduit = initial_rooms["msc_2_b_power_conduit"]
 msc_vent = initial_rooms["msc_vent"]
 service_control_junction_3f = initial_rooms["service_control_junction_3f"]
 # Act 4
-
+executive_access_corridor = initial_rooms["executive_access_corridor"]
 
 
 # Room custom events
@@ -73,6 +84,18 @@ service_control_junction_3f = initial_rooms["service_control_junction_3f"]
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
+    
+def act_3_choice_event():
+        user_confirm = input(f"""\n\nWhere do you want to hide? 
+                             1. The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.
+                             2. The Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.
+                             3. A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall.
+                             """).strip().lower()
+        if user_confirm in ["y", "yes"]:
+            if player.cur_room == deck_5_secure_pathway: 
+                player.move("msc_2")
+            elif player.cur_room == service_access_hatchway: 
+                player.move("right")
 
 def connect_all_initial_rooms():
     #Act 1
@@ -98,11 +121,21 @@ def connect_all_initial_rooms():
     central_freight_bay.backward = upper_aft_lobby
     deck_5_aft_utility.backward = upper_aft_lobby
     # Act 3
-    cargo_staging_room.right = deck_5_secure_pathway
-    deck_5_secure_pathway
+    cargo_staging_room.forward = deck_5_secure_pathway
+    deck_5_secure_pathway.left = service_access_hatchway
+    service_access_hatchway.right = msc_1
+    msc_1.forward = msc_2
+    msc_2.left = msc_2_b_storage_drums
+    msc_2.right = msc_2_b_console_desk
+    msc_2.forward = msc_2_b_power_conduit
+    msc_2_b_storage_drums.backward = msc_vent
+    msc_2_b_console_desk.backward = msc_vent
+    msc_2_b_power_conduit.backward = msc_vent
+    msc_vent.forward = service_control_junction_3f
+    # Act 4
+    service_control_junction_3f.forward = executive_access_corridor
     
-
-
+    
 
 def set_rooms_defaults():
     # Act 1
@@ -150,6 +183,30 @@ def set_rooms_defaults():
     cargo_staging_room.is_act_event_trigger = True
     cargo_staging_room.act_number = "3"
     cargo_staging_room.act_subtitle = "Arrival"
+    deck_5_secure_pathway.on_first_enter = "You've never been here before."
+    deck_5_secure_pathway.on_revisit = "You're back."
+    service_access_hatchway.on_first_enter = "You've never been here before."
+    service_access_hatchway.on_revisit = "You're back."
+    msc_1.on_first_enter = "You've never been here before."
+    msc_1.on_revisit = "You're back."
+    msc_2.on_first_enter = f"The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.\n\nThe Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.\n\n A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall."
+    msc_2.on_revisit = "You're back."
+    msc_2_b_storage_drums.on_first_enter = "You've never been here before."
+    msc_2_b_storage_drums.on_revisit = "You're back."
+    msc_2_b_console_desk.on_first_enter = "You've never been here before."
+    msc_2_b_console_desk.on_revisit = "You're back."
+    msc_2_b_power_conduit.on_first_enter = "You've never been here before."
+    msc_2_b_power_conduit.on_revisit = "You're back."
+    msc_vent.on_first_enter = "You've never been here before."
+    msc_vent.on_revisit = "You're back."
+    service_control_junction_3f.on_first_enter = "You've never been here before."
+    service_control_junction_3f.on_revisit = "You're back."
+    # Act 4
+    executive_access_corridor.on_first_enter = "You've never been here before."
+    executive_access_corridor.on_revisit = "You're back."
+    executive_access_corridor.is_act_event_trigger = True
+    executive_access_corridor.act_number = "4"
+    executive_access_corridor.act_subtitle = "The Outer Decks"
 
 def initial_rooms_setup():
     connect_all_initial_rooms()

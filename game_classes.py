@@ -39,9 +39,6 @@ class Player:
 
     def enter_room(self, room_moved_to):
         self.cur_room = room_moved_to
-        if self.cur_room.is_event_trigger:
-            self.cur_room.is_event_trigger = False
-            self.cur_room.room_event()
         if self.cur_room.is_act_event_trigger:
             self.output_act_number = self.cur_room.act_number
             self.output_act_subtitle = self.cur_room.act_subtitle
