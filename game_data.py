@@ -28,7 +28,19 @@ initial_rooms = {
     "deck_5_aft_utility": Room(name="Deck 5 Aft Utility",
         description="Small utility room."),
     "cargo_staging_room": Room(name="Cargo Staging Room",
-        description="Small room for cargo.")
+        description="Small room for cargo."),
+    "deck_5_secure_pathway": Room(name="Deck 5 Secure Pathway",
+        description="2 person pathway."),
+    "service_access_hatchway": Room(name="Service Access Hatchway",
+        description="Act 3 filler room."),
+    "msc_1": Room(name="MSC1 Main Service Control 1",
+        description="MSC Room 1 divided by mirror."),
+    "msc_2": Room(name="MSC2 Main Service Control 2",
+        description="MSC Room 2 divided by mirror. Alien encounter here."),
+    "msc_vent": Room(name="MSC2 Ventilation Shaft",
+        description="MSC2 ventilation shaft."),
+    "service_control_junction_3f": Room(name="Service Control Junction 3F",
+        description="The door before entering. Act 4."),
 }
 
 # Act 1
@@ -46,6 +58,14 @@ central_freight_bay = initial_rooms["central_freight_bay"]
 deck_5_aft_utility = initial_rooms["deck_5_aft_utility"]
 # Act 3
 cargo_staging_room = initial_rooms["cargo_staging_room"]
+deck_5_secure_pathway = initial_rooms["deck_5_secure_pathway"]
+service_access_hatchway = initial_rooms["service_access_hatchway"]
+msc_1 = initial_rooms["msc_1"]
+msc_2 = initial_rooms["msc_2"]
+msc_vent = initial_rooms["msc_vent"]
+service_control_junction_3f = initial_rooms["service_control_junction_3f"]
+# Act 4
+
 
 
 # Room custom events
@@ -53,7 +73,6 @@ cargo_staging_room = initial_rooms["cargo_staging_room"]
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
-    
 
 def connect_all_initial_rooms():
     #Act 1
@@ -79,7 +98,9 @@ def connect_all_initial_rooms():
     central_freight_bay.backward = upper_aft_lobby
     deck_5_aft_utility.backward = upper_aft_lobby
     # Act 3
-    cargo_staging_room
+    cargo_staging_room.right = deck_5_secure_pathway
+    deck_5_secure_pathway
+    
 
 
 
@@ -112,7 +133,9 @@ def set_rooms_defaults():
     medical_labs.on_first_enter = "You've never been here before."
     medical_labs.on_revisit = "You're back."
     environmental_controls.on_first_enter = "You've never been here before."
-    environmental_controls.on_revisit = "You're back."
+    environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing."
+    environmental_controls.is_open = False
+    environmental_controls.locked_description = "The door to Environmental Controls remains sealed. The access panel glows faintly, waiting for a valid code. No amount of pressing or swiping seems to budge it."
     upper_aft_lobby.on_first_enter = "You've never been here before."
     upper_aft_lobby.on_revisit = "You're back."
     central_freight_bay.on_first_enter = "You've never been here before."
@@ -122,13 +145,11 @@ def set_rooms_defaults():
     deck_5_aft_utility.on_first_enter = "You've never been here before."
     deck_5_aft_utility.on_revisit = "You're back."
     # Act 3
-    cargo_staging_room.on_first_enter = "You've never been here before."
+    cargo_staging_room.on_first_enter = "The door closes behind you and suddenly the power comes on."
     cargo_staging_room.on_revisit = "You're back."
     cargo_staging_room.is_act_event_trigger = True
     cargo_staging_room.act_number = "3"
     cargo_staging_room.act_subtitle = "Arrival"
-    
-
 
 def initial_rooms_setup():
     connect_all_initial_rooms()
@@ -161,13 +182,13 @@ welder = initial_items["welder"]
 
 def initial_items_setup():
     # Act 1
-    crew_lockers.items['backpack'] = backpack
-    crew_lockers.items['maintenance_jack'] = maintenance_jack
-    crew_lockers.items['radio'] = radio
+    crew_lockers.items["backpack"] = backpack
+    crew_lockers.items["maintenance_jack"] = maintenance_jack
+    crew_lockers.items["radio"] = radio
     # Act 2
-    medical_labs.items['engys_keycard'] = engys_keycard
-    environmental_controls.items['flashlight'] = flashlight
-    deck_5_aft_utility.items['welder'] = welder
+    medical_labs.items["engys_keycard"] = engys_keycard
+    environmental_controls.items["flashlight"] = flashlight
+    deck_5_aft_utility.items["welder"] = welder
 
 # Interactables functions
 
@@ -189,7 +210,7 @@ initial_interactables = {
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
 
 def initial_interactables_setup():
-    cryo_bay.interactables['cryo_bay_terminal'] = cryo_bay_terminal
+    cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
 
 
 # use_targets functions
@@ -199,6 +220,13 @@ def mess_hall_blast_door_used():
 def central_freight_bay_blast_door_used():
     player.output = "Freight bay blast door used"
     central_freight_bay.is_open = True
+def env_controls_access_panel_use_keypad():
+    passcode = input("Keycard detected. Please enter passcode")
+    if passcode == "4277":
+        player.output="Code verified. Access granted."
+        environmental_controls.is_open = True
+    else:
+        player.output_error="Code invalid. Access denied."
 
 # use_targets data
 
@@ -208,6 +236,11 @@ initial_use_targets = {
         description="Act 1 Broken down door, open with jack",
         on_look="You observe the heavy metallic edge of the Blast Door. The emergency hydraulic bolts are partially retracted, but the frame is visibly seized and fused. There are no electronic panels or keypads visible; the mechanism appears to be locked purely by immense mechanical pressure. This is a job for focused, brute force.",
         use_func=mess_hall_blast_door_used),
+    "env_controls_access_panel": UseTarget(name="Environmental Control Access Panel",
+        keywords = ["access panel", "panel", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
+        description="Act 2 keypad to Environmental Controls.",
+        on_look="A compact keypad and card swipe terminal connected to the ship’s security network. Its small green display sits blank, awaiting input.",
+        use_func=env_controls_access_panel_use_keypad),
     "central_freight_bay_bulk_door": UseTarget(name="Central Freight Bay Bulk Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
         description="Act 2 Broken down door, open with welder",
@@ -216,15 +249,18 @@ initial_use_targets = {
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
+env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
 
 def initial_use_targets_setup():
-    galley.use_targets['mess_hall_blast_door'] = mess_hall_blast_door
-    upper_aft_lobby.use_targets['central_freight_bay_bulk_door'] = central_freight_bay_bulk_door
+    galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
+    deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
+    upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
 
-def initial_use_targets_dicts_setup():
-    mess_hall_blast_door.usable_items['maintenance_jack'] = maintenance_jack
-    central_freight_bay_bulk_door.usable_items['welder'] = welder
+def setup_usable_items():
+    mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
+    env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
+    central_freight_bay_bulk_door.usable_items["welder"] = welder
 
 # Sceneries
 
@@ -235,6 +271,6 @@ def run_all_setups():
     initial_interactables_setup()
     initial_items_setup()
     initial_use_targets_setup()
-    initial_use_targets_dicts_setup()
+    setup_usable_items()
 
 run_all_setups()

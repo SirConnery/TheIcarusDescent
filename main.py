@@ -128,6 +128,20 @@ def process_input(user_input):
                 return None
 
 
+## Get directions and print
+
+def get_directions():
+    cur_room = player.cur_room
+
+    if cur_room.forward:
+        player.output_directions += f"\n[FORWARD] {cur_room.forward.name}"
+    if cur_room.backward:
+        player.output_directions += f"\n[BACKWARD] {cur_room.backward.name}"
+    if cur_room.left:
+        player.output_directions += f"\n[LEFT] {cur_room.left.name}"
+    if cur_room.right:
+        player.output_directions += f"\n[RIGHT] {cur_room.right.name}"
+
 ## Game intro
 
 def game_start():
@@ -135,7 +149,6 @@ def game_start():
     player.enter_room(initial_rooms["deck_4_med_env_corridor"])
     clear_screen()
     draw_HUD()
-    # r_text_act_change("1'", "The Beginning")
     r_text_act_change(player.output_act_number, player.output_act_subtitle)
     r_text(player.output)
     player.output=""
@@ -149,6 +162,7 @@ game_start()
 while game.running:
     command = console.input("[white]\n> [/white]").lower().strip()
     process_input(command)
+    get_directions()
 
     clear_screen()
     draw_HUD()
@@ -162,18 +176,20 @@ while game.running:
     (player.output_help, {"style": "white"}),
     (player.output, {}),
     (player.output_slow, {"delay": 0.05}),
-    (player.output_fast, {"delay": 0.02}),]
+    (player.output_fast, {"delay": 0.02}),
+    (player.output_directions, {"delay": 0.00}),]
 
     for text, kwargs in outputs:
         if text:
             r_text(text, **kwargs)
 
-    player.output = ""
-    player.output_debug = ""
-    player.output_error = ""
-    player.output_help = ""
-    player.output_act_number = ""
-    player.output_act_subtitle = ""
+    player.output = f""
+    player.output_debug = f""
+    player.output_error = f""
+    player.output_help = f""
+    player.output_act_number = f""
+    player.output_act_subtitle = f""
+    player.output_directions = f"\n\n"
 
     if command == "quit":
         quit_game()

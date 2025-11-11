@@ -13,6 +13,7 @@ class Player:
         self.output_help = ""
         self.output_act_number = ""
         self.output_act_subtitle = ""
+        self.output_directions = f"\n\n"
 
         self.name = "Natalie"
         self.status = "Healthy"
