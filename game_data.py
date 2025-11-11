@@ -74,6 +74,7 @@ def connect_all_initial_rooms():
     environmental_controls.backward = deck_4_med_env_corridor
     upper_aft_lobby.left = central_freight_bay
     upper_aft_lobby.right = deck_5_aft_utility
+    upper_aft_lobby.backward = deck_4_med_env_corridor
     central_freight_bay.right = cargo_staging_room
     central_freight_bay.backward = upper_aft_lobby
     deck_5_aft_utility.backward = upper_aft_lobby
@@ -116,6 +117,8 @@ def set_rooms_defaults():
     upper_aft_lobby.on_revisit = "You're back."
     central_freight_bay.on_first_enter = "You've never been here before."
     central_freight_bay.on_revisit = "You're back."
+    central_freight_bay.is_open = False
+    central_freight_bay.locked_description = "The door refuses to budge. Its surface is cold and unyielding, and the panel to the side is jammed tight. Whatever shut it down, it won’t open by hand. You’ll need another way in"
     deck_5_aft_utility.on_first_enter = "You've never been here before."
     deck_5_aft_utility.on_revisit = "You're back."
     # Act 3
@@ -141,9 +144,9 @@ initial_items = {
         description="Radio broken down",),
     "maintenance_jack": Item(name="Maintenance Jack", keywords = ["maintenance jack", "jack", "maintenancejack"],
         description="Medium sized maintenance tool for turning things",),
-    "engys_keycard": Item(name="Engy's Keycard", keywords = ["keycard, card, key, engy"],
+    "engys_keycard": Item(name="Engy's Keycard", keywords = ["keycard", "card", "key", "engy"],
         description="High Engineer Enrique's keycard.",),
-    "flashlight": Item(name="Flashlight", keywords = ["flashlight, light, flash"],
+    "flashlight": Item(name="Flashlight", keywords = ["flashlight", "light", "flash"],
         description="Small non-industrial handheld flashlight with low cone of light.",),
     "welder": Item(name="Welder", keywords = ["welder"],
         description="Hand usable welder.",),
@@ -155,7 +158,6 @@ maintenance_jack = initial_items["maintenance_jack"]
 engys_keycard = initial_items["engys_keycard"]
 flashlight = initial_items["flashlight"]
 welder = initial_items["welder"]
-
 
 def initial_items_setup():
     # Act 1
@@ -194,6 +196,9 @@ def initial_interactables_setup():
 def mess_hall_blast_door_used():
     player.output = "Mess hall blast door used"
     deck_4_mid_aft_passage.is_open = True
+def central_freight_bay_blast_door_used():
+    player.output = "Freight bay blast door used"
+    central_freight_bay.is_open = True
 
 # use_targets data
 
@@ -203,15 +208,23 @@ initial_use_targets = {
         description="Act 1 Broken down door, open with jack",
         on_look="You observe the heavy metallic edge of the Blast Door. The emergency hydraulic bolts are partially retracted, but the frame is visibly seized and fused. There are no electronic panels or keypads visible; the mechanism appears to be locked purely by immense mechanical pressure. This is a job for focused, brute force.",
         use_func=mess_hall_blast_door_used),
+    "central_freight_bay_bulk_door": UseTarget(name="Central Freight Bay Bulk Door",
+        keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
+        description="Act 2 Broken down door, open with welder",
+        on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
+        use_func=central_freight_bay_blast_door_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
+central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
 
 def initial_use_targets_setup():
     galley.use_targets['mess_hall_blast_door'] = mess_hall_blast_door
+    upper_aft_lobby.use_targets['central_freight_bay_bulk_door'] = central_freight_bay_bulk_door
 
 def initial_use_targets_dicts_setup():
     mess_hall_blast_door.usable_items['maintenance_jack'] = maintenance_jack
+    central_freight_bay_bulk_door.usable_items['welder'] = welder
 
 # Sceneries
 
