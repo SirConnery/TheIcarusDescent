@@ -8,7 +8,7 @@ import pyfiglet
 
 console = Console()
 
-from game_data import initial_rooms, player
+from game_data import rooms, player
 from game_classes import Game
 
 game = Game()
@@ -145,15 +145,21 @@ def get_directions():
 ## Game intro
 
 def game_start():
-    player.cur_room = initial_rooms["cargo_staging_room"]
-    player.enter_room(initial_rooms["cargo_staging_room"])
+    player.cur_room = rooms["operations_distribution_crossover"]
+    player.enter_room(rooms["operations_distribution_crossover"])
+    get_directions()
+
     clear_screen()
     draw_HUD()
+    
     r_text_act_change(player.output_act_number, player.output_act_subtitle)
     r_text(player.output)
+    r_text(player.output_directions)
+
     player.output=""
     player.output_act_number=""
     player.output_act_subtitle=""
+    player.output_directions = f"\n\n"
 
 game_start()
 
@@ -182,10 +188,6 @@ while game.running:
     for text, kwargs in outputs:
         if text:
             r_text(text, **kwargs)
-    
-    # if player.cur_room.is_event_trigger:
-    #     player.cur_room.room_event()
-    #     player.cur_room.is_event_trigger = False
 
     player.output = f""
     player.output_debug = f""

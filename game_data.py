@@ -4,7 +4,7 @@ player = Player()
 
 ## Rooms
 
-initial_rooms = {
+rooms = {
     "cryo_bay": Room(name="Cryo Bay", 
         description="It is a room with cryo stuff.",),
     "cryo_vestibule": Room(name="Cryo Vestibule",
@@ -47,10 +47,12 @@ initial_rooms = {
         description="MSC2 ventilation shaft."),
     "service_control_junction_5f": Room(name="Service Control Junction 5 F",
         description="The door before entering. Act 4."),
-    "executive_access_corridor": Room(name="Executive Access Corridor",
+    "operations_distribution_crossover": Room(name="Operations Distribution Crossover",
         description="Act 4 starting corridor."),
     "operations_and_cargo_interlink": Room(name="Operations and Cargo Interlink",
         description="Act 4 corridor between cargo and bridge."),
+    "cargo_bay_control_f": Room(name="Cargo Bay Control F",
+        description="Act 4 cargo bay control overwatch room."),
     "external_ops_access_way": Room(name="External Ops Access Way",
         description="Act 4 corridor between cargo and bridge."),
     "eva_gear_lockers": Room(name="EVA Gear Lockers",
@@ -69,56 +71,68 @@ initial_rooms = {
         description="Ship network and system control data central."),
     "executive_access_aisle": Room(name="Executive Access Aisle.",
         description="Ship network and system control data central."),
-    
-    
+    "captains_quarters": Room(name="Captain's Quarters.",
+        description="Living place for the captain."),
+    "command_transit_vestibule": Room(name="Command Transit Vestibule",
+        description="Stairway connecting to deck_5_forward_muster_station."),
+
 }
 
 # Act 1
-cryo_bay = initial_rooms["cryo_bay"]
-cryo_vestibule = initial_rooms["cryo_vestibule"]
-galley = initial_rooms["galley"]
-crew_lockers = initial_rooms["crew_lockers"]
-deck_4_mid_aft_passage = initial_rooms["deck_4_mid_aft_passage"]
+cryo_bay = rooms["cryo_bay"]
+cryo_vestibule = rooms["cryo_vestibule"]
+galley = rooms["galley"]
+crew_lockers = rooms["crew_lockers"]
+deck_4_mid_aft_passage = rooms["deck_4_mid_aft_passage"]
 # Act 2
-deck_4_med_env_corridor = initial_rooms["deck_4_med_env_corridor"]
-medical_labs = initial_rooms["medical_labs"]
-environmental_controls = initial_rooms["environmental_controls"]
-upper_aft_lobby = initial_rooms["upper_aft_lobby"]
-central_freight_bay = initial_rooms["central_freight_bay"]
-deck_5_aft_utility = initial_rooms["deck_5_aft_utility"]
+deck_4_med_env_corridor = rooms["deck_4_med_env_corridor"]
+medical_labs = rooms["medical_labs"]
+environmental_controls = rooms["environmental_controls"]
+upper_aft_lobby = rooms["upper_aft_lobby"]
+central_freight_bay = rooms["central_freight_bay"]
+deck_5_aft_utility = rooms["deck_5_aft_utility"]
 # Act 3
-cargo_staging_room = initial_rooms["cargo_staging_room"]
-deck_5_secure_pathway = initial_rooms["deck_5_secure_pathway"]
-service_access_hatchway = initial_rooms["service_access_hatchway"]
-msc_1 = initial_rooms["msc_1"]
-msc_2 = initial_rooms["msc_2"]
-msc_2_b_storage_drums = initial_rooms["msc_2_b_storage_drums"]
-msc_2_b_console_desk = initial_rooms["msc_2_b_console_desk"]
-msc_2_b_power_conduit = initial_rooms["msc_2_b_power_conduit"]
-msc_vent = initial_rooms["msc_vent"]
-service_control_junction_5f = initial_rooms["service_control_junction_5f"]
+cargo_staging_room = rooms["cargo_staging_room"]
+deck_5_secure_pathway = rooms["deck_5_secure_pathway"]
+service_access_hatchway = rooms["service_access_hatchway"]
+msc_1 = rooms["msc_1"]
+msc_2 = rooms["msc_2"]
+msc_2_b_storage_drums = rooms["msc_2_b_storage_drums"]
+msc_2_b_console_desk = rooms["msc_2_b_console_desk"]
+msc_2_b_power_conduit = rooms["msc_2_b_power_conduit"]
+msc_vent = rooms["msc_vent"]
+service_control_junction_5f = rooms["service_control_junction_5f"]
 # Act 4
-executive_access_corridor = initial_rooms["executive_access_corridor"]
+operations_distribution_crossover = rooms["operations_distribution_crossover"]
+operations_and_cargo_interlink = rooms["operations_and_cargo_interlink"]
+cargo_bay_control_f = rooms["cargo_bay_control_f"]
+external_ops_access_way = rooms["external_ops_access_way"]
+eva_gear_lockers = rooms["eva_gear_lockers"]
+central_utility_spine_5_f = rooms["central_utility_spine_5_f"]
+central_utility_spine_6_f = rooms["central_utility_spine_6_f"]
+deck_5_forward_muster_station = rooms["deck_5_forward_muster_station"]
+bridge = rooms["bridge"]
+systems_data_access_corridor = rooms["systems_data_access_corridor"]
+command_server_array = rooms["command_server_array"]
+executive_access_aisle = rooms["executive_access_aisle"]
+captains_quarters = rooms["captains_quarters"]
+command_transit_vestibule = rooms["command_transit_vestibule"]
 
 
+## Room custom events
 
-# Room custom events
-
+#Act 1
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
-    
-def act_3_choice_event():
-        user_confirm = input(f"""\n\nWhere do you want to hide? 
-                             1. The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.
-                             2. The Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.
-                             3. A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall.
-                             """).strip().lower()
-        if user_confirm in ["y", "yes"]:
-            if player.cur_room == deck_5_secure_pathway: 
-                player.move("msc_2")
-            elif player.cur_room == service_access_hatchway: 
-                player.move("right")
+
+#Act 4
+def act_4_lock_starting_door():
+    service_control_junction_5f.is_open = False
+    service_control_junction_5f.locked_description = "There is no reason to go back with that thing roaming there..."
+
+
+## Connect rooms
 
 def connect_all_initial_rooms():
     #Act 1
@@ -127,16 +141,16 @@ def connect_all_initial_rooms():
     cryo_vestibule.right = crew_lockers
     cryo_vestibule.backward = cryo_bay
     galley.forward = deck_4_mid_aft_passage
-    galley.backward = cryo_vestibule
-    crew_lockers.backward = cryo_vestibule
+    galley.right = cryo_vestibule
+    crew_lockers.left = cryo_vestibule
     deck_4_mid_aft_passage.forward = deck_4_med_env_corridor
     deck_4_mid_aft_passage.backward = galley
     # Act 2
     deck_4_med_env_corridor.forward = upper_aft_lobby
     deck_4_med_env_corridor.left = medical_labs
     deck_4_med_env_corridor.right = environmental_controls
-    medical_labs.backward = deck_4_med_env_corridor
-    environmental_controls.backward = deck_4_med_env_corridor
+    medical_labs.right = deck_4_med_env_corridor
+    environmental_controls.left = deck_4_med_env_corridor
     upper_aft_lobby.left = central_freight_bay
     upper_aft_lobby.right = deck_5_aft_utility
     upper_aft_lobby.backward = deck_4_med_env_corridor
@@ -144,8 +158,8 @@ def connect_all_initial_rooms():
     central_freight_bay.backward = upper_aft_lobby
     deck_5_aft_utility.backward = upper_aft_lobby
     # Act 3
-    cargo_staging_room.forward = deck_5_secure_pathway
-    deck_5_secure_pathway.left = service_access_hatchway
+    cargo_staging_room.right = deck_5_secure_pathway
+    deck_5_secure_pathway.forward = service_access_hatchway
     service_access_hatchway.right = msc_1
     msc_1.forward = msc_2
     msc_2.left = msc_2_b_storage_drums
@@ -155,10 +169,41 @@ def connect_all_initial_rooms():
     msc_2_b_console_desk.backward = msc_vent
     msc_2_b_power_conduit.backward = msc_vent
     msc_vent.forward = service_control_junction_5f
+    service_control_junction_5f.forward = operations_distribution_crossover
     # Act 4
-    service_control_junction_5f.forward = executive_access_corridor
-    
-    
+    operations_distribution_crossover.left = operations_and_cargo_interlink
+    operations_distribution_crossover.right = systems_data_access_corridor
+    operations_distribution_crossover.forward = central_utility_spine_5_f
+    operations_distribution_crossover.backward = service_control_junction_5f
+    operations_and_cargo_interlink.left = cargo_bay_control_f
+    cargo_bay_control_f.right = operations_and_cargo_interlink
+    operations_and_cargo_interlink.forward = external_ops_access_way
+    operations_and_cargo_interlink.backward = operations_distribution_crossover
+    external_ops_access_way.forward = eva_gear_lockers
+    external_ops_access_way.right = central_utility_spine_6_f
+    external_ops_access_way.backward = operations_and_cargo_interlink
+    eva_gear_lockers.backward = external_ops_access_way
+    central_utility_spine_5_f.forward = central_utility_spine_6_f
+    central_utility_spine_5_f.backward = operations_distribution_crossover
+    central_utility_spine_6_f.forward = deck_5_forward_muster_station
+    central_utility_spine_6_f.backward = operations_distribution_crossover
+    deck_5_forward_muster_station.left = external_ops_access_way
+    deck_5_forward_muster_station.right = command_transit_vestibule
+    deck_5_forward_muster_station.forward = bridge
+    deck_5_forward_muster_station.backward = central_utility_spine_6_f
+    bridge.backward = deck_5_forward_muster_station
+    systems_data_access_corridor.left = operations_distribution_crossover
+    systems_data_access_corridor.right = command_server_array
+    systems_data_access_corridor.forward = executive_access_aisle
+    command_server_array.left = systems_data_access_corridor
+    executive_access_aisle.right = captains_quarters
+    executive_access_aisle.forward = command_transit_vestibule 
+    executive_access_aisle.backward = systems_data_access_corridor
+    captains_quarters.left = executive_access_aisle
+    command_transit_vestibule.left = deck_5_forward_muster_station
+    command_transit_vestibule.backward = executive_access_aisle
+
+
 
 def set_rooms_defaults():
     # Act 1
@@ -225,11 +270,40 @@ def set_rooms_defaults():
     service_control_junction_5f.on_first_enter = "You've never been here before."
     service_control_junction_5f.on_revisit = "You're back."
     # Act 4
-    executive_access_corridor.on_first_enter = "You've never been here before."
-    executive_access_corridor.on_revisit = "You're back."
-    executive_access_corridor.is_act_event_trigger = True
-    executive_access_corridor.act_number = "4"
-    executive_access_corridor.act_subtitle = "The Outer Decks"
+    operations_distribution_crossover.on_first_enter = "You've never been here before."
+    operations_distribution_crossover.on_revisit = "You're back."
+    operations_distribution_crossover.is_event_trigger = True
+    operations_distribution_crossover.room_event = act_4_lock_starting_door
+    operations_distribution_crossover.is_act_event_trigger = True
+    operations_distribution_crossover.act_number = "4"
+    operations_distribution_crossover.act_subtitle = "The Outer Decks"
+    operations_and_cargo_interlink.on_first_enter = "You've never been here before."
+    operations_and_cargo_interlink.on_revisit = "You're back."
+    cargo_bay_control_f.on_first_enter = "You've never been here before."
+    cargo_bay_control_f.on_revisit = "You're back."
+    external_ops_access_way.on_first_enter = "You've never been here before."
+    external_ops_access_way.on_revisit = "You're back."
+    eva_gear_lockers.on_first_enter = "You've never been here before."
+    eva_gear_lockers.on_revisit = "You're back."
+    central_utility_spine_5_f.on_first_enter = "You've never been here before."
+    central_utility_spine_5_f.on_revisit = "You're back."
+    central_utility_spine_6_f.on_first_enter = "You've never been here before."
+    central_utility_spine_6_f.on_revisit = "You're back."
+    deck_5_forward_muster_station.on_first_enter = "You've never been here before."
+    deck_5_forward_muster_station.on_revisit = "You're back."
+    bridge.on_first_enter = "You've never been here before."
+    bridge.on_revisit = "You're back."
+    systems_data_access_corridor.on_first_enter = "You've never been here before."
+    systems_data_access_corridor.on_revisit = "You're back."
+    command_server_array.on_first_enter = "You've never been here before."
+    command_server_array.on_revisit = "You're back."
+    executive_access_aisle.on_first_enter = "You've never been here before."
+    executive_access_aisle.on_revisit = "You're back."
+    captains_quarters.on_first_enter = "You've never been here before."
+    captains_quarters.on_revisit = "You're back."
+    command_transit_vestibule.on_first_enter = "You've never been here before."
+    command_transit_vestibule.on_revisit = "You're back."
+
 
 def initial_rooms_setup():
     connect_all_initial_rooms()
@@ -293,7 +367,8 @@ def initial_interactables_setup():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
 
 
-# use_targets functions
+## use_targets functions
+
 def mess_hall_blast_door_used():
     player.output = "Mess hall blast door used"
     deck_4_mid_aft_passage.is_open = True
@@ -345,6 +420,8 @@ def setup_usable_items():
 # Sceneries
 
 sceneries = {}
+
+## Run all necessary setups
 
 def run_all_setups():
     initial_rooms_setup()

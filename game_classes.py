@@ -43,6 +43,9 @@ class Player:
             self.output_act_number = self.cur_room.act_number
             self.output_act_subtitle = self.cur_room.act_subtitle
             self.cur_room.is_act_event_trigger = False
+        if self.cur_room.is_event_trigger:
+            self.cur_room.room_event()
+            self.cur_room.is_event_trigger = False
         self.output += self.cur_room.get_entry_event()
 
     def move(self, direction):
