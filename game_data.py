@@ -37,18 +37,40 @@ initial_rooms = {
         description="MSC Room 1 divided by mirror."),
     "msc_2": Room(name="MSC2 Main Service Control 2",
         description="MSC Room 2 divided by mirror. Alien encounter here."),
-    "msc_2_b_storage_drums": Room(name="MSC2 (behind power storage drums)",
+    "msc_2_b_storage_drums": Room(name="MSC2 Main Service Control 2 (behind power storage drums)",
         description="MSC Room 2 behind power storage drums."),
-    "msc_2_b_console_desk": Room(name="MSC2 (behind console desk)",
+    "msc_2_b_console_desk": Room(name="MSC2 Main Service Control 2 (behind console desk)",
         description="MSC Room 2 behind console desk."),
-    "msc_2_b_power_conduit": Room(name="MSC2 (behind power conduit manifold)",
+    "msc_2_b_power_conduit": Room(name="MSC2 Main Service Control 2 (behind power conduit manifold)",
         description="MSC Room 2 behind power conduit manifold."),
     "msc_vent": Room(name="MSC2 Ventilation Shaft",
         description="MSC2 ventilation shaft."),
-    "service_control_junction_3f": Room(name="Service Control Junction 3F",
+    "service_control_junction_5f": Room(name="Service Control Junction 5 F",
         description="The door before entering. Act 4."),
     "executive_access_corridor": Room(name="Executive Access Corridor",
-        description="Act 4 starting corridor.")
+        description="Act 4 starting corridor."),
+    "operations_and_cargo_interlink": Room(name="Operations and Cargo Interlink",
+        description="Act 4 corridor between cargo and bridge."),
+    "external_ops_access_way": Room(name="External Ops Access Way",
+        description="Act 4 corridor between cargo and bridge."),
+    "eva_gear_lockers": Room(name="EVA Gear Lockers",
+        description="Act 4 eva gear locker."),
+    "central_utility_spine_5_f": Room(name="Central Utility Spine 5 F",
+        description="Part of the middle ship spanning hallway."),
+    "central_utility_spine_6_f": Room(name="Central Utility Spine 6 F",
+        description="Part of the middle ship spanning hallway."),
+    "deck_5_forward_muster_station": Room(name="Deck 5 Forward Muster Station",
+        description="Large empty area meant for gathering and receiving urgent instructions."),
+    "bridge": Room(name="Bridge",
+        description="Ship bridge."),
+    "systems_data_access_corridor": Room(name="Systems Data Access Corridor",
+        description="Corridor before Server Array."),''
+    "command_server_array": Room(name="Command Server Array",
+        description="Ship network and system control data central."),
+    "executive_access_aisle": Room(name="Executive Access Aisle.",
+        description="Ship network and system control data central."),
+    
+    
 }
 
 # Act 1
@@ -74,9 +96,10 @@ msc_2_b_storage_drums = initial_rooms["msc_2_b_storage_drums"]
 msc_2_b_console_desk = initial_rooms["msc_2_b_console_desk"]
 msc_2_b_power_conduit = initial_rooms["msc_2_b_power_conduit"]
 msc_vent = initial_rooms["msc_vent"]
-service_control_junction_3f = initial_rooms["service_control_junction_3f"]
+service_control_junction_5f = initial_rooms["service_control_junction_5f"]
 # Act 4
 executive_access_corridor = initial_rooms["executive_access_corridor"]
+
 
 
 # Room custom events
@@ -131,9 +154,9 @@ def connect_all_initial_rooms():
     msc_2_b_storage_drums.backward = msc_vent
     msc_2_b_console_desk.backward = msc_vent
     msc_2_b_power_conduit.backward = msc_vent
-    msc_vent.forward = service_control_junction_3f
+    msc_vent.forward = service_control_junction_5f
     # Act 4
-    service_control_junction_3f.forward = executive_access_corridor
+    service_control_junction_5f.forward = executive_access_corridor
     
     
 
@@ -199,8 +222,8 @@ def set_rooms_defaults():
     msc_2_b_power_conduit.on_revisit = "You're back."
     msc_vent.on_first_enter = "You've never been here before."
     msc_vent.on_revisit = "You're back."
-    service_control_junction_3f.on_first_enter = "You've never been here before."
-    service_control_junction_3f.on_revisit = "You're back."
+    service_control_junction_5f.on_first_enter = "You've never been here before."
+    service_control_junction_5f.on_revisit = "You're back."
     # Act 4
     executive_access_corridor.on_first_enter = "You've never been here before."
     executive_access_corridor.on_revisit = "You're back."
