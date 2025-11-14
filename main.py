@@ -170,7 +170,7 @@ while game.running:
     process_input(command)
     get_directions()
 
-    # clear_screen()
+    clear_screen()
     draw_HUD()
 
     if player.output_act_number and player.output_act_subtitle:

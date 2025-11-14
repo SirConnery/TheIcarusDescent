@@ -584,4 +584,4 @@ run_all_setups()
 def debug_stuff():
     player.inventory["welder"] = welder
     player.inventory["screwdriver"] = screwdriver
-debug_stuff()
+# debug_stuff()

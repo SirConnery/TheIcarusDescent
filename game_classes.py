@@ -29,12 +29,12 @@ class Player:
     # Helpers
 
     def add_item(self, item):
-        item_name = item.name.lower()
-        self.inventory[item_name] = item
+        id = item.id
+        self.inventory[id] = item
     def remove_item(self, item):
-        item_name = item.name.lower()
-        if item_name in self.inventory:
-            del self.inventory[item_name]
+        id = item.id
+        if id in self.inventory:
+            del self.inventory[id]
 
     
     # Actions
@@ -156,9 +156,10 @@ class Player:
             """
 
 class NPC:
-    def __init__(self, name, description, keywords = None, on_look = None, on_interact = None):
+    def __init__(self, id, name, description, keywords = None, on_look = None, on_interact = None):
         
         # Descriptions
+        self.id = id
         self.name = name
         self.description = description
 
@@ -220,17 +221,17 @@ class Room:
         return self.on_revisit
     
     def add_item(self, item):
-        item_name = item.name.lower()
-        self.items[item_name] = item
+        id = item.id
+        self.items[id] = item
 
     def remove_item(self, item):
-        item_name = item.name.lower()
-        if item_name in self.items:
-            del self.items[item_name]
+        id = item.id
+        if id in self.items:
+            del self.items[id]
     
     def add_use_target(self, use_target):
-        use_target_name = use_target.name.lower()
-        self.use_targets[use_target_name] = use_target
+        id = use_target.id
+        self.use_targets[id] = id
 
     def remove_use_target(self, use_target):
         id = use_target.id
@@ -282,9 +283,10 @@ class Item:
     
 
 class Interactable:
-    def __init__(self, name, description, keywords, on_interact, on_look=""):
+    def __init__(self, id, name, description, keywords, on_interact, on_look=""):
         
         # Descriptions
+        self.id = id
         self.name = name
         self.description = description
         self.keywords = keywords
@@ -314,9 +316,10 @@ class UseTarget:
 
 
 class Scenery:
-    def __init__(self, name, keywords, description, on_look=""):
+    def __init__(self, id, name, keywords, description, on_look=""):
 
          # Descriptions
+        self.id = id
         self.name = name
         self.keywords = keywords
         self.description = description
