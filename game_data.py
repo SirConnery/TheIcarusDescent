@@ -68,9 +68,11 @@ rooms = {
         debug_info="Large empty area meant for gathering and receiving urgent instructions."),
     "bridge": Room(name="Bridge",
         debug_info="Ship bridge."),
+    "systems_data_crossover": Room(name="Systems Data Crossover",
+        debug_info="Corridor before Systems Data Access Corridor."),
     "systems_data_access_corridor": Room(name="Systems Data Access Corridor",
-        debug_info="Corridor before Server Array."),''
-    "command_server_array": Room(name="Command Server Array",
+        debug_info="Corridor before Server Array."),
+    "data_server_array": Room(name="Data Server Array",
         debug_info="Ship network and system control data central."),
     "executive_access_aisle": Room(name="Executive Access Aisle.",
         debug_info="Ship network and system control data central."),
@@ -115,8 +117,9 @@ central_utility_spine_6_f = rooms["central_utility_spine_6_f"]
 central_utility_spine_4_f = rooms["central_utility_spine_4_f"]
 deck_5_forward_muster_station = rooms["deck_5_forward_muster_station"]
 bridge = rooms["bridge"]
+systems_data_crossover = rooms["systems_data_crossover"]
 systems_data_access_corridor = rooms["systems_data_access_corridor"]
-command_server_array = rooms["command_server_array"]
+data_server_array = rooms["data_server_array"]
 executive_access_aisle = rooms["executive_access_aisle"]
 captains_quarters = rooms["captains_quarters"]
 command_transit_vestibule = rooms["command_transit_vestibule"]
@@ -124,31 +127,35 @@ command_transit_vestibule = rooms["command_transit_vestibule"]
 
 ## Room custom events
 
-#Act 1
+# Act 1
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
 
-#Act 4
+# Act 4
 def act_4_lock_starting_door():
     service_control_junction_5f.is_open = False
     service_control_junction_5f.locked_description = "There is no reason to go back with that thing roaming there..."
 
 def meet_panicked_npc_executive_access_aisle():
-    player.output_fast += "Tanaka runs toward data access."
+    player.output_fast += f"Tanaka runs toward {systems_data_access_corridor.name}."
     systems_data_access_corridor.is_event_trigger = True
     systems_data_access_corridor.room_event = meet_panicked_npc_systems_data_access_corridor
 
 def meet_panicked_npc_systems_data_access_corridor():
+    systems_data_crossover.is_event_trigger = True
+    systems_data_crossover.room_event = meet_panicked_npc_systems_data_systems_crossover
+    player.output_fast += f"Tanaka runs toward {systems_data_crossover.name}."
+
+def meet_panicked_npc_systems_data_systems_crossover():
     central_utility_spine_5_f.is_event_trigger = True
     central_utility_spine_5_f.room_event = meet_panicked_npc_central_utility_spine_5_f
-    player.output_fast += "Tanaka runs toward central utility spine."
+    player.output_fast += f"Tanaka runs toward {central_utility_spine_5_f.name}."
 
 def meet_panicked_npc_central_utility_spine_5_f():
     operations_distribution_crossover.is_event_trigger = True
     operations_distribution_crossover.room_event = meet_panicked_npc_operations_distribution_crossover
-    player.output_fast += "Tanaka runs toward operations distribution crossover."
-
+    player.output_fast += f"Tanaka runs toward {operations_distribution_crossover.name}."
 
 def meet_panicked_npc_operations_distribution_crossover():
     operations_distribution_crossover.items["lockpick"] = lockpick
@@ -157,10 +164,12 @@ def meet_panicked_npc_operations_distribution_crossover():
     player.output_fast += f"\n\nTanaka runs toward operations distribution crossover."
     operations_distribution_crossover.items["lockpick"] = lockpick
 
+
+
 ## Connect rooms
 
 def connect_all_initial_rooms():
-    #Act 1
+    # Act 1
     cryo_bay.forward = cryo_vestibule
     cryo_vestibule.left = galley
     cryo_vestibule.right = crew_lockers
@@ -208,7 +217,7 @@ def connect_all_initial_rooms():
     external_ops_access_way.backward = operations_and_cargo_interlink
     eva_gear_lockers.backward = external_ops_access_way
     central_utility_spine_5_f.left = operations_distribution_crossover
-    central_utility_spine_5_f.right = systems_data_access_corridor
+    central_utility_spine_5_f.right = systems_data_crossover
     central_utility_spine_5_f.forward = central_utility_spine_6_f
     central_utility_spine_5_f.backward = central_utility_spine_4_f
     central_utility_spine_6_f.left = external_ops_access_way
@@ -219,10 +228,12 @@ def connect_all_initial_rooms():
     deck_5_forward_muster_station.forward = bridge
     deck_5_forward_muster_station.backward = central_utility_spine_6_f
     bridge.backward = deck_5_forward_muster_station
-    systems_data_access_corridor.left = central_utility_spine_5_f
-    systems_data_access_corridor.right = command_server_array
+    systems_data_crossover.left = central_utility_spine_5_f
+    systems_data_crossover.forward = systems_data_access_corridor
+    systems_data_access_corridor.right = data_server_array
     systems_data_access_corridor.forward = executive_access_aisle
-    command_server_array.left = systems_data_access_corridor
+    systems_data_access_corridor.backward = systems_data_crossover
+    data_server_array.left = systems_data_access_corridor
     executive_access_aisle.right = captains_quarters
     executive_access_aisle.forward = command_transit_vestibule 
     executive_access_aisle.backward = systems_data_access_corridor
@@ -242,63 +253,84 @@ def set_rooms_defaults():
     cryo_bay.on_survey = "You survey the room."
     cryo_vestibule.on_first_enter = "You've never been here before."
     cryo_vestibule.on_revisit = "You're back."
+    cryo_vestibule.on_survey = "You survey the room."
     galley.on_first_enter = "You've never been here before."
     galley.on_revisit = "You're back."
+    galley.on_survey = "You survey the room."
     crew_lockers.on_first_enter = "You've never been here before."
     crew_lockers.on_revisit = "You're back."
+    crew_lockers.on_survey = "You survey the room."
     crew_lockers.is_event_trigger = True
     crew_lockers.room_event = crew_lockers_event
     deck_4_mid_aft_passage.on_first_enter = "You've never been here before."
     deck_4_mid_aft_passage.on_revisit = "You're back."
+    deck_4_mid_aft_passage.on_survey = "You survey the room."
     deck_4_mid_aft_passage.is_open = False
     deck_4_mid_aft_passage.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
     # Act 2
     deck_4_med_env_corridor.on_first_enter = "You've never been here before."
     deck_4_med_env_corridor.on_revisit = "You're back."
+    deck_4_med_env_corridor.on_survey = "You survey the room."
     deck_4_med_env_corridor.is_act_event_trigger = True
     deck_4_med_env_corridor.act_number = "2"
     deck_4_med_env_corridor.act_subtitle = "Beneath the Darkness"
     medical_labs.on_first_enter = "You've never been here before."
     medical_labs.on_revisit = "You're back."
+    medical_labs.on_survey = "You survey the room."
     environmental_controls.on_first_enter = "You've never been here before."
     environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing."
+    environmental_controls.on_survey = "You survey the room."
     environmental_controls.is_open = False
     environmental_controls.locked_description = "The door to Environmental Controls remains sealed. The access panel glows faintly, waiting for a valid code. No amount of pressing or swiping seems to budge it."
     upper_aft_lobby.on_first_enter = "You've never been here before."
     upper_aft_lobby.on_revisit = "You're back."
+    upper_aft_lobby.on_survey = "You survey the room."
     central_freight_bay.on_first_enter = "You've never been here before."
     central_freight_bay.on_revisit = "You're back."
+    central_freight_bay.on_survey = "You survey the room."
     central_freight_bay.is_open = False
     central_freight_bay.locked_description = "The door refuses to budge. Its surface is cold and unyielding, and the panel to the side is jammed tight. Whatever shut it down, it won’t open by hand. You’ll need another way in"
     deck_5_aft_utility.on_first_enter = "You've never been here before."
     deck_5_aft_utility.on_revisit = "You're back."
+    deck_5_aft_utility.on_survey = "You survey the room."
     # Act 3
     cargo_staging_room.on_first_enter = "The door closes behind you and suddenly the power comes on."
     cargo_staging_room.on_revisit = "You're back."
+    cargo_staging_room.on_survey = "You survey the room."
     cargo_staging_room.is_act_event_trigger = True
     cargo_staging_room.act_number = "3"
     cargo_staging_room.act_subtitle = "Arrival"
     deck_5_secure_pathway.on_first_enter = "You've never been here before."
     deck_5_secure_pathway.on_revisit = "You're back."
+    deck_5_secure_pathway.on_survey = "You survey the room."
     service_access_hatchway.on_first_enter = "You've never been here before."
     service_access_hatchway.on_revisit = "You're back."
+    service_access_hatchway.on_survey = "You survey the room."
     msc_1.on_first_enter = "You've never been here before."
     msc_1.on_revisit = "You're back."
+    msc_1.on_survey = "You survey the room."
     msc_2.on_first_enter = f"The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.\n\nThe Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.\n\n A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall."
     msc_2.on_revisit = "You're back."
+    msc_2.on_survey = "You survey the room."
     msc_2_b_storage_drums.on_first_enter = "You've never been here before."
     msc_2_b_storage_drums.on_revisit = "You're back."
+    msc_2_b_storage_drums.on_survey = "You survey the room."
     msc_2_b_console_desk.on_first_enter = "You've never been here before."
     msc_2_b_console_desk.on_revisit = "You're back."
+    msc_2_b_console_desk.on_survey = "You survey the room."
     msc_2_b_power_conduit.on_first_enter = "You've never been here before."
     msc_2_b_power_conduit.on_revisit = "You're back."
+    msc_2_b_power_conduit.on_survey = "You survey the room."
     msc_vent.on_first_enter = "You've never been here before."
     msc_vent.on_revisit = "You're back."
+    msc_vent.on_survey = "You survey the room."
     service_control_junction_5f.on_first_enter = "You've never been here before."
     service_control_junction_5f.on_revisit = "You're back."
+    service_control_junction_5f.on_survey = "You survey the room."
     # Act 4
     operations_distribution_crossover.on_first_enter = "You've never been here before."
     operations_distribution_crossover.on_revisit = "You're back."
+    operations_distribution_crossover.on_survey = "You survey the room."
     operations_distribution_crossover.is_event_trigger = True
     operations_distribution_crossover.room_event = act_4_lock_starting_door
     operations_distribution_crossover.is_act_event_trigger = True
@@ -306,36 +338,55 @@ def set_rooms_defaults():
     operations_distribution_crossover.act_subtitle = "The Outer Decks"
     operations_and_cargo_interlink.on_first_enter = "You've never been here before."
     operations_and_cargo_interlink.on_revisit = "You're back."
+    operations_and_cargo_interlink.on_survey = "You survey the room."
     cargo_bay_control_f.on_first_enter = "You've never been here before."
     cargo_bay_control_f.on_revisit = "You're back."
+    cargo_bay_control_f.on_survey = "You survey the room."
     external_ops_access_way.on_first_enter = "You've never been here before."
     external_ops_access_way.on_revisit = "You're back."
-    eva_gear_lockers.on_first_enter = "You've never been here before."
-    eva_gear_lockers.on_revisit = "You're back."
+    external_ops_access_way.on_survey = "You survey the room."
+    eva_gear_lockers.on_first_enter = "It is a narrow staging bay lined with helmet racks and storage units. Secured to the wall is a dark, electronic locker, and through its clear panel, you can clearly see the SART (Systems Repair and Analysis Tool) unit locked inside..\n\nThere is what appears to be a screwdriver on the floor."
+    eva_gear_lockers.on_revisit = "The room's equipment racks are mostly empty, and the SART locker remains a central point of interest. There is a screwdriver on the floor."
+    eva_gear_lockers.on_survey = "The room is quiet and unnervingly cold. It is dedicated to storing external mission gear, though most racks are now empty. A specialized maintenance board stands next to a tool chest, and you see a small, precision screwdriver set attached to it.\n\nSecured prominently on the wall is a dark, electronic locker with the SART (Systems Analysis and Repair Tool) unit clearly visible behind its sealed high security glass panel. Normally you would open it by using your attached token id on your radio. The locker is centrally connected to the data servers that controls id data."
     central_utility_spine_5_f.on_first_enter = "You've never been here before."
     central_utility_spine_5_f.on_revisit = "You're back."
+    central_utility_spine_5_f.on_survey = "You survey the room."
     central_utility_spine_4_f.on_first_enter = "You've never been here before."
     central_utility_spine_4_f.on_revisit = "You're back."
+    central_utility_spine_4_f.on_survey = "You survey the room."
     central_utility_spine_4_f.is_open = False
     central_utility_spine_4_f.locked_description = "This heavy access door is severely damaged. The metallic surface is battered and buckled, and the automated locking mechanism has been ripped from its housing. The door frame is twisted, ensuring the passage is permanently sealed by physical force. "
     central_utility_spine_6_f.on_first_enter = "You've never been here before."
     central_utility_spine_6_f.on_revisit = "You're back."
+    central_utility_spine_6_f.on_survey = "You survey the room."
     deck_5_forward_muster_station.on_first_enter = "You've never been here before."
     deck_5_forward_muster_station.on_revisit = "You're back."
+    deck_5_forward_muster_station.on_survey = "You survey the room."
     bridge.on_first_enter = "You've never been here before."
     bridge.on_revisit = "You're back."
-    systems_data_access_corridor.on_first_enter = "You've never been here before."
-    systems_data_access_corridor.on_revisit = "You're back."
-    command_server_array.on_first_enter = "You've never been here before."
-    command_server_array.on_revisit = "You're back."
+    bridge.on_survey = "You survey the room."
+    systems_data_crossover.on_first_enter = "You've never been here before."
+    systems_data_crossover.on_revisit = "You're back."
+    systems_data_crossover.on_survey = "You survey the room."
+    systems_data_access_corridor.on_first_enter = "This narrow passage is lined with high-capacity data conduits, and the air feels cold and electrically charged. It seems the console that would let access the Data Server Array is fried. You have to get in somehow..."
+    systems_data_access_corridor.on_revisit = "You are back. The Data Server Array door remains sealed.."
+    systems_data_access_corridor.on_survey = "This narrow passage is lined with high-capacity data conduits, and the air feels cold and electrically charged. The electronic access console is completely fried: the panel is melted and blackened, emitting a faint smell of burnt ozone. The massive blast door is sealed shut, and the emergency mechanical lock beside it is seized. The door cannot be opened electronically. You will need a delicate tool to bypass the final internal lock tumblers."
+    data_server_array.on_first_enter = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input."
+    data_server_array.on_revisit = "The room is loud, cold, and wide. The central ICARUS terminal remains active.."
+    data_server_array.on_survey = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input."
+    data_server_array.is_open = False
+    data_server_array.locked_description = "The door is locked as the electronic console that would let you in is completely fried."
     executive_access_aisle.on_first_enter = "You've never been here before."
     executive_access_aisle.on_revisit = "You're back."
+    executive_access_aisle.on_survey = "You survey the room."
     executive_access_aisle.is_event_trigger = True
     executive_access_aisle.room_event = meet_panicked_npc_executive_access_aisle
     captains_quarters.on_first_enter = "You've never been here before."
     captains_quarters.on_revisit = "You're back."
+    captains_quarters.on_survey = "You survey the room."
     command_transit_vestibule.on_first_enter = "You've never been here before."
     command_transit_vestibule.on_revisit = "You're back."
+    command_transit_vestibule.on_survey = "You survey the room."
 
 
 def initial_rooms_setup():
@@ -402,6 +453,16 @@ initial_items = {
         debug_info="Screwdriver on the floor of EVA room."
     ),
 
+    "sart": Item(
+        id="sart",
+        name="SART",
+        keywords=["sart", "system", "analysis", "repair", "tool"],
+        debug_info="System Analysis and Repair Tool.",
+        on_look="System Analysis and Repair Tool.",
+        can_take=False,
+        locked_description="It is locked behind a bulletproof glass panel with token identifier next to it."
+    ),
+
     "bridge_access_cypher": Item(
         id="bridge_access_cypher",
         name="Access Cypher",
@@ -419,6 +480,7 @@ flashlight = initial_items["flashlight"]
 welder = initial_items["welder"]
 lockpick = initial_items["lockpick"]
 screwdriver = initial_items["screwdriver"]
+sart = initial_items["sart"]
 bridge_access_cypher = initial_items["bridge_access_cypher"]
 
 def initial_items_setup():
@@ -430,7 +492,9 @@ def initial_items_setup():
     medical_labs.items["engys_keycard"] = engys_keycard
     environmental_controls.items["flashlight"] = flashlight
     deck_5_aft_utility.items["welder"] = welder
+    # Act 4
     eva_gear_lockers.items["screwdriver"] = screwdriver
+    eva_gear_lockers.items["sart"] = sart
 
 # Interactables functions
 
@@ -446,6 +510,14 @@ initial_interactables = {
         keywords=["terminal", "console", "terminal console", "cryo terminal"],
         debug_info="Act 1 Broken down door, open with jack",
         on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
+        on_interact=interacted_cryo_terminal
+    ),
+    "icarus_systems_terminal": Interactable(
+        id="icarus_systems_terminal",
+        name="ICARUS Systems Terminal",
+        keywords=["terminal", "console", "terminal console", "data terminal", "data", "icarus", "systems"],
+        debug_info="Act 4 Terminal inside Data Server Array",
+        on_look="",
         on_interact=interacted_cryo_terminal
     ),
 }
@@ -477,11 +549,11 @@ def env_controls_access_panel_use_keypad():
 def personal_command_vault_welder_used():
     player.output += "You welded the thing open."
     player.cur_room.remove_use_target(personal_command_vault_before_weld)
-    # player.cur_room.add_use_target(personal_command_vault_after_weld)
+    player.cur_room.add_use_target(personal_command_vault_after_weld)
 
 def personal_comand_vault_screwdriver_used():
     player.output += "You used the screwdriver to open it."
-    player.cur_room.add_use_target(bridge_access_cypher)
+    player.cur_room.add_item(bridge_access_cypher)
     player.take("cypher")
 
 
@@ -524,6 +596,13 @@ initial_use_targets = {
         debug_info="Act 2 Broken down door, open with welder",
         on_look="The Personal Command Vault is now partially open. The protective blast plate lies on the floor beside it, exposing the inner electronic lock mechanism.\n\nThe mechanism's small access panel is seized shut and secured by four tiny, specialized security screws.\n\nTo get inside, you'll need to find a way past that last, delicate barrier.",
         use_func=personal_comand_vault_screwdriver_used),
+    "data_array_door": UseTarget(
+        id="data_array_door",
+        name="Data Array Door",
+        keywords = ["door", "data", "array", "systems", "lock"],
+        debug_info="Data Server Array room broken down door. Use lockpick to open.",
+        on_look="The destruction of the console has rendered the primary lock useless. The emergency mechanical lock tumblers are visible in a small recess next to the frame. They are jammed and cannot be operated by hand, but the exposed key housing is small and complex, indicating it was designed for fine, precision manipulation.",
+        use_func=personal_comand_vault_screwdriver_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
@@ -531,19 +610,24 @@ env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
 personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
 personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
+data_array_door = initial_use_targets["data_array_door"]
+
 
 def initial_use_targets_setup():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
     deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
     captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
+    systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
 
-def setup_usable_items():
+def setup_use_targets_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
     personal_command_vault_before_weld.usable_items["welder"] = welder
     personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
+    data_array_door.usable_items["lockpick"] = lockpick
+
 
 # Sceneries
 
@@ -565,7 +649,7 @@ npcs ={
     "tanaka":NPC(
     id="tanaka",
     name="Tanaka",
-    debug_info="Japanese Environmental Systems Technician")}
+    debug_info="Japanese Data Systems Analysts")}
 
 engy = npcs["engy"]
 chef = npcs["chef"]
@@ -582,7 +666,7 @@ def run_all_setups():
     initial_interactables_setup()
     initial_items_setup()
     initial_use_targets_setup()
-    setup_usable_items()
+    setup_use_targets_usable_items()
     setup_npcs()
 
 run_all_setups()
@@ -591,4 +675,4 @@ run_all_setups()
 def debug_stuff():
     player.inventory["welder"] = welder
     player.inventory["screwdriver"] = screwdriver
-# debug_stuff()
+debug_stuff()

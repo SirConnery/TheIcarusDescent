@@ -91,8 +91,11 @@ class Player:
 
         item = get_object_by_keyword(sources, keyword)
         if item:
-            item.pick_up(self, self.cur_room)
-            self.output_gain_item += f"You have taken {item.name}.\n"
+            if item.can_take:
+                item.pick_up(self, self.cur_room)
+                self.output_gain_item += f"You have taken {item.name}.\n"
+            else:
+                self.output += item.locked_description
         else:
             self.output_error += f"No item named {keyword} in this location.\n"
     
@@ -256,7 +259,9 @@ class Room:
                 return None
 
 class Item:
-    def __init__(self, id, name, debug_info, keywords, on_look="", can_take=False, item_event=None, is_item_event_trigger=False):
+    def __init__(self, id, name, debug_info, keywords, on_look="", 
+                can_take=False, locked_description = False,
+                is_item_event_trigger=False, item_event=None,):
         
         # Descriptions
         self.id = id
@@ -271,6 +276,7 @@ class Item:
 
         # Utility
         self.can_take = can_take
+        self.locked_description = locked_description
 
     def pick_up(self, player, room):
         player.add_item(self)
@@ -311,7 +317,6 @@ class UseTarget:
 
     def on_use(self, item):
         if item in self.usable_items.values():
-            print("Found item in door dict")
             self.use_func()
 
 
