@@ -156,12 +156,12 @@ class Player:
             """
 
 class NPC:
-    def __init__(self, id, name, description, keywords = None, on_look = None, on_interact = None):
+    def __init__(self, id, name, debug_info, keywords = None, on_look = None, on_interact = None):
         
         # Descriptions
         self.id = id
         self.name = name
-        self.description = description
+        self.debug_info = debug_info
 
         #Other
         self.on_look = on_look
@@ -169,7 +169,7 @@ class NPC:
         self.keywords = keywords
 
 class Room:
-    def __init__(self, name, description,
+    def __init__(self, name, debug_info,
                  forward=None, backward=None, left=None, right=None, 
                  on_first_enter=None, on_revisit=None, has_been_visited=False,
                  is_event_trigger=False, room_event=None,
@@ -180,7 +180,7 @@ class Room:
         
         # Descriptions
         self.name = name
-        self.description = description
+        self.debug_info = debug_info
 
         # Exits
         self.forward = forward
@@ -256,12 +256,12 @@ class Room:
                 return None
 
 class Item:
-    def __init__(self, id, name, description, keywords, on_look="", can_take=False, item_event=None, is_item_event_trigger=False):
+    def __init__(self, id, name, debug_info, keywords, on_look="", can_take=False, item_event=None, is_item_event_trigger=False):
         
         # Descriptions
         self.id = id
         self.name = name
-        self.description = description
+        self.debug_info = debug_info
         self.keywords = keywords
         self.on_look = on_look
 
@@ -283,12 +283,12 @@ class Item:
     
 
 class Interactable:
-    def __init__(self, id, name, description, keywords, on_interact, on_look=""):
+    def __init__(self, id, name, debug_info, keywords, on_interact, on_look=""):
         
         # Descriptions
         self.id = id
         self.name = name
-        self.description = description
+        self.debug_info = debug_info
         self.keywords = keywords
         self.on_look = on_look
 
@@ -296,12 +296,12 @@ class Interactable:
         self.on_interact = on_interact
 
 class UseTarget:
-    def __init__(self, id, name, description, keywords, use_func, on_look=""):
+    def __init__(self, id, name, debug_info, keywords, use_func, on_look=""):
         
         # Descriptions
         self.id = id
         self.name = name
-        self.description = description
+        self.debug_info = debug_info
         self.keywords = keywords
         self.on_look = on_look
 
@@ -316,13 +316,13 @@ class UseTarget:
 
 
 class Scenery:
-    def __init__(self, id, name, keywords, description, on_look=""):
+    def __init__(self, id, name, keywords, debug_info, on_look=""):
 
          # Descriptions
         self.id = id
         self.name = name
         self.keywords = keywords
-        self.description = description
+        self.debug_info = debug_info
         self.on_look = on_look
 
 

@@ -7,77 +7,77 @@ player = Player()
 
 rooms = {
     "cryo_bay": Room(name="Cryo Bay", 
-        description="It is a room with cryo stuff.",),
+        debug_info="It is a room with cryo stuff.",),
     "cryo_vestibule": Room(name="Cryo Vestibule",
-        description="It is a vestibule connecting CryoBay, Mess Hall and Crew Lockers.",),
+        debug_info="It is a vestibule connecting CryoBay, Mess Hall and Crew Lockers.",),
     "galley": Room(name="Galley",
-        description="A room with small kitchen and dinner table, some sofas",),
+        debug_info="A room with small kitchen and dinner table, some sofas",),
     "crew_lockers": Room(name="Crew Lockers",
-        description="A room with small kitchen and dinner table, some sofas",),
+        debug_info="A room with small kitchen and dinner table, some sofas",),
     "deck_4_mid_aft_passage": Room(name="Deck 4 Mid-Aft Passage",
-        description="A passage connecting Act 1 and Act 2"),
+        debug_info="A passage connecting Act 1 and Act 2"),
     "deck_4_med_env_corridor": Room(name="Deck 4 Med-Env Corridor",
-        description="Start of Act 2."),
+        debug_info="Start of Act 2."),
     "medical_labs": Room(name="Medical Labs",
-        description="Medical laboratory where you find a keycard"),
+        debug_info="Medical laboratory where you find a keycard"),
     "environmental_controls": Room(name="Environmental Controls",
-        description="Needs passcode. Find flashlight."),
+        debug_info="Needs passcode. Find flashlight."),
     "upper_aft_lobby": Room(name="Upper Aft Lobby",
-        description="Connecting room to cargo and utility."),
+        debug_info="Connecting room to cargo and utility."),
     "central_freight_bay": Room(name="Central Freight Bay",
-        description="Massive cargo bay."),
+        debug_info="Massive cargo bay."),
     "deck_5_aft_utility": Room(name="Deck 5 Aft Utility",
-        description="Small utility room."),
+        debug_info="Small utility room."),
     "cargo_staging_room": Room(name="Cargo Staging Room",
-        description="Small room for cargo."),
+        debug_info="Small room for cargo."),
     "deck_5_secure_pathway": Room(name="Deck 5 Secure Pathway",
-        description="2 person pathway."),
+        debug_info="2 person pathway."),
     "service_access_hatchway": Room(name="Service Access Hatchway",
-        description="Act 3 filler room."),
+        debug_info="Act 3 filler room."),
     "msc_1": Room(name="MSC1 Main Service Control 1",
-        description="MSC Room 1 divided by mirror."),
+        debug_info="MSC Room 1 divided by mirror."),
     "msc_2": Room(name="MSC2 Main Service Control 2",
-        description="MSC Room 2 divided by mirror. Alien encounter here."),
+        debug_info="MSC Room 2 divided by mirror. Alien encounter here."),
     "msc_2_b_storage_drums": Room(name="MSC2 Main Service Control 2 (behind power storage drums)",
-        description="MSC Room 2 behind power storage drums."),
+        debug_info="MSC Room 2 behind power storage drums."),
     "msc_2_b_console_desk": Room(name="MSC2 Main Service Control 2 (behind console desk)",
-        description="MSC Room 2 behind console desk."),
+        debug_info="MSC Room 2 behind console desk."),
     "msc_2_b_power_conduit": Room(name="MSC2 Main Service Control 2 (behind power conduit manifold)",
-        description="MSC Room 2 behind power conduit manifold."),
+        debug_info="MSC Room 2 behind power conduit manifold."),
     "msc_vent": Room(name="MSC2 Ventilation Shaft",
-        description="MSC2 ventilation shaft."),
+        debug_info="MSC2 ventilation shaft."),
     "service_control_junction_5f": Room(name="Service Control Junction 5 F",
-        description="The door before entering. Act 4."),
+        debug_info="The door before entering. Act 4."),
     "operations_distribution_crossover": Room(name="Operations Distribution Crossover",
-        description="Act 4 starting corridor."),
+        debug_info="Act 4 starting corridor."),
     "operations_and_cargo_interlink": Room(name="Operations and Cargo Interlink",
-        description="Act 4 corridor between cargo and bridge."),
+        debug_info="Act 4 corridor between cargo and bridge."),
     "cargo_bay_control_f": Room(name="Cargo Bay Control F",
-        description="Act 4 cargo bay control overwatch room."),
+        debug_info="Act 4 cargo bay control overwatch room."),
     "external_ops_access_way": Room(name="External Ops Access Way",
-        description="Act 4 corridor between cargo and bridge."),
+        debug_info="Act 4 corridor between cargo and bridge."),
     "eva_gear_lockers": Room(name="EVA Gear Lockers",
-        description="Act 4 eva gear locker."),
+        debug_info="Act 4 eva gear locker."),
     "central_utility_spine_5_f": Room(name="Central Utility Spine 5 F",
-        description="Part of the middle ship spanning hallway."),
+        debug_info="Part of the middle ship spanning hallway."),
     "central_utility_spine_4_f": Room(name="Central Utility Spine 4 F",
-        description="This door is broken and the room cannot be accessed."),
+        debug_info="This door is broken and the room cannot be accessed."),
     "central_utility_spine_6_f": Room(name="Central Utility Spine 6 F",
-        description="Part of the middle ship spanning hallway."),
+        debug_info="Part of the middle ship spanning hallway."),
     "deck_5_forward_muster_station": Room(name="Deck 5 Forward Muster Station",
-        description="Large empty area meant for gathering and receiving urgent instructions."),
+        debug_info="Large empty area meant for gathering and receiving urgent instructions."),
     "bridge": Room(name="Bridge",
-        description="Ship bridge."),
+        debug_info="Ship bridge."),
     "systems_data_access_corridor": Room(name="Systems Data Access Corridor",
-        description="Corridor before Server Array."),''
+        debug_info="Corridor before Server Array."),''
     "command_server_array": Room(name="Command Server Array",
-        description="Ship network and system control data central."),
+        debug_info="Ship network and system control data central."),
     "executive_access_aisle": Room(name="Executive Access Aisle.",
-        description="Ship network and system control data central."),
+        debug_info="Ship network and system control data central."),
     "captains_quarters": Room(name="Captain's Quarters.",
-        description="Living place for the captain."),
+        debug_info="Living place for the captain."),
     "command_transit_vestibule": Room(name="Command Transit Vestibule",
-        description="Stairway connecting to deck_5_forward_muster_station."),
+        debug_info="Stairway connecting to deck_5_forward_muster_station."),
 }
 
 # Act 1
@@ -349,7 +349,7 @@ initial_items = {
         id="backpack",
         name="Backpack",
         keywords=["backpack", "pack", "bag"],
-        description="Brown utility backpack",
+        debug_info="Brown utility backpack",
         on_look="It is a durable, brown canvas backpack, clearly built for field utility rather than comfort."
     ),
 
@@ -357,56 +357,56 @@ initial_items = {
         id="radio",
         name="Radio",
         keywords=["radio"],
-        description="Radio broken down"
+        debug_info="Radio broken down"
     ),
 
     "maintenance_jack": Item(
         id="maintenance_jack",
         name="Maintenance Jack",
         keywords=["maintenance jack", "jack", "maintenancejack"],
-        description="Medium sized maintenance tool for turning things"
+        debug_info="Medium sized maintenance tool for turning things"
     ),
 
     "engys_keycard": Item(
         id="engys_keycard",
         name="Engy's Keycard",
         keywords=["keycard", "card", "key", "engy"],
-        description="High Engineer Enrique's keycard."
+        debug_info="High Engineer Enrique's keycard."
     ),
 
     "flashlight": Item(
         id="flashlight",
         name="Flashlight",
         keywords=["flashlight", "light", "flash"],
-        description="Small non-industrial handheld flashlight with low cone of light."
+        debug_info="Small non-industrial handheld flashlight with low cone of light."
     ),
 
     "welder": Item(
         id="welder",
         name="Welder",
         keywords=["welder"],
-        description="Hand usable welder."
+        debug_info="Hand usable welder."
     ),
 
     "lockpick": Item(
         id="lockpick",
         name="Lockpick",
         keywords=["lockpick", "key"],
-        description="Dropped lockpick by Tanaka. Opens Server Array."
+        debug_info="Dropped lockpick by Tanaka. Opens Server Array."
     ),
 
     "screwdriver": Item(
         id="screwdriver",
         name="Screwdriver",
         keywords=["screwdriver", "screw", "driver"],
-        description="Screwdriver on the floor of EVA room."
+        debug_info="Screwdriver on the floor of EVA room."
     ),
 
     "bridge_access_cypher": Item(
         id="bridge_access_cypher",
         name="Access Cypher",
         keywords=["cypher", "bridge", "access", "access cypher", "bridge access cypher"],
-        description="Captain's quarters vault you find this."
+        debug_info="Captain's quarters vault you find this."
     ),
 }
 
@@ -441,9 +441,10 @@ def interacted_cryo_terminal():
 
 initial_interactables = {
     "cryo_bay_terminal": Interactable(
+        id="cryo_bay_terminal",
         name="Cryo Bay Terminal",
         keywords=["terminal", "console", "terminal console", "cryo terminal"],
-        description="Act 1 Broken down door, open with jack",
+        debug_info="Act 1 Broken down door, open with jack",
         on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
         on_interact=interacted_cryo_terminal
     ),
@@ -492,35 +493,35 @@ initial_use_targets = {
         id="mess_hall_blast_door",
         name="Mess Hall Blast Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
-        description="Act 1 Broken down door, open with jack",
+        debug_info="Act 1 Broken down door, open with jack",
         on_look="You observe the heavy metallic edge of the Blast Door. The emergency hydraulic bolts are partially retracted, but the frame is visibly seized and fused. There are no electronic panels or keypads visible; the mechanism appears to be locked purely by immense mechanical pressure. This is a job for focused, brute force.",
         use_func=mess_hall_blast_door_used),
     "env_controls_access_panel": UseTarget(
         id="env_controls_access_panel",
         name="Environmental Control Access Panel",
         keywords = ["access panel", "panel", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
-        description="Act 2 keypad to Environmental Controls.",
+        debug_info="Act 2 keypad to Environmental Controls.",
         on_look="A compact keypad and card swipe terminal connected to the ship’s security network. Its small green display sits blank, awaiting input.",
         use_func=env_controls_access_panel_use_keypad),
     "central_freight_bay_bulk_door": UseTarget(
         id="central_freight_bay_bulk_door",
         name="Central Freight Bay Bulk Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
-        description="Act 2 Broken down door, open with welder",
+        debug_info="Act 2 Broken down door, open with welder",
         on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
         use_func=central_freight_bay_blast_door_used),
     "personal_command_vault_before_weld": UseTarget(
         id="personal_command_vault_before_weld",
         name="Personal Command Vault",
         keywords = ["vault", "personal", "personal vault", "safe", "command"],
-        description="Act 2 Broken down door, open with welder",
+        debug_info="Act 2 Broken down door, open with welder",
         on_look="The Personal Command Vault is a sturdy, dark gray safe bolted to the rear wall. The unit itself appears undamaged. The standard electronic keypad access has been completely covered by an emergency metallic blast plate, suggesting a high-level, automated lockdown. This plate is held firmly in place by four heavy, visible structural welds and cannot be removed without cutting the seals.",
         use_func=personal_command_vault_welder_used),
     "personal_command_vault_after_weld": UseTarget(
         id="personal_command_vault_after_weld",
         name="Personal Command Vault",
         keywords = ["vault", "personal", "personal vault", "safe", "command"],
-        description="Act 2 Broken down door, open with welder",
+        debug_info="Act 2 Broken down door, open with welder",
         on_look="The Personal Command Vault is now partially open. The protective blast plate lies on the floor beside it, exposing the inner electronic lock mechanism.\n\nThe mechanism's small access panel is seized shut and secured by four tiny, specialized security screws.\n\nTo get inside, you'll need to find a way past that last, delicate barrier.",
         use_func=personal_comand_vault_screwdriver_used),
 }
@@ -549,16 +550,22 @@ def setup_usable_items():
 sceneries = {}
 
 npcs ={
-    "engy":NPC(name="Engy",
-    description="Deceased High Engineer Enrique.",
+    "engy":NPC(
+    id="engy",
+    name="Engy",
+    debug_info="Deceased High Engineer Enrique.",
     on_look="The body is that of High Engineer Enrique, also known as Engy. He is a thin man in a white utility suit, slumped against the locker. Though you and Engy didn't know each other well, you vaguely recall his reputation for being a easygoing and quick with a joke who occasionally got into trouble with the Captain.",
     keywords=["body", "engy", "deceased", "dead"]),
-    "chef":NPC(name="Chef",
-    description="Main chef, black. Nat's great friend.",
+    "chef":NPC(
+    id="chef",
+    name="Chef",
+    debug_info="Main chef, black. Nat's great friend.",
     keywords=["chef"],
     on_look="You see the Chef. He's a broad, imposing Black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight, carrying no excess gear. A faint feeling of relief washes over you at the sight of your friend, prepared and ready."),
-    "tanaka":NPC(name="Tanaka",
-    description="Japanese Environmental Systems Technician")}
+    "tanaka":NPC(
+    id="tanaka",
+    name="Tanaka",
+    debug_info="Japanese Environmental Systems Technician")}
 
 engy = npcs["engy"]
 chef = npcs["chef"]
