@@ -170,7 +170,7 @@ while game.running:
     process_input(command)
     get_directions()
 
-    clear_screen()
+    # clear_screen()
     draw_HUD()
 
     if player.output_act_number and player.output_act_subtitle:
@@ -178,6 +178,8 @@ while game.running:
 
     outputs = [
     (player.output_debug, {"style": "yellow"}),
+    (player.output_gain_item, {"style": "green"}),
+    (player.output_lose_item, {"style": "red"}),
     (player.output_error, {"style": "red"}),
     (player.output_help, {"style": "white"}),
     (player.output, {}),
@@ -190,12 +192,16 @@ while game.running:
             r_text(text, **kwargs)
 
     player.output = f""
+    player.output_fast = f""
+    player.ouput_slow = f""
     player.output_debug = f""
     player.output_error = f""
     player.output_help = f""
     player.output_act_number = f""
     player.output_act_subtitle = f""
     player.output_directions = f"\n\n"
+    player.output_gain_item = f""
+    player.output_lose_item = f""
 
     if command == "quit":
         quit_game()

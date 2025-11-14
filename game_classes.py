@@ -14,6 +14,8 @@ class Player:
         self.output_act_number = ""
         self.output_act_subtitle = ""
         self.output_directions = f"\n\n"
+        self.output_gain_item = f"\n\n"
+        self.output_lose_item = f"\n\n"
 
         self.name = "Natalie"
         self.status = "Healthy"
@@ -67,7 +69,6 @@ class Player:
         self.output = self.cur_room.on_survey
 
     def interact(self, keyword):
-        self.output_debug = "Interacted."
         sources = [self.cur_room.interactables]
 
         obj = get_object_by_keyword(sources, keyword)
@@ -77,7 +78,6 @@ class Player:
             self.output_error = f"No interactable {keyword} in this room."
 
     def look(self, keyword):
-        self.output_debug = "Looked"
         sources = [self.cur_room.interactables, self.cur_room.use_targets, self.cur_room.items, self.cur_room.sceneries, self.inventory]
 
         obj = get_object_by_keyword(sources, keyword)
@@ -87,47 +87,39 @@ class Player:
             self.output_error = f"No interesting {keyword} in this location."
 
     def take(self, keyword):
-        self.output_debug = "Take"
-
         sources = [self.cur_room.items]
 
         item = get_object_by_keyword(sources, keyword)
         if item:
             item.pick_up(self, self.cur_room)
-            self.output_debug = f"You have taken {item.name}."
+            self.output_gain_item += f"You have taken {item.name}.\n"
         else:
-            self.output_error = f"No item named {keyword} in this location."
+            self.output_error += f"No item named {keyword} in this location.\n"
     
     def use(self, obj, obj_2):
-        self.output_debug = "use"
-
         source_1 = [self.inventory]
         item = get_object_by_keyword(source_1, obj)
         if item:
-            self.output_debug += "Item is in inventory"
             source_2 = [self.cur_room.use_targets]
             use_target = get_object_by_keyword(source_2, obj_2)
             if use_target:
-                self.output_debug += "Use target found"
                 use_target.on_use(item)
 
 
 
         else:
-            self.output_error += "{obj} not found in inventory."
+            self.output_error += f"{obj} not found in inventory."
 
 
     def drop(self, keyword):
-        self.output_debug = "Drop"
-
         sources = [self.inventory]
 
         item = get_object_by_keyword(sources, keyword)
         if item:
             item.drop(self, self.cur_room)
-            self.output_debug = f"You have dropped {item.name}."
+            self.output_drop += f"You have dropped {item.name}."
         else:
-            self.output_error = f"No item named {keyword} in your inventory."    
+            self.output_error += f"No item named {keyword} in your inventory."    
     
     def help(self):
         self.output_help = f"""
@@ -163,7 +155,17 @@ class Player:
             Usage: quit
             """
 
+class NPC:
+    def __init__(self, name, description, keywords = None, on_look = None, on_interact = None):
+        
+        # Descriptions
+        self.name = name
+        self.description = description
 
+        #Other
+        self.on_look = on_look
+        self.on_interact = on_interact
+        self.keywords = keywords
 
 class Room:
     def __init__(self, name, description,
@@ -207,6 +209,7 @@ class Room:
         self.interactables = {}
         self.use_targets = {}
         self.sceneries = {}
+        self.npcs = {}
         
     # Functions
 
@@ -224,7 +227,15 @@ class Room:
         item_name = item.name.lower()
         if item_name in self.items:
             del self.items[item_name]
-        
+    
+    def add_use_target(self, use_target):
+        use_target_name = use_target.name.lower()
+        self.use_targets[use_target_name] = use_target
+
+    def remove_use_target(self, use_target):
+        id = use_target.id
+        if id in self.use_targets:
+            del self.use_targets[id]
 
     # Helpers
 
@@ -244,13 +255,18 @@ class Room:
                 return None
 
 class Item:
-    def __init__(self, name, description, keywords, on_look="", can_take=False):
+    def __init__(self, id, name, description, keywords, on_look="", can_take=False, item_event=None, is_item_event_trigger=False):
         
         # Descriptions
+        self.id = id
         self.name = name
         self.description = description
         self.keywords = keywords
         self.on_look = on_look
+
+        # Events
+        self.is_item_event_trigger = is_item_event_trigger
+        self.item_event = item_event
 
         # Utility
         self.can_take = can_take
@@ -278,9 +294,10 @@ class Interactable:
         self.on_interact = on_interact
 
 class UseTarget:
-    def __init__(self, name, description, keywords, use_func, on_look=""):
+    def __init__(self, id, name, description, keywords, use_func, on_look=""):
         
         # Descriptions
+        self.id = id
         self.name = name
         self.description = description
         self.keywords = keywords

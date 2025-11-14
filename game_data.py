@@ -1,6 +1,7 @@
-from game_classes import Player, Room, Item, Interactable, UseTarget, Scenery
+from game_classes import Player, NPC, Room, Item, Interactable, UseTarget, Scenery
 
 player = Player()
+
 
 ## Rooms
 
@@ -59,6 +60,8 @@ rooms = {
         description="Act 4 eva gear locker."),
     "central_utility_spine_5_f": Room(name="Central Utility Spine 5 F",
         description="Part of the middle ship spanning hallway."),
+    "central_utility_spine_4_f": Room(name="Central Utility Spine 4 F",
+        description="This door is broken and the room cannot be accessed."),
     "central_utility_spine_6_f": Room(name="Central Utility Spine 6 F",
         description="Part of the middle ship spanning hallway."),
     "deck_5_forward_muster_station": Room(name="Deck 5 Forward Muster Station",
@@ -75,7 +78,6 @@ rooms = {
         description="Living place for the captain."),
     "command_transit_vestibule": Room(name="Command Transit Vestibule",
         description="Stairway connecting to deck_5_forward_muster_station."),
-
 }
 
 # Act 1
@@ -110,6 +112,7 @@ external_ops_access_way = rooms["external_ops_access_way"]
 eva_gear_lockers = rooms["eva_gear_lockers"]
 central_utility_spine_5_f = rooms["central_utility_spine_5_f"]
 central_utility_spine_6_f = rooms["central_utility_spine_6_f"]
+central_utility_spine_4_f = rooms["central_utility_spine_4_f"]
 deck_5_forward_muster_station = rooms["deck_5_forward_muster_station"]
 bridge = rooms["bridge"]
 systems_data_access_corridor = rooms["systems_data_access_corridor"]
@@ -131,6 +134,28 @@ def act_4_lock_starting_door():
     service_control_junction_5f.is_open = False
     service_control_junction_5f.locked_description = "There is no reason to go back with that thing roaming there..."
 
+def meet_panicked_npc_executive_access_aisle():
+    player.output_fast += "Tanaka runs toward data access."
+    systems_data_access_corridor.is_event_trigger = True
+    systems_data_access_corridor.room_event = meet_panicked_npc_systems_data_access_corridor
+
+def meet_panicked_npc_systems_data_access_corridor():
+    central_utility_spine_5_f.is_event_trigger = True
+    central_utility_spine_5_f.room_event = meet_panicked_npc_central_utility_spine_5_f
+    player.output_fast += "Tanaka runs toward central utility spine."
+
+def meet_panicked_npc_central_utility_spine_5_f():
+    operations_distribution_crossover.is_event_trigger = True
+    operations_distribution_crossover.room_event = meet_panicked_npc_operations_distribution_crossover
+    player.output_fast += "Tanaka runs toward operations distribution crossover."
+
+
+def meet_panicked_npc_operations_distribution_crossover():
+    operations_distribution_crossover.items["lockpick"] = lockpick
+    operations_distribution_crossover.on_survey = "This corridor is narrow and reinforced, designed for limited crew transit between the central spine and the external operation staging areas. The walls are smooth, and the overhead utilities are secured and caged.\n\n Lying just beside the rough, circular hole you previously cut into the access door, you spot a small, professional Lockpick Set glinting faintly. It must have fallen from Tanaka's belt in his haste to squeeze through the opening."
+    player.output += "Tanaka don't go!"
+    player.output_fast += f"\n\nTanaka runs toward operations distribution crossover."
+    operations_distribution_crossover.items["lockpick"] = lockpick
 
 ## Connect rooms
 
@@ -172,27 +197,29 @@ def connect_all_initial_rooms():
     service_control_junction_5f.forward = operations_distribution_crossover
     # Act 4
     operations_distribution_crossover.left = operations_and_cargo_interlink
-    operations_distribution_crossover.right = systems_data_access_corridor
-    operations_distribution_crossover.forward = central_utility_spine_5_f
+    operations_distribution_crossover.right = central_utility_spine_5_f
     operations_distribution_crossover.backward = service_control_junction_5f
     operations_and_cargo_interlink.left = cargo_bay_control_f
     cargo_bay_control_f.right = operations_and_cargo_interlink
+    operations_and_cargo_interlink.right = operations_distribution_crossover
     operations_and_cargo_interlink.forward = external_ops_access_way
-    operations_and_cargo_interlink.backward = operations_distribution_crossover
     external_ops_access_way.forward = eva_gear_lockers
     external_ops_access_way.right = central_utility_spine_6_f
     external_ops_access_way.backward = operations_and_cargo_interlink
     eva_gear_lockers.backward = external_ops_access_way
+    central_utility_spine_5_f.left = operations_distribution_crossover
+    central_utility_spine_5_f.right = systems_data_access_corridor
     central_utility_spine_5_f.forward = central_utility_spine_6_f
-    central_utility_spine_5_f.backward = operations_distribution_crossover
+    central_utility_spine_5_f.backward = central_utility_spine_4_f
+    central_utility_spine_6_f.left = external_ops_access_way
     central_utility_spine_6_f.forward = deck_5_forward_muster_station
-    central_utility_spine_6_f.backward = operations_distribution_crossover
+    central_utility_spine_6_f.backward = central_utility_spine_5_f
     deck_5_forward_muster_station.left = external_ops_access_way
     deck_5_forward_muster_station.right = command_transit_vestibule
     deck_5_forward_muster_station.forward = bridge
     deck_5_forward_muster_station.backward = central_utility_spine_6_f
     bridge.backward = deck_5_forward_muster_station
-    systems_data_access_corridor.left = operations_distribution_crossover
+    systems_data_access_corridor.left = central_utility_spine_5_f
     systems_data_access_corridor.right = command_server_array
     systems_data_access_corridor.forward = executive_access_aisle
     command_server_array.left = systems_data_access_corridor
@@ -287,6 +314,10 @@ def set_rooms_defaults():
     eva_gear_lockers.on_revisit = "You're back."
     central_utility_spine_5_f.on_first_enter = "You've never been here before."
     central_utility_spine_5_f.on_revisit = "You're back."
+    central_utility_spine_4_f.on_first_enter = "You've never been here before."
+    central_utility_spine_4_f.on_revisit = "You're back."
+    central_utility_spine_4_f.is_open = False
+    central_utility_spine_4_f.locked_description = "This heavy access door is severely damaged. The metallic surface is battered and buckled, and the automated locking mechanism has been ripped from its housing. The door frame is twisted, ensuring the passage is permanently sealed by physical force. "
     central_utility_spine_6_f.on_first_enter = "You've never been here before."
     central_utility_spine_6_f.on_revisit = "You're back."
     deck_5_forward_muster_station.on_first_enter = "You've never been here before."
@@ -299,6 +330,8 @@ def set_rooms_defaults():
     command_server_array.on_revisit = "You're back."
     executive_access_aisle.on_first_enter = "You've never been here before."
     executive_access_aisle.on_revisit = "You're back."
+    executive_access_aisle.is_event_trigger = True
+    executive_access_aisle.room_event = meet_panicked_npc_executive_access_aisle
     captains_quarters.on_first_enter = "You've never been here before."
     captains_quarters.on_revisit = "You're back."
     command_transit_vestibule.on_first_enter = "You've never been here before."
@@ -312,20 +345,71 @@ def initial_rooms_setup():
 ## Items
 
 initial_items = {
-    "backpack": Item(name="Backpack", keywords = ["backpack", "pack", "bag"],
+        "backpack": Item(
+        id="backpack",
+        name="Backpack",
+        keywords=["backpack", "pack", "bag"],
         description="Brown utility backpack",
-        on_look="It is a durable, brown canvas backpack, clearly built for field utility rather than comfort."),
-    "radio": Item(name="Radio", keywords = ["radio"],
-        description="Radio broken down",),
-    "maintenance_jack": Item(name="Maintenance Jack", keywords = ["maintenance jack", "jack", "maintenancejack"],
-        description="Medium sized maintenance tool for turning things",),
-    "engys_keycard": Item(name="Engy's Keycard", keywords = ["keycard", "card", "key", "engy"],
-        description="High Engineer Enrique's keycard.",),
-    "flashlight": Item(name="Flashlight", keywords = ["flashlight", "light", "flash"],
-        description="Small non-industrial handheld flashlight with low cone of light.",),
-    "welder": Item(name="Welder", keywords = ["welder"],
-        description="Hand usable welder.",),
+        on_look="It is a durable, brown canvas backpack, clearly built for field utility rather than comfort."
+    ),
+
+    "radio": Item(
+        id="radio",
+        name="Radio",
+        keywords=["radio"],
+        description="Radio broken down"
+    ),
+
+    "maintenance_jack": Item(
+        id="maintenance_jack",
+        name="Maintenance Jack",
+        keywords=["maintenance jack", "jack", "maintenancejack"],
+        description="Medium sized maintenance tool for turning things"
+    ),
+
+    "engys_keycard": Item(
+        id="engys_keycard",
+        name="Engy's Keycard",
+        keywords=["keycard", "card", "key", "engy"],
+        description="High Engineer Enrique's keycard."
+    ),
+
+    "flashlight": Item(
+        id="flashlight",
+        name="Flashlight",
+        keywords=["flashlight", "light", "flash"],
+        description="Small non-industrial handheld flashlight with low cone of light."
+    ),
+
+    "welder": Item(
+        id="welder",
+        name="Welder",
+        keywords=["welder"],
+        description="Hand usable welder."
+    ),
+
+    "lockpick": Item(
+        id="lockpick",
+        name="Lockpick",
+        keywords=["lockpick", "key"],
+        description="Dropped lockpick by Tanaka. Opens Server Array."
+    ),
+
+    "screwdriver": Item(
+        id="screwdriver",
+        name="Screwdriver",
+        keywords=["screwdriver", "screw", "driver"],
+        description="Screwdriver on the floor of EVA room."
+    ),
+
+    "bridge_access_cypher": Item(
+        id="bridge_access_cypher",
+        name="Access Cypher",
+        keywords=["cypher", "bridge", "access", "access cypher", "bridge access cypher"],
+        description="Captain's quarters vault you find this."
+    ),
 }
+
 
 backpack = initial_items["backpack"]
 radio = initial_items["radio"]
@@ -333,6 +417,9 @@ maintenance_jack = initial_items["maintenance_jack"]
 engys_keycard = initial_items["engys_keycard"]
 flashlight = initial_items["flashlight"]
 welder = initial_items["welder"]
+lockpick = initial_items["lockpick"]
+screwdriver = initial_items["screwdriver"]
+bridge_access_cypher = initial_items["bridge_access_cypher"]
 
 def initial_items_setup():
     # Act 1
@@ -343,6 +430,7 @@ def initial_items_setup():
     medical_labs.items["engys_keycard"] = engys_keycard
     environmental_controls.items["flashlight"] = flashlight
     deck_5_aft_utility.items["welder"] = welder
+    eva_gear_lockers.items["screwdriver"] = screwdriver
 
 # Interactables functions
 
@@ -372,9 +460,11 @@ def initial_interactables_setup():
 def mess_hall_blast_door_used():
     player.output = "Mess hall blast door used"
     deck_4_mid_aft_passage.is_open = True
+
 def central_freight_bay_blast_door_used():
     player.output = "Freight bay blast door used"
     central_freight_bay.is_open = True
+
 def env_controls_access_panel_use_keypad():
     passcode = input("Keycard detected. Please enter passcode")
     if passcode == "4277":
@@ -383,43 +473,100 @@ def env_controls_access_panel_use_keypad():
     else:
         player.output_error="Code invalid. Access denied."
 
+def personal_command_vault_welder_used():
+    player.output += "You welded the thing open."
+    player.cur_room.remove_use_target(personal_command_vault_before_weld)
+    # player.cur_room.add_use_target(personal_command_vault_after_weld)
+
+def personal_comand_vault_screwdriver_used():
+    player.output += "You used the screwdriver to open it."
+    player.cur_room.add_use_target(bridge_access_cypher)
+    player.take("cypher")
+
+
+
 # use_targets data
 
 initial_use_targets = {
-    "mess_hall_blast_door": UseTarget(name="Mess Hall Blast Door",
+    "mess_hall_blast_door": UseTarget(
+        id="mess_hall_blast_door",
+        name="Mess Hall Blast Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
         description="Act 1 Broken down door, open with jack",
         on_look="You observe the heavy metallic edge of the Blast Door. The emergency hydraulic bolts are partially retracted, but the frame is visibly seized and fused. There are no electronic panels or keypads visible; the mechanism appears to be locked purely by immense mechanical pressure. This is a job for focused, brute force.",
         use_func=mess_hall_blast_door_used),
-    "env_controls_access_panel": UseTarget(name="Environmental Control Access Panel",
+    "env_controls_access_panel": UseTarget(
+        id="env_controls_access_panel",
+        name="Environmental Control Access Panel",
         keywords = ["access panel", "panel", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
         description="Act 2 keypad to Environmental Controls.",
         on_look="A compact keypad and card swipe terminal connected to the ship’s security network. Its small green display sits blank, awaiting input.",
         use_func=env_controls_access_panel_use_keypad),
-    "central_freight_bay_bulk_door": UseTarget(name="Central Freight Bay Bulk Door",
+    "central_freight_bay_bulk_door": UseTarget(
+        id="central_freight_bay_bulk_door",
+        name="Central Freight Bay Bulk Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
         description="Act 2 Broken down door, open with welder",
         on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
         use_func=central_freight_bay_blast_door_used),
+    "personal_command_vault_before_weld": UseTarget(
+        id="personal_command_vault_before_weld",
+        name="Personal Command Vault",
+        keywords = ["vault", "personal", "personal vault", "safe", "command"],
+        description="Act 2 Broken down door, open with welder",
+        on_look="The Personal Command Vault is a sturdy, dark gray safe bolted to the rear wall. The unit itself appears undamaged. The standard electronic keypad access has been completely covered by an emergency metallic blast plate, suggesting a high-level, automated lockdown. This plate is held firmly in place by four heavy, visible structural welds and cannot be removed without cutting the seals.",
+        use_func=personal_command_vault_welder_used),
+    "personal_command_vault_after_weld": UseTarget(
+        id="personal_command_vault_after_weld",
+        name="Personal Command Vault",
+        keywords = ["vault", "personal", "personal vault", "safe", "command"],
+        description="Act 2 Broken down door, open with welder",
+        on_look="The Personal Command Vault is now partially open. The protective blast plate lies on the floor beside it, exposing the inner electronic lock mechanism.\n\nThe mechanism's small access panel is seized shut and secured by four tiny, specialized security screws.\n\nTo get inside, you'll need to find a way past that last, delicate barrier.",
+        use_func=personal_comand_vault_screwdriver_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
 env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
+personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
+personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
 
 def initial_use_targets_setup():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
     deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
+    captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
 
 def setup_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
+    personal_command_vault_before_weld.usable_items["welder"] = welder
+    personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
 
 # Sceneries
 
 sceneries = {}
+
+npcs ={
+    "engy":NPC(name="Engy",
+    description="Deceased High Engineer Enrique.",
+    on_look="The body is that of High Engineer Enrique, also known as Engy. He is a thin man in a white utility suit, slumped against the locker. Though you and Engy didn't know each other well, you vaguely recall his reputation for being a easygoing and quick with a joke who occasionally got into trouble with the Captain.",
+    keywords=["body", "engy", "deceased", "dead"]),
+    "chef":NPC(name="Chef",
+    description="Main chef, black. Nat's great friend.",
+    keywords=["chef"],
+    on_look="You see the Chef. He's a broad, imposing Black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight, carrying no excess gear. A faint feeling of relief washes over you at the sight of your friend, prepared and ready."),
+    "tanaka":NPC(name="Tanaka",
+    description="Japanese Environmental Systems Technician")}
+
+engy = npcs["engy"]
+chef = npcs["chef"]
+tanaka = npcs["tanaka"]
+
+def setup_npcs():
+    medical_labs.npcs["engy"] = engy
+    deck_5_secure_pathway.npcs["chef"] = chef
 
 ## Run all necessary setups
 
@@ -429,5 +576,12 @@ def run_all_setups():
     initial_items_setup()
     initial_use_targets_setup()
     setup_usable_items()
+    setup_npcs()
 
 run_all_setups()
+
+
+def debug_stuff():
+    player.inventory["welder"] = welder
+    player.inventory["screwdriver"] = screwdriver
+debug_stuff()
