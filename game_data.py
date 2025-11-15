@@ -248,7 +248,7 @@ command_transit_vestibule = rooms["command_transit_vestibule"]
 ## Room custom events
 # Title room
 def game_started_intro_room():
-    input("Press Enter to start...")
+    # input("Press Enter to start...")
     player.cur_room = cryo_bay
     player.enter_room(cryo_bay)
 # Act 1
@@ -381,7 +381,7 @@ def set_rooms_defaults():
     title_room.room_event = game_started_intro_room
     
     # Act 1
-    cryo_bay.on_first_enter = ""
+    cryo_bay.on_first_enter = "Act 1\n\n"
     cryo_bay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
     cryo_bay.on_survey = "You survey the room."
     cryo_bay.is_act_event_trigger = True

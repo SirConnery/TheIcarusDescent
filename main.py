@@ -143,34 +143,43 @@ def get_directions():
     if cur_room.right:
         player.output_directions += f"\n[RIGHT] {cur_room.right.name}"
 
+def clear_outputs():
+    player.output = f""
+    player.output_fast = f""
+    player.output_slow = f""
+    player.output_debug = f""
+    player.output_error = f""
+    player.output_help = f""
+    player.output_act_number = f""
+    player.output_act_subtitle = f""
+    player.output_directions = f"\n\n"
+    player.output_gain_item = f""
+    player.output_lose_item = f""
+
 ## Game intro
 
 def game_start():
-    console.input("")
     player.cur_room = rooms["title_room"]
     player.enter_room(rooms["title_room"])
-    console.input("")
     get_directions()
 
     clear_screen()
     draw_HUD()
     
-    # r_text_act_change(player.output_act_number, player.output_act_subtitle)
-    # r_text(player.output)
-    r_text(player.output_slow)
+    r_text_act_change(player.output_act_number, player.output_act_subtitle)
+    r_text(player.output)
+    r_text(player.output_slow, 0.05)
     r_text(player.output_fast)
     r_text(player.output_directions)
 
-    player.output=""
-    player.output_act_number=""
-    player.output_act_subtitle=""
-    player.output_directions = f"\n\n"
+    clear_outputs()
 
 
 # Main loop
-game_start()
 actions = 0
+game_start()
 while game.running:
+
     command = console.input("[white]\n> [/white]").lower().strip()
     process_input(command)
     get_directions()
@@ -179,7 +188,7 @@ while game.running:
     draw_HUD()
 
     if player.output_act_number and player.output_act_subtitle:
-         r_text_act_change(player.output_act_number, player.output_act_subtitle)
+        r_text_act_change(player.output_act_number, player.output_act_subtitle)
 
     outputs = [
     (player.output_debug, {"style": "yellow"}),
@@ -196,17 +205,9 @@ while game.running:
         if text:
             r_text(text, **kwargs)
 
-    player.output = f""
-    player.output_fast = f""
-    player.output_slow = f""
-    player.output_debug = f""
-    player.output_error = f""
-    player.output_help = f""
-    player.output_act_number = f""
-    player.output_act_subtitle = f""
-    player.output_directions = f"\n\n"
-    player.output_gain_item = f""
-    player.output_lose_item = f""
+    clear_outputs()
 
     if command == "quit":
         quit_game()
+    
+    actions += 1
