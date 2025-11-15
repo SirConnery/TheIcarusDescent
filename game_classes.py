@@ -1,6 +1,8 @@
 class Game:
     def __init__(self):
         self.running = True
+        self.act_4_bridge_powered = False
+        self.act_4_bridge_authorized = False
 
 class Player:
     def __init__(self):
@@ -114,7 +116,9 @@ class Player:
             source_2 = [self.cur_room.use_targets]
             use_target = get_object_by_keyword(source_2, obj_2)
             if use_target:
-                use_target.on_use(item)
+                result = use_target.on_use(item)
+                if not result:
+                    self.output_error += f"{item.name} could not be used on {use_target.name}"
 
 
 
@@ -192,7 +196,7 @@ class Arachnid:
         self.keywords = keywords
 
 class Room:
-    def __init__(self, name, debug_info,
+    def __init__(self, id, name, debug_info,
                  forward=None, backward=None, left=None, right=None, 
                  on_first_enter=None, on_revisit=None, has_been_visited=False,
                  is_event_trigger=False, room_event=None,
@@ -202,6 +206,7 @@ class Room:
                  items = None, interactables = None, use_targets = None, sceneries = None):
         
         # Descriptions
+        self.id = id
         self.name = name
         self.debug_info = debug_info
 
@@ -346,9 +351,11 @@ class UseTarget:
         self.usable_items = {}
 
     def on_use(self, item):
-        if item in self.usable_items.values():
+        if item.id in self.usable_items:
             self.use_func()
-
+            return True
+        else:
+            return None
 
 class Scenery:
     def __init__(self, id, name, keywords, debug_info, on_look=""):

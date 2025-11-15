@@ -1,86 +1,198 @@
-from game_classes import Player, NPC, Room, Item, Interactable, UseTarget, Scenery
+from game_classes import Game, Player, NPC, Room, Item, Interactable, UseTarget, Scenery
 from npc_data import engy, chef, tanaka, arachnid
 player = Player()
-
+game = Game()
 
 ## Rooms
 
 rooms = {
-    "cryo_bay": Room(name="Cryo Bay", 
-        debug_info="It is a room with cryo stuff.",),
-    "cryo_vestibule": Room(name="Cryo Vestibule",
-        debug_info="It is a vestibule connecting CryoBay, Mess Hall and Crew Lockers.",),
-    "galley": Room(name="Galley",
-        debug_info="A room with small kitchen and dinner table, some sofas",),
-    "crew_lockers": Room(name="Crew Lockers",
-        debug_info="A room with small kitchen and dinner table, some sofas",),
-    "deck_4_mid_aft_passage": Room(name="Deck 4 Mid-Aft Passage",
-        debug_info="A passage connecting Act 1 and Act 2"),
-    "deck_4_med_env_corridor": Room(name="Deck 4 Med-Env Corridor",
-        debug_info="Start of Act 2."),
-    "medical_labs": Room(name="Medical Labs",
-        debug_info="Medical laboratory where you find a keycard"),
-    "environmental_controls": Room(name="Environmental Controls",
-        debug_info="Needs passcode. Find flashlight."),
-    "upper_aft_lobby": Room(name="Upper Aft Lobby",
-        debug_info="Connecting room to cargo and utility."),
-    "central_freight_bay": Room(name="Central Freight Bay",
-        debug_info="Massive cargo bay."),
-    "deck_5_aft_utility": Room(name="Deck 5 Aft Utility",
-        debug_info="Small utility room."),
-    "cargo_staging_room": Room(name="Cargo Staging Room",
-        debug_info="Small room for cargo."),
-    "deck_5_secure_pathway": Room(name="Deck 5 Secure Pathway",
-        debug_info="2 person pathway."),
-    "service_access_hatchway": Room(name="Service Access Hatchway",
-        debug_info="Act 3 filler room."),
-    "msc_1": Room(name="MSC1 Main Service Control 1",
-        debug_info="MSC Room 1 divided by mirror."),
-    "msc_2": Room(name="MSC2 Main Service Control 2",
-        debug_info="MSC Room 2 divided by mirror. Alien encounter here."),
-    "msc_2_b_storage_drums": Room(name="MSC2 Main Service Control 2 (behind power storage drums)",
-        debug_info="MSC Room 2 behind power storage drums."),
-    "msc_2_b_console_desk": Room(name="MSC2 Main Service Control 2 (behind console desk)",
-        debug_info="MSC Room 2 behind console desk."),
-    "msc_2_b_power_conduit": Room(name="MSC2 Main Service Control 2 (behind power conduit manifold)",
-        debug_info="MSC Room 2 behind power conduit manifold."),
-    "msc_vent": Room(name="MSC2 Ventilation Shaft",
-        debug_info="MSC2 ventilation shaft."),
-    "service_control_junction_5f": Room(name="Service Control Junction 5 F",
-        debug_info="The door before entering. Act 4."),
-    "operations_distribution_crossover": Room(name="Operations Distribution Crossover",
-        debug_info="Act 4 starting corridor."),
-    "operations_and_cargo_interlink": Room(name="Operations and Cargo Interlink",
-        debug_info="Act 4 corridor between cargo and bridge."),
-    "cargo_bay_control_f": Room(name="Cargo Bay Control F",
-        debug_info="Act 4 cargo bay control overwatch room."),
-    "external_ops_access_way": Room(name="External Ops Access Way",
-        debug_info="Act 4 corridor between cargo and bridge."),
-    "eva_gear_lockers": Room(name="EVA Gear Lockers",
-        debug_info="Act 4 eva gear locker."),
-    "central_utility_spine_5_f": Room(name="Central Utility Spine 5 F",
-        debug_info="Part of the middle ship spanning hallway."),
-    "central_utility_spine_4_f": Room(name="Central Utility Spine 4 F",
-        debug_info="This door is broken and the room cannot be accessed."),
-    "central_utility_spine_6_f": Room(name="Central Utility Spine 6 F",
-        debug_info="Part of the middle ship spanning hallway."),
-    "deck_5_forward_muster_station": Room(name="Deck 5 Forward Muster Station",
-        debug_info="Large empty area meant for gathering and receiving urgent instructions."),
-    "bridge": Room(name="Bridge",
-        debug_info="Ship bridge."),
-    "systems_data_crossover": Room(name="Systems Data Crossover",
-        debug_info="Corridor before Systems Data Access Corridor."),
-    "systems_data_access_corridor": Room(name="Systems Data Access Corridor",
-        debug_info="Corridor before Server Array."),
-    "data_server_array": Room(name="Data Server Array",
-        debug_info="Ship network and system control data central."),
-    "executive_access_aisle": Room(name="Executive Access Aisle.",
-        debug_info="Ship network and system control data central."),
-    "captains_quarters": Room(name="Captain's Quarters.",
-        debug_info="Living place for the captain."),
-    "command_transit_vestibule": Room(name="Command Transit Vestibule",
-        debug_info="Stairway connecting to deck_5_forward_muster_station."),
+    "cryo_bay": Room(
+        id="cryo_bay",
+        name="Cryo Bay",
+        debug_info="It is a room with cryo stuff.",
+    ),
+    "cryo_vestibule": Room(
+        id="cryo_vestibule",
+        name="Cryo Vestibule",
+        debug_info="It is a vestibule connecting CryoBay, Mess Hall and Crew Lockers.",
+    ),
+    "galley": Room(
+        id="galley",
+        name="Galley",
+        debug_info="A room with small kitchen and dinner table, some sofas",
+    ),
+    "crew_lockers": Room(
+        id="crew_lockers",
+        name="Crew Lockers",
+        debug_info="A room with small kitchen and dinner table, some sofas",
+    ),
+    "deck_4_mid_aft_passage": Room(
+        id="deck_4_mid_aft_passage",
+        name="Deck 4 Mid-Aft Passage",
+        debug_info="A passage connecting Act 1 and Act 2",
+    ),
+    "deck_4_med_env_corridor": Room(
+        id="deck_4_med_env_corridor",
+        name="Deck 4 Med-Env Corridor",
+        debug_info="Start of Act 2.",
+    ),
+    "medical_labs": Room(
+        id="medical_labs",
+        name="Medical Labs",
+        debug_info="Medical laboratory where you find a keycard",
+    ),
+    "environmental_controls": Room(
+        id="environmental_controls",
+        name="Environmental Controls",
+        debug_info="Needs passcode. Find flashlight.",
+    ),
+    "upper_aft_lobby": Room(
+        id="upper_aft_lobby",
+        name="Upper Aft Lobby",
+        debug_info="Connecting room to cargo and utility.",
+    ),
+    "central_freight_bay": Room(
+        id="central_freight_bay",
+        name="Central Freight Bay",
+        debug_info="Massive cargo bay.",
+    ),
+    "deck_5_aft_utility": Room(
+        id="deck_5_aft_utility",
+        name="Deck 5 Aft Utility",
+        debug_info="Small utility room.",
+    ),
+    "cargo_staging_room": Room(
+        id="cargo_staging_room",
+        name="Cargo Staging Room",
+        debug_info="Small room for cargo.",
+    ),
+    "deck_5_secure_pathway": Room(
+        id="deck_5_secure_pathway",
+        name="Deck 5 Secure Pathway",
+        debug_info="2 person pathway.",
+    ),
+    "service_access_hatchway": Room(
+        id="service_access_hatchway",
+        name="Service Access Hatchway",
+        debug_info="Act 3 filler room.",
+    ),
+    "msc_1": Room(
+        id="msc_1",
+        name="MSC1 Main Service Control 1",
+        debug_info="MSC Room 1 divided by mirror.",
+    ),
+    "msc_2": Room(
+        id="msc_2",
+        name="MSC2 Main Service Control 2",
+        debug_info="MSC Room 2 divided by mirror. Alien encounter here.",
+    ),
+    "msc_2_b_storage_drums": Room(
+        id="msc_2_b_storage_drums",
+        name="MSC2 Main Service Control 2 (behind power storage drums)",
+        debug_info="MSC Room 2 behind power storage drums.",
+    ),
+    "msc_2_b_console_desk": Room(
+        id="msc_2_b_console_desk",
+        name="MSC2 Main Service Control 2 (behind console desk)",
+        debug_info="MSC Room 2 behind console desk.",
+    ),
+    "msc_2_b_power_conduit": Room(
+        id="msc_2_b_power_conduit",
+        name="MSC2 Main Service Control 2 (behind power conduit manifold)",
+        debug_info="MSC Room 2 behind power conduit manifold.",
+    ),
+    "msc_vent": Room(
+        id="msc_vent",
+        name="MSC2 Ventilation Shaft",
+        debug_info="MSC2 ventilation shaft.",
+    ),
+    "service_control_junction_5f": Room(
+        id="service_control_junction_5f",
+        name="Service Control Junction 5 F",
+        debug_info="The door before entering. Act 4.",
+    ),
+    "operations_distribution_crossover": Room(
+        id="operations_distribution_crossover",
+        name="Operations Distribution Crossover",
+        debug_info="Act 4 starting corridor.",
+    ),
+    "operations_and_cargo_interlink": Room(
+        id="operations_and_cargo_interlink",
+        name="Operations and Cargo Interlink",
+        debug_info="Act 4 corridor between cargo and bridge.",
+    ),
+    "cargo_bay_control_f": Room(
+        id="cargo_bay_control_f",
+        name="Cargo Bay Control F",
+        debug_info="Act 4 cargo bay control overwatch room.",
+    ),
+    "external_ops_access_way": Room(
+        id="external_ops_access_way",
+        name="External Ops Access Way",
+        debug_info="Act 4 corridor between cargo and bridge.",
+    ),
+    "eva_gear_lockers": Room(
+        id="eva_gear_lockers",
+        name="EVA Gear Lockers",
+        debug_info="Act 4 eva gear locker.",
+    ),
+    "central_utility_spine_5_f": Room(
+        id="central_utility_spine_5_f",
+        name="Central Utility Spine 5 F",
+        debug_info="Part of the middle ship spanning hallway.",
+    ),
+    "central_utility_spine_4_f": Room(
+        id="central_utility_spine_4_f",
+        name="Central Utility Spine 4 F",
+        debug_info="This door is broken and the room cannot be accessed.",
+    ),
+    "central_utility_spine_6_f": Room(
+        id="central_utility_spine_6_f",
+        name="Central Utility Spine 6 F",
+        debug_info="Part of the middle ship spanning hallway.",
+    ),
+    "deck_5_forward_muster_station": Room(
+        id="deck_5_forward_muster_station",
+        name="Deck 5 Forward Muster Station",
+        debug_info="Large empty area meant for gathering and receiving urgent instructions.",
+    ),
+    "bridge": Room(
+        id="bridge",
+        name="Bridge",
+        debug_info="Ship bridge.",
+    ),
+    "systems_data_crossover": Room(
+        id="systems_data_crossover",
+        name="Systems Data Crossover",
+        debug_info="Corridor before Systems Data Access Corridor.",
+    ),
+    "systems_data_access_corridor": Room(
+        id="systems_data_access_corridor",
+        name="Systems Data Access Corridor",
+        debug_info="Corridor before Server Array.",
+    ),
+    "data_server_array": Room(
+        id="data_server_array",
+        name="Data Server Array",
+        debug_info="Ship network and system control data central.",
+    ),
+    "executive_access_aisle": Room(
+        id="executive_access_aisle",
+        name="Executive Access Aisle.",
+        debug_info="Ship network and system control data central.",
+    ),
+    "captains_quarters": Room(
+        id="captains_quarters",
+        name="Captain's Quarters.",
+        debug_info="Living place for the captain.",
+    ),
+    "command_transit_vestibule": Room(
+        id="command_transit_vestibule",
+        name="Command Transit Vestibule",
+        debug_info="Stairway connecting to deck_5_forward_muster_station.",
+    ),
 }
+
 
 # Act 1
 cryo_bay = rooms["cryo_bay"]
@@ -123,6 +235,7 @@ data_server_array = rooms["data_server_array"]
 executive_access_aisle = rooms["executive_access_aisle"]
 captains_quarters = rooms["captains_quarters"]
 command_transit_vestibule = rooms["command_transit_vestibule"]
+# Act 5
 
 
 ## Room custom events
@@ -367,6 +480,8 @@ def set_rooms_defaults():
     bridge.on_first_enter = "You've never been here before."
     bridge.on_revisit = "You're back."
     bridge.on_survey = "You survey the room."
+    bridge.is_open = False
+    bridge.locked_description = "Next to the bridge door the Bridge Security Terminal screen glows amber. It confirms the access system is blocked critical hardware and security errors."
     systems_data_crossover.on_first_enter = "You've never been here before."
     systems_data_crossover.on_revisit = "You're back."
     systems_data_crossover.on_survey = "You survey the room."
@@ -391,7 +506,7 @@ def set_rooms_defaults():
     command_transit_vestibule.on_survey = "You survey the room."
 
 
-def initial_rooms_setup():
+def setup_rooms():
     connect_all_initial_rooms()
     set_rooms_defaults()
 
@@ -483,7 +598,7 @@ screwdriver = initial_items["screwdriver"]
 sart = initial_items["sart"]
 bridge_access_cypher = initial_items["bridge_access_cypher"]
 
-def initial_items_setup():
+def setup_items():
     # Act 1
     crew_lockers.items["backpack"] = backpack
     crew_lockers.items["maintenance_jack"] = maintenance_jack
@@ -531,7 +646,7 @@ initial_interactables = {
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
 icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
 
-def initial_interactables_setup():
+def setup_interactables():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
     data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
 
@@ -562,11 +677,12 @@ def operations_and_cargo_interlink_console_used():
     operations_and_cargo_interlink.on_survey = "The door is open. There is not much of interest here."
 
 def cargo_bay_control_f_power_bus_used():
-    player.output_fast += "You finish forcing the lever, and the power bus hums back to life. Just then, you glance out the massive control room window into the Cargo Bay. You spot Tanaka, still in his technician uniform, moving erratically across the deck below. He seems completely lost and erratic. \n\nA sudden impossibly large shadow stretches across the cargo bay floor, falling from the high ceiling where no shadows should exist. You look up and see the colossal arachnoid creature dropping like a silent anchor, instantly closing the distance to the floor. The terrifying clicking sound begins, sharp and deafening, echoing up from the vast bay. \n\nInstinct takes over and you duck low behind the inert consoles, shielding your eyes. You don't see the impact, but the clicking quickly gives way to a sickening, muffled crunch and a brief, strangled cry that is abruptly cut short. When the silence returns, it is heavy and absolute. You know Tanaka didn't make it..."
-    bridge.is_open = True
+    game.act_4_bridge_powered = True
+    player.output_fast += "You finish forcing the lever, and the power bus hums back to life. Just then, you glance out the massive control room window into the Cargo Bay. You spot Tanaka, still in his technician uniform, moving erratically across the deck below. He seems completely lost and disoriented. \n\nA sudden impossibly large shadow stretches across the cargo bay floor, falling from the high ceiling where no shadows should exist. You look up and see the colossal arachnoid creature dropping like a silent anchor, instantly closing the distance to the floor. The terrifying clicking sound begins, sharp and deafening, echoing up from the vast bay. \n\nInstinct takes over and you duck low behind the inert consoles, shielding your eyes. You don't see the impact, but the clicking quickly gives way to a sickening, muffled crunch and a brief, strangled cry that is abruptly cut short. When the silence returns, it is heavy and absolute. You know Tanaka didn't make it..."
     cargo_bay_control_f.on_first_enter = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
     cargo_bay_control_f.on_revisit = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
     cargo_bay_control_f.on_survey = "You are ducking on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
+    bridge_errors_check()
 
 def personal_command_vault_welder_used():
     player.output += "You welded the thing open."
@@ -581,6 +697,23 @@ def personal_comand_vault_screwdriver_used():
 def data_array_door_lockpick_used():
     data_server_array.is_open = True
     player.output += "You hear a click and the door opens."
+
+def bridge_door_console_cypher_used():
+    player.output = "AUTHORIZATION SUCCESSFUL. \n\nOne of the errors disappeared."
+    game.act_4_bridge_authorized = True
+    bridge_errors_check()
+
+def bridge_errors_check():
+    if game.act_4_bridge_powered:
+        bridge_security_terminal.on_look = "It is a thin, reinforced diagnostic panel built into the wall beside the Bridge's main hatch. The screen is active but glows with a frustrated amber caution light. A scrolling list of diagnostic errors is displayed, blocking access: \n\nERROR 02: SECURITY CLEARANCE REQUIRED \n\nYou realize this terminal doesn't open the door, but diagnoses why the door won't open. Beneath the display, a secure interface socket is visible, designed to accept a high-level cryptographic cypher for verification."
+    if game.act_4_bridge_authorized:
+        bridge_security_terminal.on_look = "It is a thin, reinforced diagnostic panel built into the wall beside the Bridge's main hatch. The screen is active but glows with a frustrated amber caution light. A scrolling list of diagnostic errors is displayed, blocking access: \n\nERROR 01: POWER BUS DISRUPTION \n\nYou realize this terminal doesn't open the door, but diagnoses why the door won't open. Beneath the display, a secure interface socket is visible, designed to accept a high-level cryptographic cypher for verification."
+    if game.act_4_bridge_powered and game.act_4_bridge_authorized:
+        bridge.is_open = True
+        bridge_security_terminal.on_look = "The Bridge Security Terminal now glows with a steady, functional green light. The screen displays a single, static message: ACCESS GRANTED. ALL SYSTEMS NOMINAL. The Cypher slot remains empty, indicating your task here is complete."
+        if player.cur_room.id == deck_5_forward_muster_station.id:
+            player.output = "The amber caution light on the terminal flashes green, and the diagnostic errors vanish. The ICARUS SYSTEMS screen flashes ACCESS GRANTED - MANUAL OVERRIDE DEACTIVATED"
+
 
 # use_targets data
 
@@ -609,7 +742,7 @@ initial_use_targets = {
     "logistics_door_console": UseTarget(
         id="logistics_door_console",
         name="Logistics Access Console",
-        keywords = ["console", "terminal", "logistics", "logistics console", "diagnostic", "diagnostics", "diagnostic console"],
+        keywords = ["console", "terminal", "logistics", "logistics console", "diagnostic", "diagnostics", "diagnostic console", "door"],
         debug_info="Console that needs SART to be used on it.",
         on_look="It is a small, specialized terminal mounted beside the door. It has an exposed electronic interface port but no keypad or manual override. The screen is dark, confirming the system has failed and requires a high-level diagnostic tool to handshake with the security lock and initiate access.",
         use_func=operations_and_cargo_interlink_console_used),
@@ -641,6 +774,13 @@ initial_use_targets = {
         debug_info="Data Server Array room broken down door. Use lockpick to open.",
         on_look="The destruction of the console has rendered the primary lock useless. The emergency mechanical lock tumblers are visible in a small recess next to the frame. They are jammed and cannot be operated by hand, but the exposed key housing is small and complex, indicating it was designed for fine, precision manipulation.",
         use_func=data_array_door_lockpick_used),
+    "bridge_security_terminal": UseTarget(
+        id="bridge_security_terminal",
+        name="Bridge Security Terminal",
+        keywords = ["door", "bridge", "security", "terminal", "console"],
+        debug_info="Bridge security terminal before door. Use cypher here and power it up from cargo room.",
+        on_look="It is a thin, reinforced diagnostic panel built into the wall beside the Bridge's main hatch. The screen is active but glows with a frustrated amber caution light. A scrolling list of diagnostic errors is displayed, blocking access: \n\nERROR 01: POWER BUS DISRUPTION\nERROR 02: SECURITY CLEARANCE REQUIRED \n\nYou realize this terminal doesn't open the door, but diagnoses why the door won't open. Beneath the display, a secure interface socket is visible, designed to accept a high-level cryptographic cypher for verification.",
+        use_func=bridge_door_console_cypher_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
@@ -651,15 +791,18 @@ power_bus_distribution_panel = initial_use_targets["power_bus_distribution_panel
 personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
 personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
 data_array_door = initial_use_targets["data_array_door"]
+bridge_security_terminal = initial_use_targets["bridge_security_terminal"]
 
-def initial_use_targets_setup():
+def setup_use_targets():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
     deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
-    captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
-    systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
     operations_and_cargo_interlink.use_targets["logistics_door_console"] = logistics_door_console
     cargo_bay_control_f.use_targets["power_bus_distribution_panel"] = power_bus_distribution_panel
+    deck_5_forward_muster_station.use_targets["bridge_security_terminal"] = bridge_security_terminal
+    systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
+    captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
+
 
 def setup_use_targets_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
@@ -667,6 +810,7 @@ def setup_use_targets_usable_items():
     central_freight_bay_bulk_door.usable_items["welder"] = welder
     logistics_door_console.usable_items["sart"] = sart
     power_bus_distribution_panel.usable_items["maintenance_jack"] = maintenance_jack
+    bridge_security_terminal.usable_items["bridge_access_cypher"] = bridge_access_cypher
     personal_command_vault_before_weld.usable_items["welder"] = welder
     personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
     data_array_door.usable_items["lockpick"] = lockpick
@@ -680,17 +824,13 @@ def setup_npcs():
     medical_labs.npcs["engy"] = engy
     deck_5_secure_pathway.npcs["chef"] = chef
 
-# Arachnid
-def setup_arachnid():
-    pass
-
 ## Run all necessary setups
 
 def run_all_setups():
-    initial_rooms_setup()
-    initial_interactables_setup()
-    initial_items_setup()
-    initial_use_targets_setup()
+    setup_rooms()
+    setup_interactables()
+    setup_items()
+    setup_use_targets()
     setup_use_targets_usable_items()
     setup_npcs()
 
@@ -703,4 +843,6 @@ def debug_stuff():
     player.inventory["screwdriver"] = screwdriver
     player.inventory["lockpick"] = lockpick
     player.inventory["sart"] = sart
+    player.inventory["bridge_access_cypher"] = bridge_access_cypher
+
 debug_stuff()

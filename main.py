@@ -6,12 +6,9 @@ from rich.text import Text
 from rich.align import Align
 import pyfiglet
 
+from game_data import rooms, player, game
+
 console = Console()
-
-from game_data import rooms, player
-from game_classes import Game
-
-game = Game()
 
 def draw_HUD():
     inventory_names = (", ".join(sorted([item.name for item in player.inventory.values()]))
