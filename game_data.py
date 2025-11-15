@@ -535,6 +535,7 @@ def initial_interactables_setup():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
     data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
 
+
 ## use_targets functions
 
 # Act 1
@@ -553,16 +554,17 @@ def env_controls_access_panel_use_keypad():
         environmental_controls.is_open = True
     else:
         player.output_error="Code invalid. Access denied."
-
 # Act 4
 def operations_and_cargo_interlink_console_used():
     player.output += f"The door next to the console clicks and the lock to {cargo_bay_control_f.name} is open."
     cargo_bay_control_f.is_open = True
+    operations_and_cargo_interlink.on_revisit = ""
+    operations_and_cargo_interlink.on_survey = "The door is open. There is not much of interest here."
 
 def cargo_bay_control_f_power_bus_used():
     player.output_fast += "You finish forcing the lever, and the power bus hums back to life. Just then, you glance out the massive control room window into the Cargo Bay. You spot Tanaka, still in his technician uniform, moving erratically across the deck below. He seems completely lost and erratic. \n\nA sudden impossibly large shadow stretches across the cargo bay floor, falling from the high ceiling where no shadows should exist. You look up and see the colossal arachnoid creature dropping like a silent anchor, instantly closing the distance to the floor. The terrifying clicking sound begins, sharp and deafening, echoing up from the vast bay. \n\nInstinct takes over and you duck low behind the inert consoles, shielding your eyes. You don't see the impact, but the clicking quickly gives way to a sickening, muffled crunch and a brief, strangled cry that is abruptly cut short. When the silence returns, it is heavy and absolute. You know Tanaka didn't make it..."
     bridge.is_open = True
-    cargo_bay_control_f.on_enter = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
+    cargo_bay_control_f.on_first_enter = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
     cargo_bay_control_f.on_revisit = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
     cargo_bay_control_f.on_survey = "You are ducking on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
 
