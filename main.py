@@ -64,6 +64,9 @@ def r_text_act_change(act_number="", subtitle="", style="bold white", font="xsbo
     
     if delay > 0:
         time.sleep(delay)
+    time.sleep(2.0)
+    clear_screen()
+    draw_HUD()
         
 
 # Other functions
@@ -143,15 +146,19 @@ def get_directions():
 ## Game intro
 
 def game_start():
-    player.cur_room = rooms["operations_distribution_crossover"]
-    player.enter_room(rooms["operations_distribution_crossover"])
+    console.input("")
+    player.cur_room = rooms["title_room"]
+    player.enter_room(rooms["title_room"])
+    console.input("")
     get_directions()
 
     clear_screen()
     draw_HUD()
     
-    r_text_act_change(player.output_act_number, player.output_act_subtitle)
-    r_text(player.output)
+    # r_text_act_change(player.output_act_number, player.output_act_subtitle)
+    # r_text(player.output)
+    r_text(player.output_slow)
+    r_text(player.output_fast)
     r_text(player.output_directions)
 
     player.output=""
@@ -159,10 +166,10 @@ def game_start():
     player.output_act_subtitle=""
     player.output_directions = f"\n\n"
 
-game_start()
 
 # Main loop
-
+game_start()
+actions = 0
 while game.running:
     command = console.input("[white]\n> [/white]").lower().strip()
     process_input(command)
@@ -191,7 +198,7 @@ while game.running:
 
     player.output = f""
     player.output_fast = f""
-    player.ouput_slow = f""
+    player.output_slow = f""
     player.output_debug = f""
     player.output_error = f""
     player.output_help = f""
