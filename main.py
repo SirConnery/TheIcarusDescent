@@ -19,9 +19,10 @@ def draw_HUD():
     else "(empty)")
 
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
+    [bright cyan]Name: {player.name}[/bright cyan]
     [green]Status: {player.status}[/green], [blue]Warmth: {player.warmth}[/blue], [magenta]Heartrate: {player.heartrate}[/magenta], [yellow]Location: {player.cur_room.name}[/yellow]
-    [white]Inventory: {inventory_names}[/white]
-    [white]Commands:[/white] Move, Survey, Interact, Look, Take, Use, Help, Quit"""
+    [grey82]Inventory:[/grey82][white] {inventory_names}[/white]
+    [grey82]Commands:[/grey82] Move, Survey, Interact, Look, Take, Use, Help, Quit"""
 
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)

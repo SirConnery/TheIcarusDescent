@@ -17,7 +17,8 @@ class Player:
         self.output_gain_item = f"\n\n"
         self.output_lose_item = f"\n\n"
 
-        self.name = "Natalie"
+        self.name = "Natalia Volkov"
+        self.nickname = "Nat"
         self.status = "Healthy"
         self.warmth = "Cold"
         self.heartrate = "Calm"
@@ -69,11 +70,17 @@ class Player:
         self.output = self.cur_room.on_survey
 
     def interact(self, keyword):
-        sources = [self.cur_room.interactables]
+        sources = [self.cur_room.interactables, self.cur_room.use_targets]
 
         obj = get_object_by_keyword(sources, keyword)
         if obj:
-            obj.on_interact()
+            if obj.can_interact:
+                if obj.on_interact_func:
+                    obj.on_interact_func()
+                else:
+                    self.output_error += f"Cannot interact with {obj.name}"
+            else:
+                self.output_error += f"Cannot interact with {obj.name}"
         else:
             self.output_error = f"No interactable {keyword} in this room."
 
@@ -82,7 +89,8 @@ class Player:
 
         obj = get_object_by_keyword(sources, keyword)
         if obj:
-            self.output = obj.on_look
+            self.output += f"You look at the {obj.name}.\n\n"
+            self.output += obj.on_look
         else:
             self.output_error = f"No interesting {keyword} in this location."
 
@@ -125,10 +133,9 @@ class Player:
             self.output_error += f"No item named {keyword} in your inventory."    
     
     def help(self):
-        self.output_help = f"""
-            Use commands like below:
+        self.output_help = f"""Use commands like below:
 
-            1. Move: move in 4 directions. You can use either WASD or f,b,l,r.
+            1. Move: move in 4 directions. You can use WASD, f,b,l,r or forward, backward, left, right.
             Example: move w
             Usage: move [w,a,s,d,forward,backward,left,right,f,b,l,r]
 
@@ -234,7 +241,7 @@ class Room:
     
     def add_use_target(self, use_target):
         id = use_target.id
-        self.use_targets[id] = id
+        self.use_targets[id] = use_target
 
     def remove_use_target(self, use_target):
         id = use_target.id
@@ -260,7 +267,8 @@ class Room:
 
 class Item:
     def __init__(self, id, name, debug_info, keywords, on_look="", 
-                can_take=False, locked_description = False,
+                can_take=True, locked_description = False,
+                can_interact=False, on_interact_func=False,
                 is_item_event_trigger=False, item_event=None,):
         
         # Descriptions
@@ -273,6 +281,10 @@ class Item:
         # Events
         self.is_item_event_trigger = is_item_event_trigger
         self.item_event = item_event
+
+        # Interact
+        self.can_interact = can_interact
+        self.on_interact_func = on_interact_func
 
         # Utility
         self.can_take = can_take
@@ -289,7 +301,7 @@ class Item:
     
 
 class Interactable:
-    def __init__(self, id, name, debug_info, keywords, on_interact, on_look=""):
+    def __init__(self, id, name, debug_info, keywords, on_interact_func, can_interact=True, on_look=""):
         
         # Descriptions
         self.id = id
@@ -299,10 +311,11 @@ class Interactable:
         self.on_look = on_look
 
         # Interact
-        self.on_interact = on_interact
+        self.can_interact = can_interact
+        self.on_interact_func = on_interact_func
 
 class UseTarget:
-    def __init__(self, id, name, debug_info, keywords, use_func, on_look=""):
+    def __init__(self, id, name, debug_info, keywords, use_func, on_look="", can_interact=False, on_interact_func=False,):
         
         # Descriptions
         self.id = id
@@ -310,6 +323,10 @@ class UseTarget:
         self.debug_info = debug_info
         self.keywords = keywords
         self.on_look = on_look
+
+        # Interact
+        self.can_interact = can_interact
+        self.on_interact_func = on_interact_func
 
         # Use
         self.use_func = use_func

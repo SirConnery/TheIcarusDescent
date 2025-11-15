@@ -336,12 +336,14 @@ def set_rooms_defaults():
     operations_distribution_crossover.is_act_event_trigger = True
     operations_distribution_crossover.act_number = "4"
     operations_distribution_crossover.act_subtitle = "The Outer Decks"
-    operations_and_cargo_interlink.on_first_enter = "You've never been here before."
-    operations_and_cargo_interlink.on_revisit = "You're back."
-    operations_and_cargo_interlink.on_survey = "You survey the room."
-    cargo_bay_control_f.on_first_enter = "You've never been here before."
+    operations_and_cargo_interlink.on_first_enter = "This short, fortified corridor feels heavy and cold. The passage is dominated by three sealed doorways. To your left, a heavy security door has been completely destroyed, its metallic surface ripped and curled as if melted by immense, unnatural force. Right next to it, the door leading to Cargo Bay Control F remains intact but locked. Forward, a door leads to the External Ops Access Way. \n\nA small, specialized diagnostic console is mounted beside the Cargo Bay Control door, indicating the access system has failed and requires a unique technical bypass."
+    operations_and_cargo_interlink.on_revisit = "You're back. The destroyed door remains untouched, and the Cargo Bay Control door is still sealed. The diagnostic console next to it is awaiting initiation."
+    operations_and_cargo_interlink.on_survey = "This short, fortified corridor feels heavy and cold. The passage is dominated by three sealed doorways. \n\nTo your left, a heavy security door has been completely destroyed, its metallic surface ripped and curled as if melted by immense, unnatural force. Right next to it, the Cargo Bay Control F remains intact but locked.\n\n A small, specialized diagnostic console is mounted beside the Cargo Bay door, indicating the access system has failed and requires a unique technical bypass. \n\nForward, a door leads to the External Ops Access Way"
+    cargo_bay_control_f.on_first_enter = ""
     cargo_bay_control_f.on_revisit = "You're back."
     cargo_bay_control_f.on_survey = "You survey the room."
+    cargo_bay_control_f.is_open = False
+    cargo_bay_control_f.locked_description = "The door doesn't budge. The console next to the door is awaiting input."
     external_ops_access_way.on_first_enter = "You've never been here before."
     external_ops_access_way.on_revisit = "You're back."
     external_ops_access_way.on_survey = "You survey the room."
@@ -375,7 +377,7 @@ def set_rooms_defaults():
     data_server_array.on_revisit = "The room is loud, cold, and wide. The central ICARUS terminal remains active.."
     data_server_array.on_survey = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input."
     data_server_array.is_open = False
-    data_server_array.locked_description = "The door is locked as the electronic console that would let you in is completely fried."
+    data_server_array.locked_description = "The door is locked as the electronic console that would let you in is completely fried.\n\nThe door's mechanical emergency lock looks fine though."
     executive_access_aisle.on_first_enter = "You've never been here before."
     executive_access_aisle.on_revisit = "You're back."
     executive_access_aisle.on_survey = "You survey the room."
@@ -442,7 +444,7 @@ initial_items = {
     "lockpick": Item(
         id="lockpick",
         name="Lockpick",
-        keywords=["lockpick", "key"],
+        keywords=["lockpick", "key", "pick", "lock"],
         debug_info="Dropped lockpick by Tanaka. Opens Server Array."
     ),
 
@@ -452,7 +454,15 @@ initial_items = {
         keywords=["screwdriver", "screw", "driver"],
         debug_info="Screwdriver on the floor of EVA room."
     ),
-
+    "sart": Item(
+        id="sart",
+        name="SART",
+        keywords=["sart", "system", "analysis", "repair", "tool"],
+        debug_info="System Analysis and Repair Tool.",
+        on_look="System Analysis and Repair Tool.",
+        can_take=False,
+        locked_description="It is locked behind a bulletproof glass panel with token identifier next to it."
+    ),
     "sart": Item(
         id="sart",
         name="SART",
@@ -468,6 +478,7 @@ initial_items = {
         name="Access Cypher",
         keywords=["cypher", "bridge", "access", "access cypher", "bridge access cypher"],
         debug_info="Captain's quarters vault you find this."
+    
     ),
 }
 
@@ -501,6 +512,11 @@ def initial_items_setup():
 def interacted_cryo_terminal():
     player.output="You interacted with the cryo terminal"
 
+def interacted_icarus_systems_terminal():
+    sart.can_take = True
+    sart.on_look = "The lock is open and the sart can be taken."
+    player.output += "EVA Lockers SART lock opened."
+
 # Interactables data
 
 initial_interactables = {
@@ -510,23 +526,24 @@ initial_interactables = {
         keywords=["terminal", "console", "terminal console", "cryo terminal"],
         debug_info="Act 1 Broken down door, open with jack",
         on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
-        on_interact=interacted_cryo_terminal
+        on_interact_func=interacted_cryo_terminal
     ),
     "icarus_systems_terminal": Interactable(
         id="icarus_systems_terminal",
         name="ICARUS Systems Terminal",
-        keywords=["terminal", "console", "terminal console", "data terminal", "data", "icarus", "systems"],
-        debug_info="Act 4 Terminal inside Data Server Array",
-        on_look="",
-        on_interact=interacted_cryo_terminal
+        keywords = ["terminal", "console", "icarus", "systems", "data", "note"],
+        debug_info="Main systems terminal inside Data Server Array.",
+        on_look="The ICARUS Systems Terminal is a heavy-duty, reinforced console built directly into the floor. Its primary interface is fully active, displaying a sequence of high-level network protocols demanding authentication. \n\nYou note the massive auxiliary power connection required to run it, hinting at its high signal output capability. \n\nRight next to the interface, a faded yellow sticky note is secured to the console, bearing the text: Admin 1234.",
+        on_interact_func=interacted_icarus_systems_terminal,
     ),
 }
 
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
+icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
 
 def initial_interactables_setup():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
-
+    data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
 
 ## use_targets functions
 
@@ -545,6 +562,10 @@ def env_controls_access_panel_use_keypad():
         environmental_controls.is_open = True
     else:
         player.output_error="Code invalid. Access denied."
+# Act 4
+
+def operations_and_cargo_interlink_console_used():
+    pass
 
 def personal_command_vault_welder_used():
     player.output += "You welded the thing open."
@@ -556,7 +577,9 @@ def personal_comand_vault_screwdriver_used():
     player.cur_room.add_item(bridge_access_cypher)
     player.take("cypher")
 
-
+def data_array_door_lockpick_used():
+    data_server_array.is_open = True
+    player.output += "You hear a click and the door opens."
 
 # use_targets data
 
@@ -582,6 +605,13 @@ initial_use_targets = {
         debug_info="Act 2 Broken down door, open with welder",
         on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
         use_func=central_freight_bay_blast_door_used),
+    "logistics_door_console": UseTarget(
+        id="logistics_door_console",
+        name="Logistics Access Console",
+        keywords = ["console", "terminal", "logistics", "logistics console", "diagnostic", "diagnostics", "diagnostic console"],
+        debug_info="Console that needs SART to be used on it.",
+        on_look="It is a small, specialized terminal mounted beside the door. It has an exposed electronic interface port but no keypad or manual override. The screen is dark, confirming the system has failed and requires a high-level diagnostic tool to handshake with the security lock and initiate access.",
+        use_func=operations_and_cargo_interlink_console_used),
     "personal_command_vault_before_weld": UseTarget(
         id="personal_command_vault_before_weld",
         name="Personal Command Vault",
@@ -602,7 +632,7 @@ initial_use_targets = {
         keywords = ["door", "data", "array", "systems", "lock"],
         debug_info="Data Server Array room broken down door. Use lockpick to open.",
         on_look="The destruction of the console has rendered the primary lock useless. The emergency mechanical lock tumblers are visible in a small recess next to the frame. They are jammed and cannot be operated by hand, but the exposed key housing is small and complex, indicating it was designed for fine, precision manipulation.",
-        use_func=personal_comand_vault_screwdriver_used),
+        use_func=data_array_door_lockpick_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
@@ -611,6 +641,7 @@ central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_do
 personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
 personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
 data_array_door = initial_use_targets["data_array_door"]
+logistics_door_console = initial_use_targets["logistics_door_console"]
 
 
 def initial_use_targets_setup():
@@ -619,11 +650,13 @@ def initial_use_targets_setup():
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
     captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
     systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
+    operations_and_cargo_interlink.use_targets["logistics_door_console"] = logistics_door_console
 
 def setup_use_targets_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
+    logistics_door_console.usable_items["sart"] = sart
     personal_command_vault_before_weld.usable_items["welder"] = welder
     personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
     data_array_door.usable_items["lockpick"] = lockpick
@@ -675,4 +708,5 @@ run_all_setups()
 def debug_stuff():
     player.inventory["welder"] = welder
     player.inventory["screwdriver"] = screwdriver
+    player.inventory["lockpick"] = lockpick
 debug_stuff()
