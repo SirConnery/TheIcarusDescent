@@ -6,11 +6,6 @@ game = Game()
 ## Rooms
 
 rooms = {
-    "title_room": Room(
-        id="intro_room",
-        name="Intro room",
-        debug_info="Room just for initializing rich text typewriter effect properly.",
-    ),
     "cryo_bay": Room(
         id="cryo_bay",
         name="Cryo Bay",
@@ -198,9 +193,6 @@ rooms = {
     ),
 }
 
-
-# Game title room
-title_room = rooms["title_room"]
 # Act 1
 cryo_bay = rooms["cryo_bay"]
 cryo_vestibule = rooms["cryo_vestibule"]
@@ -246,11 +238,6 @@ command_transit_vestibule = rooms["command_transit_vestibule"]
 
 
 ## Room custom events
-# Title room
-def game_started_intro_room():
-    # input("Press Enter to start...")
-    player.cur_room = cryo_bay
-    player.enter_room(cryo_bay)
 # Act 1
 def cryo_bay_intro():
     player.output_slow = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
@@ -375,13 +362,8 @@ def connect_all_initial_rooms():
 
 
 def set_rooms_defaults():
-    # Debug intro
-    title_room.on_first_enter = ""
-    title_room.is_event_trigger = True
-    title_room.room_event = game_started_intro_room
-    
     # Act 1
-    cryo_bay.on_first_enter = "Act 1\n\n"
+    cryo_bay.on_first_enter = "Act 1"
     cryo_bay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
     cryo_bay.on_survey = "You survey the room."
     cryo_bay.is_act_event_trigger = True
@@ -406,7 +388,7 @@ def set_rooms_defaults():
     deck_4_mid_aft_passage.is_open = False
     deck_4_mid_aft_passage.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
     # Act 2
-    deck_4_med_env_corridor.on_first_enter = "You've never been here before."
+    deck_4_med_env_corridor.on_first_enter = "Act 2"
     deck_4_med_env_corridor.on_revisit = "You're back."
     deck_4_med_env_corridor.on_survey = "You survey the room."
     deck_4_med_env_corridor.is_act_event_trigger = True

@@ -143,53 +143,12 @@ def get_directions():
     if cur_room.right:
         player.output_directions += f"\n[RIGHT] {cur_room.right.name}"
 
-def clear_outputs():
-    player.output = f""
-    player.output_fast = f""
-    player.output_slow = f""
-    player.output_debug = f""
-    player.output_error = f""
-    player.output_help = f""
-    player.output_act_number = f""
-    player.output_act_subtitle = f""
-    player.output_directions = f"\n\n"
-    player.output_gain_item = f""
-    player.output_lose_item = f""
-
-## Game intro
-
-def game_start():
-    player.cur_room = rooms["title_room"]
-    player.enter_room(rooms["title_room"])
-    get_directions()
-
-    clear_screen()
-    draw_HUD()
-    
-    r_text_act_change(player.output_act_number, player.output_act_subtitle)
-    r_text(player.output)
-    r_text(player.output_slow, 0.05)
-    r_text(player.output_fast)
-    r_text(player.output_directions)
-
-    clear_outputs()
-
-
-# Main loop
-actions = 0
-game_start()
-while game.running:
-
-    command = console.input("[white]\n> [/white]").lower().strip()
-    process_input(command)
-    get_directions()
-
-    clear_screen()
-    draw_HUD()
-
+def display_player_act_outputs():
     if player.output_act_number and player.output_act_subtitle:
         r_text_act_change(player.output_act_number, player.output_act_subtitle)
 
+def display_player_outputs():
+    # Does not display act text
     outputs = [
     (player.output_debug, {"style": "yellow"}),
     (player.output_gain_item, {"style": "green"}),
@@ -205,9 +164,49 @@ while game.running:
         if text:
             r_text(text, **kwargs)
 
-    clear_outputs()
+def clear_player_outputs():
+    player.output = f""
+    player.output_fast = f""
+    player.output_slow = f""
+    player.output_debug = f""
+    player.output_error = f""
+    player.output_help = f""
+    player.output_act_number = f""
+    player.output_act_subtitle = f""
+    player.output_directions = f"\n\n"
+    player.output_gain_item = f""
+    player.output_lose_item = f""
+
+## Game intro
+
+def game_start():
+    player.cur_room = rooms["bridge"]
+    player.enter_room(rooms["bridge"])
+    get_directions()
+
+    clear_screen()
+    draw_HUD()
+
+    display_player_act_outputs()
+    display_player_outputs()
+    clear_player_outputs()
+
+
+# Main loop
+game_start()
+while game.running:
+
+    command = console.input("[white]\n> [/white]").lower().strip()
+    process_input(command)
+    get_directions()
+
+    clear_screen()
+    draw_HUD()
+
+    display_player_act_outputs()
+
+    display_player_outputs()
+    clear_player_outputs()
 
     if command == "quit":
         quit_game()
-    
-    actions += 1
