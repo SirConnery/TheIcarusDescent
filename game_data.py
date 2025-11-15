@@ -1,5 +1,5 @@
 from game_classes import Player, NPC, Room, Item, Interactable, UseTarget, Scenery
-
+from npc_data import engy, chef, tanaka, arachnid
 player = Player()
 
 
@@ -422,7 +422,7 @@ initial_items = {
 
     "engys_keycard": Item(
         id="engys_keycard",
-        name="Engy's Keycard",
+        name="High Engineer Enrique's keycard.",
         keywords=["keycard", "card", "key", "engy"],
         debug_info="High Engineer Enrique's keycard."
     ),
@@ -456,29 +456,18 @@ initial_items = {
     ),
     "sart": Item(
         id="sart",
-        name="SART",
+        name="(SART) System Analysis and Repair Tool",
         keywords=["sart", "system", "analysis", "repair", "tool"],
         debug_info="System Analysis and Repair Tool.",
-        on_look="System Analysis and Repair Tool.",
+        on_look="It is the System Analysis and Repair Tool. Can be used for diagnostics, using and repairing consoles.",
         can_take=False,
         locked_description="It is locked behind a bulletproof glass panel with token identifier next to it."
     ),
-    "sart": Item(
-        id="sart",
-        name="SART",
-        keywords=["sart", "system", "analysis", "repair", "tool"],
-        debug_info="System Analysis and Repair Tool.",
-        on_look="System Analysis and Repair Tool.",
-        can_take=False,
-        locked_description="It is locked behind a bulletproof glass panel with token identifier next to it."
-    ),
-
     "bridge_access_cypher": Item(
         id="bridge_access_cypher",
         name="Access Cypher",
         keywords=["cypher", "bridge", "access", "access cypher", "bridge access cypher"],
         debug_info="Captain's quarters vault you find this."
-    
     ),
 }
 
@@ -536,6 +525,7 @@ initial_interactables = {
         on_look="The ICARUS Systems Terminal is a heavy-duty, reinforced console built directly into the floor. Its primary interface is fully active, displaying a sequence of high-level network protocols demanding authentication. \n\nYou note the massive auxiliary power connection required to run it, hinting at its high signal output capability. \n\nRight next to the interface, a faded yellow sticky note is secured to the console, bearing the text: Admin 1234.",
         on_interact_func=interacted_icarus_systems_terminal,
     ),
+
 }
 
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
@@ -547,10 +537,11 @@ def initial_interactables_setup():
 
 ## use_targets functions
 
+# Act 1
 def mess_hall_blast_door_used():
     player.output = "Mess hall blast door used"
     deck_4_mid_aft_passage.is_open = True
-
+# Act 2
 def central_freight_bay_blast_door_used():
     player.output = "Freight bay blast door used"
     central_freight_bay.is_open = True
@@ -562,10 +553,18 @@ def env_controls_access_panel_use_keypad():
         environmental_controls.is_open = True
     else:
         player.output_error="Code invalid. Access denied."
-# Act 4
 
+# Act 4
 def operations_and_cargo_interlink_console_used():
-    pass
+    player.output += f"The door next to the console clicks and the lock to {cargo_bay_control_f.name} is open."
+    cargo_bay_control_f.is_open = True
+
+def cargo_bay_control_f_power_bus_used():
+    player.output_fast += "You finish forcing the lever, and the power bus hums back to life. Just then, you glance out the massive control room window into the Cargo Bay. You spot Tanaka, still in his technician uniform, moving erratically across the deck below. He seems completely lost and erratic. \n\nA sudden impossibly large shadow stretches across the cargo bay floor, falling from the high ceiling where no shadows should exist. You look up and see the colossal arachnoid creature dropping like a silent anchor, instantly closing the distance to the floor. The terrifying clicking sound begins, sharp and deafening, echoing up from the vast bay. \n\nInstinct takes over and you duck low behind the inert consoles, shielding your eyes. You don't see the impact, but the clicking quickly gives way to a sickening, muffled crunch and a brief, strangled cry that is abruptly cut short. When the silence returns, it is heavy and absolute. You know Tanaka didn't make it..."
+    bridge.is_open = True
+    cargo_bay_control_f.on_enter = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
+    cargo_bay_control_f.on_revisit = "You duck on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
+    cargo_bay_control_f.on_survey = "You are ducking on the floor to not be seen through the large window. This is no time to look around, the arachnid creature might still be there in the cargo bay."
 
 def personal_command_vault_welder_used():
     player.output += "You welded the thing open."
@@ -612,6 +611,13 @@ initial_use_targets = {
         debug_info="Console that needs SART to be used on it.",
         on_look="It is a small, specialized terminal mounted beside the door. It has an exposed electronic interface port but no keypad or manual override. The screen is dark, confirming the system has failed and requires a high-level diagnostic tool to handshake with the security lock and initiate access.",
         use_func=operations_and_cargo_interlink_console_used),
+    "power_bus_distribution_panel": UseTarget(
+        id="power_bus_distribution_panel",
+        name="Power Bus Distribution Panel",
+        keywords = ["power","bus", "distribution", "panel", "closet"],
+        debug_info="Act 4 power bus unit inside cargo_bay_control_f. Use maintenance jack.",
+        on_look="It is a heavy, gray metallic cabinet bolted to the wall, humming loudly with suppressed voltage. The automated controls are dark, but the manual override lever is visible behind a reinforced safety grate. This bus controls the dedicated line feeding the Command Deck and Bridge systems. The lever is clearly seized solid due to immense pressure and heat and will not budge by hand. The only way to restore power is by applying extreme, focused leverage.",
+        use_func=cargo_bay_control_f_power_bus_used,),
     "personal_command_vault_before_weld": UseTarget(
         id="personal_command_vault_before_weld",
         name="Personal Command Vault",
@@ -638,11 +644,11 @@ initial_use_targets = {
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
 env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
+logistics_door_console = initial_use_targets["logistics_door_console"]
+power_bus_distribution_panel = initial_use_targets["power_bus_distribution_panel"]
 personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
 personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
 data_array_door = initial_use_targets["data_array_door"]
-logistics_door_console = initial_use_targets["logistics_door_console"]
-
 
 def initial_use_targets_setup():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
@@ -651,46 +657,30 @@ def initial_use_targets_setup():
     captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
     systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
     operations_and_cargo_interlink.use_targets["logistics_door_console"] = logistics_door_console
+    cargo_bay_control_f.use_targets["power_bus_distribution_panel"] = power_bus_distribution_panel
 
 def setup_use_targets_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
     logistics_door_console.usable_items["sart"] = sart
+    power_bus_distribution_panel.usable_items["maintenance_jack"] = maintenance_jack
     personal_command_vault_before_weld.usable_items["welder"] = welder
     personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
     data_array_door.usable_items["lockpick"] = lockpick
-
 
 # Sceneries
 
 sceneries = {}
 
-npcs ={
-    "engy":NPC(
-    id="engy",
-    name="Engy",
-    debug_info="Deceased High Engineer Enrique.",
-    on_look="The body is that of High Engineer Enrique, also known as Engy. He is a thin man in a white utility suit, slumped against the locker. Though you and Engy didn't know each other well, you vaguely recall his reputation for being a easygoing and quick with a joke who occasionally got into trouble with the Captain.",
-    keywords=["body", "engy", "deceased", "dead"]),
-    "chef":NPC(
-    id="chef",
-    name="Chef",
-    debug_info="Main chef, black. Nat's great friend.",
-    keywords=["chef"],
-    on_look="You see the Chef. He's a broad, imposing Black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight, carrying no excess gear. A faint feeling of relief washes over you at the sight of your friend, prepared and ready."),
-    "tanaka":NPC(
-    id="tanaka",
-    name="Tanaka",
-    debug_info="Japanese Data Systems Analysts")}
-
-engy = npcs["engy"]
-chef = npcs["chef"]
-tanaka = npcs["tanaka"]
-
+# NPCS
 def setup_npcs():
     medical_labs.npcs["engy"] = engy
     deck_5_secure_pathway.npcs["chef"] = chef
+
+# Arachnid
+def setup_arachnid():
+    pass
 
 ## Run all necessary setups
 
@@ -706,7 +696,9 @@ run_all_setups()
 
 
 def debug_stuff():
+    player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
     player.inventory["screwdriver"] = screwdriver
     player.inventory["lockpick"] = lockpick
+    player.inventory["sart"] = sart
 debug_stuff()

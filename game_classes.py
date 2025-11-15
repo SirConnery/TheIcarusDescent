@@ -178,6 +178,19 @@ class NPC:
         self.on_interact = on_interact
         self.keywords = keywords
 
+class Arachnid:
+    def __init__(self, id, name, debug_info, keywords = None, on_look = None, on_interact = None):
+        
+        # Descriptions
+        self.id = id
+        self.name = name
+        self.debug_info = debug_info
+
+        #Other
+        self.on_look = on_look
+        self.on_interact = on_interact
+        self.keywords = keywords
+
 class Room:
     def __init__(self, name, debug_info,
                  forward=None, backward=None, left=None, right=None, 
