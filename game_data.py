@@ -358,20 +358,23 @@ def emergency_launch_compartment_room_event():
 def emergency_launch_access_corridor_room_event():
     player.output_fast += "\n\nThis long, narrow passage is a scene of systemic breakdown. The power has mostly failed, and the only illumination comes from flickering, strobe-like emergency lights that cast the path in blinding flashes of red and black shadow.\n"
     player.output_fast += "The air is freezing, biting at your exposed skin and making your breath plume violently. Structural conduits have been torn from the ceiling, confirming this route is extremely unstable.\n\n"
-    player.output_fast += "The main reactor alarm blares violently across the deck. A synthetic voice echoes through the ship: ** EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.** \n\n"
+    player.output_fast += "The main reactor alarm blares violently across the deck. A synthetic voice echoes through the ship: **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.** \n\n"
     player.output_fast += "The freezing air hits you with the force of a hammer, but you need to keep moving."
 
 def emergency_vehicles_bay_room_event():
-    player.output_slow += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES**\n\n"
-    player.output_slow += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive, and blessed relief washes over you.\n" 
-    player.output_slow += "The emergency lighting here is stable, casting the area in a warm, steady glow, and the ambient temperature is several degrees warmer than the corridor.\n\n"
-    player.output_slow += "The emergency escape vehicle Tantalus Ark Cutter Class sits secured in its launch cradle, looking reliable and ready. Its main access hatch is currently open.\n\n"    
+    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES.**\n\n"
+    player.output_slow += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive and, thankfully, the ambient temperature is several degrees warmer than the corridor.\n" 
+    player.output_slow += "The emergency lighting here is stable, casting the entire area in a warm, steady glow, offering a brief, blessed reprieve from the chaos.\n\n"
+    player.output_slow += "The Tantalus Ark Cutter Class sits secured in its launch cradle, looking entirely solid and ready. Its main access hatch is currently open.\n"
     player.output_slow += "You sigh a bit at the sight of the vessel.\n"
-    player.output_slow += "You know the launch sequence and opening the Tantalus Horizon doors can be done purely from inside the craft.\n\n"
-    player.output_slow += "Nat: We made it. It's ready."
+    player.output_slow += "You know the launch sequence and opening the outer Tantalus Horizon doors can be done purely from inside the craft.\n\n"
+    player.output_slow += "Nat: I made it. It's ready."
 
 def tantalus_ark_room_event():
-    pass
+    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
+    player.output_slow += "You rush up the landing struts and run through the open hatch. The internal lighting flickers on, confirming the craft has power.\n\n"
+    player.output_slow += "You are in the pilot cabin of The Tantalus Ark. The main diagnostic screen is green, confirming systems are functional. The controls are within easy reach.\n"
+    player.output_slow += "The clock is ticking. You must initiate the launch sequence immediately on the console."
 
 ## Connect rooms
 
@@ -746,6 +749,17 @@ def interacted_icarus_systems_terminal():
     sart.on_look = "The lock is open and the sart can be taken."
     player.output += "EVA Lockers SART lock opened."
 
+def interacted_tantalus_ark_console_1():
+    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
+    player.output_slow += "You slam your hand down on the activation switch. The cabin lights surge, and the heavy launch cradle retracts with a deafening hydraulic screech.\n"
+    player.output_slow += "The main computer screams: **'EMERGENCY LAUNCH SEQUENCE INITIATED. T-MINUS ONE MINUTE.'**\n"
+    player.output_slow += "The Tantalus Ark shudders violently and begins to slide forward on the magnetic rails. The outer airlock hatch starts to cycle open.\n\n"
+    player.output_slow += "Just as you feel the magnetic acceleration kick in, the ship is struck by an impossibly heavy, metallic impact. **A colossal, scarred figure slams against the pilot viewport.**\n"
+    player.output_slow += "The launch sequence immediately aborts. The vessel is pinned in the launch cradle, held fast by the arachnid creature's immense, spiked legs. Its hideous form completely fills your forward view."
+
+def interacted_tantalus_ark_console_2():
+    pass
+
 # Interactables data
 
 initial_interactables = {
@@ -765,15 +779,34 @@ initial_interactables = {
         on_look="The ICARUS Systems Terminal is a heavy-duty, reinforced console built directly into the floor. Its primary interface is fully active, displaying a sequence of high-level network protocols demanding authentication. \n\nYou note the massive auxiliary power connection required to run it, hinting at its high signal output capability. \n\nRight next to the interface, a faded yellow sticky note is secured to the console, bearing the text: Admin 1234.",
         on_interact_func=interacted_icarus_systems_terminal,
     ),
+    "tantalus_ark_console_1": Interactable(
+        id="tantalus_ark_console",
+        name="Tantalus Ark Cockpit Console",
+        keywords=["terminal", "console", "terminal console", "cockpit", "systems", "ignite", "initiate", "pilot"],
+        debug_info="Last location and last interactable. First interaction.",
+        on_look="The main pilot console wraps around the command seat, featuring heavy physical toggles, analog gauges, and thick, matte-screen displays set behind reinforced glass.",
+        on_interact_func=interacted_tantalus_ark_console_1
+    ),
+    "tantalus_ark_console_2": Interactable(
+        id="tantalus_ark_console",
+        name="Tantalus Ark Cockpit Console",
+        keywords=["terminal", "console", "terminal console", "cockpit", "systems", "ignite", "initiate", "pilot"],
+        debug_info="Last location and last interactable. Second and last interaction.",
+        on_look="The main pilot console wraps around the command seat, featuring heavy physical toggles, analog gauges, and thick, matte-screen displays set behind reinforced glass.",
+        on_interact_func=interacted_tantalus_ark_console_2
+    ),
 
 }
 
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
 icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
+tantalus_ark_console_1 = initial_interactables["tantalus_ark_console_1"]
+tantalus_ark_console_2 = initial_interactables["tantalus_ark_console_2"]
 
 def setup_interactables():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
     data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
+    tantalus_ark.interactables["tantalus_ark_console_1"] = tantalus_ark_console_1
 
 
 ## use_targets functions
