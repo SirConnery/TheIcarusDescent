@@ -8,8 +8,9 @@ class Player:
     def __init__(self):
         self.cur_room = None
         self.output = ""
-        self.output_slow = ""
+        self.output_normal = ""
         self.output_fast = ""
+        self.output_slow = ""
         self.output_debug = ""
         self.output_error = ""
         self.output_help = ""
@@ -84,6 +85,7 @@ class Player:
             if obj.can_interact:
                 if obj.on_interact_func:
                     obj.on_interact_func()
+                    obj.amount_interacted_with += 1
                 else:
                     self.output_error += f"Cannot interact with {obj.name}"
             else:
@@ -324,7 +326,7 @@ class Item:
     
 
 class Interactable:
-    def __init__(self, id, name, debug_info, keywords, on_interact_func, can_interact=True, on_look=""):
+    def __init__(self, id, name, debug_info, keywords, on_interact_func, amount_interacted_with = 0, can_interact=True, on_look=""):
         
         # Descriptions
         self.id = id
@@ -336,6 +338,7 @@ class Interactable:
         # Interact
         self.can_interact = can_interact
         self.on_interact_func = on_interact_func
+        self.amount_interacted_with = amount_interacted_with
 
 class UseTarget:
     def __init__(self, id, name, debug_info, keywords, use_func, on_look="", can_interact=False, on_interact_func=False,):

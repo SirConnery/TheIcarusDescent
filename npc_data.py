@@ -12,7 +12,7 @@ npcs ={
     name="Chef",
     debug_info="Main chef, black. Nat's great friend.",
     keywords=["chef"],
-    on_look="You see the Chef. He's a broad, imposing Black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight, carrying no excess gear. A faint feeling of relief washes over you at the sight of your friend, prepared and ready."),
+    on_look="You see the Chef. He's a broad, imposing black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight, carrying no excess gear. A faint feeling of relief washes over you at the sight of your friend, prepared and ready."),
     "tanaka":NPC(
     id="tanaka",
     name="Tanaka",

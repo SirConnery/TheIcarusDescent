@@ -44,37 +44,58 @@ def r_text(text, delay=0.00, style="cyan"):
 
 # Acts title text
 
-def r_text_act_change(act_number="", subtitle="", style="bold white", font="xsbookb",
-                      subtitle_font="cyberlarge", subtitle_style="bold cyan",
-                      delay=0.0, line_delay=0.0):
-    ascii_text = pyfiglet.figlet_format(f"ACT {act_number}", font=font)
-    
-    panel = Panel(
-        Align.center(f"[{style}]{ascii_text}[/{style}]", vertical="middle"),
-        expand=False,
-        border_style=style
-    )
-    console.print(Align.center(panel, vertical="middle"))
-    
+def r_text_act_change(
+    act_number="",
+    subtitle="",
+    act_text="ACT",
+    show_panel=True,
+    style="bold white",
+    font="xsbookb",
+    subtitle_font="cyberlarge",
+    subtitle_style="bold cyan",
+    delay=0.0,
+    line_delay=0.0,
+    return_only=False,
+):
+    clear_screen()
+
+    panel = None
+    if show_panel and act_text:
+        ascii_text = pyfiglet.figlet_format(f"{act_text} {act_number}", font=font)
+        panel = Panel(
+            Align.center(f"[{style}]{ascii_text}[/{style}]", vertical="middle"),
+            expand=False,
+            border_style=style
+        )
+
+    subtitle_render = None
     if subtitle:
         subtitle_text = pyfiglet.figlet_format(subtitle, font=subtitle_font)
-        for line in subtitle_text.splitlines():
-            console.print(Align.center(f"[{subtitle_style}]{line}[/{subtitle_style}]"))
+        subtitle_render = [
+            f"[{subtitle_style}]{line}[/{subtitle_style}]"
+            for line in subtitle_text.splitlines()
+        ]
+
+    if return_only:
+        return panel, subtitle_render
+
+    if panel:
+        console.print(Align.center(panel, vertical="middle"))
+
+    if subtitle_render:
+        for line in subtitle_render:
+            console.print(Align.center(line))
             time.sleep(line_delay)
-    
+
     if delay > 0:
         time.sleep(delay)
+
     time.sleep(2.0)
     clear_screen()
     draw_HUD()
-        
 
-# Other functions
 
-def quit_game():
-    game.running = False
-    clear_screen()
-    r_text("Game has been quit. Your fate remains a mystery...")
+
 
 ## Command Parser
 
@@ -157,7 +178,8 @@ def display_player_outputs():
     (player.output_help, {"style": "white"}),
     (player.output, {}),
     (player.output_fast, {"delay": 0.02}),
-    (player.output_slow, {"delay": 0.04}),
+    (player.output_normal, {"delay": 0.04}),
+    (player.output_slow, {"delay": 0.05}),
     (player.output_directions, {"delay": 0.00}),]
 
     for text, kwargs in outputs:
@@ -167,6 +189,7 @@ def display_player_outputs():
 def clear_player_outputs():
     player.output = f""
     player.output_fast = f""
+    player.output_normal = f""
     player.output_slow = f""
     player.output_debug = f""
     player.output_error = f""
@@ -180,10 +203,11 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.cur_room = rooms["emergency_vehicles_bay"]
-    player.enter_room(rooms["emergency_vehicles_bay"])
+    player.enter_room(rooms["cryo_bay"])
     get_directions()
-
+    
+    r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")
+    
     clear_screen()
     draw_HUD()
 
@@ -197,6 +221,11 @@ game_start()
 while game.running:
 
     command = console.input("[white]\n> [/white]").lower().strip()
+    if command == "quit":
+        clear_screen()
+        r_text("Game has been quit. Your fate remains a mystery...")
+        break
+    
     process_input(command)
     get_directions()
 
@@ -204,9 +233,5 @@ while game.running:
     draw_HUD()
 
     display_player_act_outputs()
-
     display_player_outputs()
     clear_player_outputs()
-
-    if command == "quit":
-        quit_game()

@@ -225,7 +225,12 @@ rooms = {
         id="tantalus_ark",
         name="Emergency Vehicles Bay (inside The Tantalus Ark)",
         debug_info="Medium sized escape vessel Cutter Class.",
-    )
+    ),
+    "tantalus_ark_final": Room(
+        id="tantalus_ark_final",
+        name="Tantalus Ark",
+        debug_info="Final room before game end.",
+    ),
 }
 
 # Act 1
@@ -278,16 +283,38 @@ emergency_launch_compartment = rooms["emergency_launch_compartment"]
 emergency_launch_access_corridor = rooms["emergency_launch_access_corridor"]
 emergency_vehicles_bay = rooms["emergency_vehicles_bay"]
 tantalus_ark = rooms["tantalus_ark"]
-
+tantalus_ark_final = rooms["tantalus_ark_final"]
 
 ## Room custom events
 # Act 1
 def cryo_bay_intro():
     player.output_slow = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
-
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
+# Act 3
+def deck_5_secure_pathway_room_event():
+    player.output_normal += "The dim, failing red lights suddenly give way to stable, normal illumination.\n\n"
+    player.output_normal += "In the distance, down the corridor, you see a shape that doesn't belong there... It's coming towards you.\n\n"
+    player.output_normal += "Chef: Hey, girl.\n"
+    player.output_normal += "You realize it's your old friend, Chef. A wave of relief goes through your chest.\n"
+    player.output_normal += "Chef: Aren't you grease monkeys supposed to keep the lights on here? The power is all kinds of messed up. I think I fixed it for now but you better take a look at it, Nat.\n\n"
+    player.output_normal += "Before answering you take a brief moment to look at Chef. He is a broad, muscular black man in a dark-gray utility jumpsuit with sleeves rolled up to his biceps.\n\n"
+    player.output_normal += "Nat: Chef, Enrique is dead.\n"
+    player.output_normal += "Chef: I know. I came through there. It's bad, Nat. This ain't just fuses.\n"
+    player.output_normal += "Chef: You know how to work the power right Nat? Let's go to the Main Service Control and see what's up.\n"
+    player.output_normal += "Nat: Sure. Lead the way Chef."
+
+def service_access_hatchway_room_event():
+    player.output_slow += "Chef: Hold up. What's that smell? Burnt metal and fried wiring. That from your deck, Nat?\n"
+    player.output_slow += "Nat: Yeah. You know, that smell reminds me of your kitchen.\n"
+    player.output_slow += "Chef: Yeah, yeah, roast my kitchen later. That smell's serious, or you just cooked another conduit?\n"
+    player.output_slow += "Nat: Keep it moving, Chef."
+
+def msc_1_room_event():
+    player.output_slow += "The air here is frigid and loud, filled with the roar of ventilation fans. Exposed conduits and thick, heavy piping line the reinforced walls. Directly ahead, a single, reinforced window overlooks MSC 2 a mirrored control station.\n"
+
+
 # Act 4
 def act_4_lock_starting_door():
     service_control_junction_5f.is_open = False
@@ -321,39 +348,39 @@ def meet_panicked_npc_operations_distribution_crossover():
     operations_distribution_crossover.items["lockpick"] = lockpick
 # Act 5
 def bridge_room_enter_event():
-    player.output_slow = "\n\nYou step onto the Bridge. The silence is immense, broken only by the cold hum of auxiliary power. The main command console is dark. Before you can even move, the entry door hisses shut.\n\n"
-    player.output_slow += "Nat! \n\nYou spin around. The Chef stands framed in the access hatch, looking ready. He's gripping a bulky, jury-rigged flamethrower.\n\n"
-    player.output_slow += "Chef: Look what I found, Nat. I got just enough fuel on this to go for some roast spider meat.\n"
-    player.output_slow += "Nat: Chef! Thank God. The console is live. Can we get the lifeboats cycling?\n\n"
-    player.output_slow += "The Chef types quickly on the emergency console. The screen flashes red.\n\n"
-    player.output_slow += "Chef: Hold up, we got problems. This whole rig is officially cooked, Nat. The pressure regulators on the main airlocks are seized. We can't cycle the life pods from this luxury suite. We gotta go manual.\n"
-    player.output_slow += f"Nat: Manual, yes. The {auxiliary_reactor_control.name} on Deck 2. It's the only place with the purge valves and manual lifeboat releases.\n"
-    player.output_slow += "Chef: Good. We're not taking the main passage, it's a death trap. Let's use the service route. We'll hit the self-destruct while we're down there. That spider's travel plans are gonna blow up.\n"
-    player.output_slow += "Chef: Follow me. Stick close. We're going down three decks, fast.\n\n" 
-    player.output_slow += "Nat: Right. Blow the station. Open the pods. Let's move."
+    player.output_normal = "\n\nYou step onto the Bridge. The silence is immense, broken only by the cold hum of auxiliary power. The main command console is dark. Before you can even move, the entry door hisses shut.\n\n"
+    player.output_normal += "Nat! \n\nYou spin around. The Chef stands framed in the access hatch, looking ready. He's gripping a bulky, jury-rigged flamethrower.\n\n"
+    player.output_normal += "Chef: Look what I found, Nat. I got just enough fuel on this to go for some roast spider meat.\n"
+    player.output_normal += "Nat: Chef! Thank God. The console is live. Can we get the lifeboats cycling?\n\n"
+    player.output_normal += "The Chef types quickly on the emergency console. The screen flashes red.\n\n"
+    player.output_normal += "Chef: Hold up, we got problems. This whole rig is officially cooked, Nat. The pressure regulators on the main airlocks are seized. We can't cycle the life pods from this luxury suite. We gotta go manual.\n"
+    player.output_normal += f"Nat: Manual, yes. The {auxiliary_reactor_control.name} on Deck 2. It's the only place with the purge valves and manual lifeboat releases.\n"
+    player.output_normal += "Chef: Good. We're not taking the main passage, it's a death trap. Let's use the service route. We'll hit the self-destruct while we're down there. That spider's travel plans are gonna blow up.\n"
+    player.output_normal += "Chef: Follow me. Stick close. We're going down three decks, fast.\n\n" 
+    player.output_normal += "Nat: Right. Blow the station. Open the pods. Let's move."
 
 def vertical_service_shaft_room_event():
-    player.output_slow = "Chef: Hold up, Nat! This old thing ain't pretty, but it's fast. Remember what I told you: smooth is fast, and fast is life!\n"
-    player.output_slow += "Nat: Relax, Chef. I know every weld on this deck better than you know your spice rack.\n"    
-    player.output_slow += "Chef: Good. Because where we're going, if we ain't fixing it with muscle and metal, we ain't fixin' it. Keep your eyes peeled, girl. We are running out of time and luck, and baby, I ain't got much of either left!\n"    
+    player.output_normal = "Chef: Hold up, Nat! This old thing ain't pretty, but it's fast. Remember what I told you: smooth is fast, and fast is life!\n"
+    player.output_normal += "Nat: Relax, Chef. I know every weld on this deck better than you know your spice rack.\n"    
+    player.output_normal += "Chef: Good. Because where we're going, if we ain't fixing it with muscle and metal, we ain't fixin' it. Keep your eyes peeled, girl. We are running out of time and luck, and baby, I ain't got much of either left!\n"    
 
 def reactor_deck_service_hub_room_event():
-    player.output_slow += "Chef: This is it, Nat. The Hub. Control Room is right through that door. This place gives me the creeps.\n"
-    player.output_slow += "Nat: Hey, I basically live down here.\n"
-    player.output_slow += "Chef: Oh right, you grease monkeys get all the fun.\n"
-    player.output_slow += "Nat: It takes more than a greasy apron to fix an entire command network, Chef."
+    player.output_normal += "Chef: This is it, Nat. The Hub. Control Room is right through that door. This place gives me the creeps.\n"
+    player.output_normal += "Nat: Hey, I basically live down here.\n"
+    player.output_normal += "Chef: Oh right, you grease monkeys get all the fun.\n"
+    player.output_normal += "Nat: It takes more than a greasy apron to fix an entire command network, Chef."
 
 def auxiliary_reactor_control_room_event():
-    player.output_slow += "Chef: Hold up now... Did you hear that? The clicking.\n"
-    player.output_slow += "Nat: Quick! Close the door! I'm hitting the manual meltdown sequence!\n"    
-    player.output_slow += "Chef: Forget the purge! That thing got to the hydraulics, the main line is buckled! We can't get the lifeboats out!\n" 
-    player.output_slow += "Nat: I see it. The hydraulic line running along the frame is severely buckled and pinched. That thing cut off all pressure to the feed!\n"
-    player.output_slow += f"Nat: The final pressure valve is in the {emergency_launch_compartment.name}. I'm going there now to fix the pinch. You take over the terminal and prepare the purge sequence, Chef.\n"
-    player.output_slow += "Chef: Get on it, Nat! I ain't gonna be spider food down here!\n"
+    player.output_normal += "Chef: Hold up now... Did you hear that? The clicking.\n"
+    player.output_normal += "Nat: Quick! Close the door! I'm hitting the manual meltdown sequence!\n"    
+    player.output_normal += "Chef: Forget the purge! That thing got to the hydraulics, the main line is buckled! We can't get the lifeboats out!\n" 
+    player.output_normal += "Nat: I see it. The hydraulic line running along the frame is severely buckled and pinched. That thing cut off all pressure to the feed!\n"
+    player.output_normal += f"Nat: The final pressure valve is in the {emergency_launch_compartment.name}. I'm going there now to fix the pinch. You take over the terminal and prepare the purge sequence, Chef.\n"
+    player.output_normal += "Chef: Get on it, Nat! I ain't gonna be spider food down here!\n"
 
 def emergency_launch_compartment_room_event():
-    player.output_slow += "You enter the room. The heavy duty blast door closes behind you. Inside the room is a small console for operating the lifeboats and above it you see the hydraulic fluid line running along the doorframe. It is completely warped and will need fixing by manual force. You will need some leverage for this one.\n\n" 
-    player.output_slow += "You can see Chef through the window."
+    player.output_normal += "You enter the room. The heavy duty blast door closes behind you. Inside the room is a small console for operating the lifeboats and above it you see the hydraulic fluid line running along the doorframe. It is completely warped and will need fixing by manual force. You will need some leverage for this one.\n\n" 
+    player.output_normal += "You can see Chef through the window."
 # Act 6
 def emergency_launch_access_corridor_room_event():
     player.output_fast += "\n\nThis long, narrow passage is a scene of systemic breakdown. The power has mostly failed, and the only illumination comes from flickering, strobe-like emergency lights that cast the path in blinding flashes of red and black shadow.\n"
@@ -362,19 +389,23 @@ def emergency_launch_access_corridor_room_event():
     player.output_fast += "The freezing air hits you with the force of a hammer, but you need to keep moving."
 
 def emergency_vehicles_bay_room_event():
-    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES.**\n\n"
-    player.output_slow += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive and, thankfully, the ambient temperature is several degrees warmer than the corridor.\n" 
-    player.output_slow += "The emergency lighting here is stable, casting the entire area in a warm, steady glow, offering a brief, blessed reprieve from the chaos.\n\n"
-    player.output_slow += "The Tantalus Ark Cutter Class sits secured in its launch cradle, looking entirely solid and ready. Its main access hatch is currently open.\n"
-    player.output_slow += "You sigh a bit at the sight of the vessel.\n"
-    player.output_slow += "You know the launch sequence and opening the outer Tantalus Horizon doors can be done purely from inside the craft.\n\n"
-    player.output_slow += "Nat: I made it. It's ready."
+    player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES.**\n\n"
+    player.output_normal += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive and, thankfully, the ambient temperature is several degrees warmer than the corridor.\n" 
+    player.output_normal += "The emergency lighting here is stable, casting the entire area in a warm, steady glow, offering a brief reprieve from the chaos.\n\n"
+    player.output_normal += "The Tantalus Ark Cutter Class sits secured in its launch cradle, looking entirely solid and ready. Its main access hatch is currently open.\n"
+    player.output_normal += "You sigh a bit at the sight of the vessel.\n"
+    player.output_normal += "You know initiating the magnetic rail launch sequence can be done purely from inside the craft.\n\n"
+    player.output_normal += "You think to yourself: I made it. It's ready."
 
 def tantalus_ark_room_event():
     player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
-    player.output_slow += "You rush up the landing struts and run through the open hatch. The internal lighting flickers on, confirming the craft has power.\n\n"
-    player.output_slow += "You are in the pilot cabin of The Tantalus Ark. The main diagnostic screen is green, confirming systems are functional. The controls are within easy reach.\n"
-    player.output_slow += "The clock is ticking. You must initiate the launch sequence immediately on the console."
+    player.output_normal += "You rush up the landing struts and run through the open hatch and hit the button besides the door closing the hatch behind you. The internal lighting flickers on, confirming the craft has power.\n\n"
+    player.output_normal += "You are in the pilot cabin of The Tantalus Ark. The main diagnostic screen is green, confirming systems are functional. The controls are within easy reach.\n"
+    player.output_normal += "The clock is ticking. You must initiate the launch sequence immediately on the console."
+
+def tantalus_ark_cryobay_room_event():
+    player.output_title = "The End"
+    game.running = False
 
 ## Connect rooms
 
@@ -520,12 +551,18 @@ def set_rooms_defaults():
     deck_5_secure_pathway.on_first_enter = "You've never been here before."
     deck_5_secure_pathway.on_revisit = "You're back."
     deck_5_secure_pathway.on_survey = "You survey the room."
+    deck_5_secure_pathway.is_act_event_trigger = True
+    deck_5_secure_pathway.room_event = deck_5_secure_pathway_room_event
     service_access_hatchway.on_first_enter = "You've never been here before."
     service_access_hatchway.on_revisit = "You're back."
     service_access_hatchway.on_survey = "You survey the room."
+    service_access_hatchway.is_act_event_trigger = True
+    service_access_hatchway.room_event = service_access_hatchway_room_event
     msc_1.on_first_enter = "You've never been here before."
     msc_1.on_revisit = "You're back."
     msc_1.on_survey = "You survey the room."
+    msc_1.is_act_event_trigger = True
+    msc_1.room_event = msc_1_room_event
     msc_2.on_first_enter = f"The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.\n\nThe Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.\n\n A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall."
     msc_2.on_revisit = "You're back."
     msc_2.on_survey = "You survey the room."
@@ -749,17 +786,45 @@ def interacted_icarus_systems_terminal():
     sart.on_look = "The lock is open and the sart can be taken."
     player.output += "EVA Lockers SART lock opened."
 
-def interacted_tantalus_ark_console_1():
-    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
-    player.output_slow += "You slam your hand down on the activation switch. The cabin lights surge, and the heavy launch cradle retracts with a deafening hydraulic screech.\n"
-    player.output_slow += "The main computer screams: **'EMERGENCY LAUNCH SEQUENCE INITIATED. T-MINUS ONE MINUTE.'**\n"
-    player.output_slow += "The Tantalus Ark shudders violently and begins to slide forward on the magnetic rails. The outer airlock hatch starts to cycle open.\n\n"
-    player.output_slow += "Just as you feel the magnetic acceleration kick in, the ship is struck by an impossibly heavy, metallic impact. **A colossal, scarred figure slams against the pilot viewport.**\n"
-    player.output_slow += "The launch sequence immediately aborts. The vessel is pinned in the launch cradle, held fast by the arachnid creature's immense, spiked legs. Its hideous form completely fills your forward view."
+def interacted_tantalus_ark_console():
+    if tantalus_ark_console.amount_interacted_with == 0:
+        player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
+        player.output_normal += "You slam your hand down on the activation switch. The cabin lights surge, and the heavy launch cradle retracts with a deafening hydraulic screech.\n"
+        player.output_normal += "The Tantalus Ark shudders violently and begins to slide forward on the magnetic rails. The outer airlock hatch starts to cycle open.\n\n"
+        player.output_normal += "Just as you feel the magnetic acceleration kick in, the vessel is struck by an impossibly heavy, metallic impact. A colossal, scarred figure slams against the pilot viewport.\n"
+        player.output_normal += "The launch sequence immediately aborts. The creature has anchored its immense, spiked legs deep into the magnetic launch rail structure, locking the Ark in place.\n"
+        player.output_normal += "The launch cradle screams under the external pressure, and your console flashes: **'LAUNCH RAIL OBSTRUCTION.'** \n\n"
+        player.output_normal += "You hope starting the launch sequence again will work."
+    elif tantalus_ark_console.amount_interacted_with == 1:
+        player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE.**\n\n"
+        player.output_fast   += "The main control panel screams: 'LAUNCH ABORTED. EXTERNAL OBSTRUCTION.'\n" 
+        player.output_normal += "Suddenly, the silence is annihilated by the sound of heavy machinery being violently accelerated. A large, dark shape hurtles across the launch bay floor.\n"
+        player.output_normal += "It's the Chef! He is driving an industrial maintenance lifter, a heavy, low-profile vehicle, directly toward the massive arachnid.\n"
+        player.output_normal += "Chef (shouting, voice distorted by the radio): One small step for man, one giant squish for spiderkind!\n"
+        player.output_normal += "The impact is colossal. The creature shrieks as it's violently thrown against the far wall. The industrial lifter stalls, pinned between the creature and the rail.\n"
+        player.output_normal += "The ship's computer flashes green: **'OBSTRUCTION CLEARED. LAUNCH SEQUENCE RESUMED.'**\n"
+        player.output_normal += "Your control panel flashes: **T-MINUS THIRTY SECONDS.** \n\n"
+        player.output_normal += "You don't have time to rescue Chef. You have one last chance to initiate the launch sequence.\n"
+    elif tantalus_ark_console.amount_interacted_with == 2:
+        player.enter_room(tantalus_ark_final)
+        
+        player.output_fast += "You slam your hand onto the activation switch. The Ark's console immediately blazes with green light, confirming the sequence.\n\n"
+        player.output_fast += "**'LAUNCH INTEGRITY 100%.'**\n\n"
+        player.output_fast += "The vessel roars to life, and the cabin lights lock down to safety red.\n"
+        player.output_fast += "The internal hatch seals with a heavy thud, separating you from the launching bay and the creature's hideous form.\n\n"
+        player.output_fast += "Through the viewport, you see the Chef, pinned by the industrial lifter, look back at your vessel. He raises a hand in a final salute as the massive external airlock begins its cycle, sealing the entire launch bay.\n"
+        player.output_normal += "Chef (through the radio, his voice sounding strained): Sorry, eight-legs, this ship already has a countdown, and you're out of time.\n\n"
+        player.output_normal += "[SYSTEMS: EXTERNAL SEAL CONFIRMED. IGNITING LAUNCH ACCELERATORS!]\n\n"
+        player.output_normal += "The Tantalus Ark punches forward, ripping free of the dying station. You watch through the viewport as the hull of the Tantalus Horizon shudders one final, agonizing time.\n"
+        player.output_normal += "The central reactor core goes critical in a silent, blinding flash of white energy. The immense ship collapses into itself, consumed by the meltdown and the void.\n"
+        
+        player.output_slow += "You are alone, but alive.\n\n"
+        player.output_slow += "You turn on the emergency beacon and enter the containment cryo unit within The Tantalus Ark.\n\n"
+        player.output_slow += "Your signal is all you have now. Because in the vastness of space, no one can hear you scream...\n\n\n"
+        
+        player.output_slow += "THE END."
 
-def interacted_tantalus_ark_console_2():
-    pass
-
+        
 # Interactables data
 
 initial_interactables = {
@@ -779,34 +844,24 @@ initial_interactables = {
         on_look="The ICARUS Systems Terminal is a heavy-duty, reinforced console built directly into the floor. Its primary interface is fully active, displaying a sequence of high-level network protocols demanding authentication. \n\nYou note the massive auxiliary power connection required to run it, hinting at its high signal output capability. \n\nRight next to the interface, a faded yellow sticky note is secured to the console, bearing the text: Admin 1234.",
         on_interact_func=interacted_icarus_systems_terminal,
     ),
-    "tantalus_ark_console_1": Interactable(
+    "tantalus_ark_console": Interactable(
         id="tantalus_ark_console",
         name="Tantalus Ark Cockpit Console",
-        keywords=["terminal", "console", "terminal console", "cockpit", "systems", "ignite", "initiate", "pilot"],
-        debug_info="Last location and last interactable. First interaction.",
+        keywords=["terminal", "console", "terminal console", "cockpit", "systems", "ignite", "initiate", "pilot", "launch", "sequence"],
+        debug_info="Last location and last interactable.",
         on_look="The main pilot console wraps around the command seat, featuring heavy physical toggles, analog gauges, and thick, matte-screen displays set behind reinforced glass.",
-        on_interact_func=interacted_tantalus_ark_console_1
+        on_interact_func=interacted_tantalus_ark_console,
     ),
-    "tantalus_ark_console_2": Interactable(
-        id="tantalus_ark_console",
-        name="Tantalus Ark Cockpit Console",
-        keywords=["terminal", "console", "terminal console", "cockpit", "systems", "ignite", "initiate", "pilot"],
-        debug_info="Last location and last interactable. Second and last interaction.",
-        on_look="The main pilot console wraps around the command seat, featuring heavy physical toggles, analog gauges, and thick, matte-screen displays set behind reinforced glass.",
-        on_interact_func=interacted_tantalus_ark_console_2
-    ),
-
 }
 
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
 icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
-tantalus_ark_console_1 = initial_interactables["tantalus_ark_console_1"]
-tantalus_ark_console_2 = initial_interactables["tantalus_ark_console_2"]
+tantalus_ark_console = initial_interactables["tantalus_ark_console"]
 
 def setup_interactables():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
     data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
-    tantalus_ark.interactables["tantalus_ark_console_1"] = tantalus_ark_console_1
+    tantalus_ark.interactables["tantalus_ark_console"] = tantalus_ark_console
 
 
 ## use_targets functions
@@ -875,25 +930,25 @@ def bridge_errors_check():
 def emergency_launch_compartment_hydraulic_pipe_used():
     emergency_launch_compartment.backward = emergency_launch_access_corridor
 
-    player.output_slow += "You manage to straighten the warped pipe. You can hear softly the fluid flowing inside it.\n"
-    player.output_slow += "You hear crackling on your radio.\n\n"
-    player.output_slow += "Chef: Good one Nat! I'm starting the meltdown sequence.\n\n"
-    player.output_slow += "Before the Chef even finishes speaking, the terrifying, rhythmic clicking begins right outside the door.\n"
-    player.output_slow += "Suddenly, the colossal arachnid creature appears outside of the Auxiliary Reactor Control Room door, its segmented legs scrambling for purchase on the frame.\n"    
-    player.output_slow += "The Chef sees the giant arachnid pierce a corrosive acid pipe above the door. The door instantly begins to melt.\n\n"
-    player.output_slow += "Chef: Aww hell naww!\n\n"
-    player.output_slow += "The spider quickly ducks below the door and enters the room.\n\n"
-    player.output_slow += "Chef: Get back, you ugly**! This ain't my first barbecue!\n\n"
-    player.output_slow += "Chef readies his flamethrower and blasts the arachnid with intense flame.\n"
-    player.output_slow += "The creature takes a few hesitant steps back, as if startled by the heat. Then, it calmly walks straight through the flame and slams the Chef into the wall next to the terminal.\n"
-    player.output_slow += "The immense spider turns its attention to you, looking through the thick glass of your compartment window.\n\n"
-    player.output_slow += "**Reactor Alarm blares: SEQUENCE READY.**\n\n"
-    player.output_slow += "Chef (whispering over the radio, barely alive): Nat... This dinner is served cold.\n\n"
-    player.output_slow += "Chef presses the final purge button. Through the glass you see a torrent of white, freezing gas and liquid nitrogen instantly filling the Reactor Room."
-    player.output_slow += "You realize you can't help your friend..."
-    player.output_slow += "The main reactor alarm blares violently. A synthetic voice screams: **THREE MINUTES UNTIL CORE MELTDOWN.**\n"
-    player.output_slow += "You use the console to activate the lifeboat system. The console confirms the locks are disengaged "
-    player.output_slow += "It's time to move."
+    player.output_normal += "You manage to straighten the warped pipe. You can hear softly the fluid flowing inside it.\n"
+    player.output_normal += "You hear crackling on your radio.\n\n"
+    player.output_normal += "Chef: Good one Nat! I'm starting the meltdown sequence.\n\n"
+    player.output_normal += "Before the Chef even finishes speaking, the terrifying, rhythmic clicking begins right outside the door.\n"
+    player.output_normal += "Suddenly, the colossal arachnid creature appears outside of the Auxiliary Reactor Control Room door, its segmented legs scrambling for purchase on the frame.\n"    
+    player.output_normal += "The Chef sees the giant arachnid pierce a corrosive acid pipe above the door. The door instantly begins to melt.\n\n"
+    player.output_normal += "Chef: Aww hell naww!\n\n"
+    player.output_normal += "The spider quickly ducks below the door and enters the room.\n\n"
+    player.output_normal += "Chef: Get back, you ugly**! This ain't my first barbecue!\n\n"
+    player.output_normal += "Chef readies his flamethrower and blasts the arachnid with intense flame.\n"
+    player.output_normal += "The creature takes a few hesitant steps back, as if startled by the heat. Then, it calmly walks straight through the flame and slams the Chef into the wall next to the terminal.\n"
+    player.output_normal += "The immense spider turns its attention to you, looking through the thick glass of your compartment window.\n\n"
+    player.output_normal += "**Reactor Alarm blares: SEQUENCE READY.**\n\n"
+    player.output_normal += "Chef (whispering over the radio, barely alive): Nat... This dinner is served cold.\n\n"
+    player.output_normal += "Chef presses the final purge button. Through the glass you see a torrent of white, freezing gas and liquid nitrogen instantly filling the Reactor Room.\n"
+    player.output_normal += "You realize you can't help your friend...\n"
+    player.output_normal += "The main reactor alarm blares violently. A synthetic voice screams: **THREE MINUTES UNTIL CORE MELTDOWN.**\n"
+    player.output_normal += "You use the console to activate the lifeboat system. The console confirms the locks are disengaged.\n\n"
+    player.output_normal += "It's time to move."
 
 # Act 6
 
