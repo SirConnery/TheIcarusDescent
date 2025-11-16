@@ -211,7 +211,21 @@ rooms = {
         name="Emergency Launch Compartment",
         debug_info="Small space next to reactor room.",
     ),
-
+    "emergency_launch_access_corridor": Room(
+        id="emergency_launch_compartment",
+        name="Emergency Launch Access Corridor",
+        debug_info="Corridor leading to lifeboats.",
+    ),
+    "emergency_vehicles_bay": Room(
+        id="emergency_vehicles_bay",
+        name="Emergency Vehicles Bay",
+        debug_info="Final emergency exit before the end.",
+    ),
+    "tantalus_ark": Room(
+        id="tantalus_ark",
+        name="Emergency Vehicles Bay (inside The Tantalus Ark)",
+        debug_info="Medium sized escape vessel Cutter Class.",
+    )
 }
 
 # Act 1
@@ -261,8 +275,9 @@ reactor_deck_service_hub = rooms["reactor_deck_service_hub"]
 auxiliary_reactor_control = rooms["auxiliary_reactor_control"]
 emergency_launch_compartment = rooms["emergency_launch_compartment"]
 # Act 6
-
-
+emergency_launch_access_corridor = rooms["emergency_launch_access_corridor"]
+emergency_vehicles_bay = rooms["emergency_vehicles_bay"]
+tantalus_ark = rooms["tantalus_ark"]
 
 
 ## Room custom events
@@ -337,19 +352,26 @@ def auxiliary_reactor_control_room_event():
     player.output_slow += "Chef: Get on it, Nat! I ain't gonna be spider food down here!\n"
 
 def emergency_launch_compartment_room_event():
-    player.output_slow += "The spider appears outside the reactor room door.\n"
-    player.output_slow += "The Chef sees the Xenoptera pierce a corrosive acid pipe above the door. The door instantly begins to melt.\n\n"
-    player.output_slow += "Chef: Aww hell naww!\n\n"
-    player.output_slow += "The spider quickly ducks below the door and enters the room.\n\n"
-    player.output_slow += "Chef: Get back, you ugly**! This ain't my first barbecue!\n\n"
-    player.output_slow += "Chef readies his flamethrower and blasts the area around the corroding door.\n"
-    player.output_slow += "The creature takes a few hesitant steps back, as if startled by the heat. Then, it calmly walks straight through the flame and slams the Chef into the wall next to the terminal.\n"
-    player.output_slow += "The immense spider turns its attention to you, looking through the thick glass of your compartment window.\n\n"
-    player.output_slow += "**Reactor Alarm blares: SEQUENCE READY.**\n\n"
-    player.output_slow += "Chef (whispering over the radio, barely alive): Nat... This dinner is served cold.\n\n"
-    player.output_slow += "Chef presses the final purge button. A torrent of white, freezing gas and liquid nitrogen instantly fills the Reactor Room. The 3:00 countdown begins."
+    player.output_slow += "You enter the room. The heavy duty blast door closes behind you. Inside the room is a small console for operating the lifeboats and above it you see the hydraulic fluid line running along the doorframe. It is completely warped and will need fixing by manual force. You will need some leverage for this one.\n\n" 
+    player.output_slow += "You can see Chef through the window."
+# Act 6
+def emergency_launch_access_corridor_room_event():
+    player.output_fast += "\n\nThis long, narrow passage is a scene of systemic breakdown. The power has mostly failed, and the only illumination comes from flickering, strobe-like emergency lights that cast the path in blinding flashes of red and black shadow.\n"
+    player.output_fast += "The air is freezing, biting at your exposed skin and making your breath plume violently. Structural conduits have been torn from the ceiling, confirming this route is extremely unstable.\n\n"
+    player.output_fast += "The main reactor alarm blares violently across the deck. A synthetic voice echoes through the ship: ** EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.** \n\n"
+    player.output_fast += "The freezing air hits you with the force of a hammer, but you need to keep moving."
 
+def emergency_vehicles_bay_room_event():
+    player.output_slow += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES**\n\n"
+    player.output_slow += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive, and blessed relief washes over you.\n" 
+    player.output_slow += "The emergency lighting here is stable, casting the area in a warm, steady glow, and the ambient temperature is several degrees warmer than the corridor.\n\n"
+    player.output_slow += "The emergency escape vehicle Tantalus Ark Cutter Class sits secured in its launch cradle, looking reliable and ready. Its main access hatch is currently open.\n\n"    
+    player.output_slow += "You sigh a bit at the sight of the vessel.\n"
+    player.output_slow += "You know the launch sequence and opening the Tantalus Horizon doors can be done purely from inside the craft.\n\n"
+    player.output_slow += "Nat: We made it. It's ready."
 
+def tantalus_ark_room_event():
+    pass
 
 ## Connect rooms
 
@@ -430,11 +452,12 @@ def connect_all_initial_rooms():
     reactor_deck_service_hub.backward = auxiliary_reactor_control
     auxiliary_reactor_control.right = emergency_launch_compartment
     # Act 6
-
+    emergency_launch_access_corridor.right = emergency_vehicles_bay
+    emergency_vehicles_bay.right = tantalus_ark
 
 def set_rooms_defaults():
     # Act 1
-    cryo_bay.on_first_enter = "Act 1"
+    cryo_bay.on_first_enter = "Act 1 - The Beginning"
     cryo_bay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
     cryo_bay.on_survey = "You survey the room."
     cryo_bay.is_act_event_trigger = True
@@ -459,7 +482,7 @@ def set_rooms_defaults():
     deck_4_mid_aft_passage.is_open = False
     deck_4_mid_aft_passage.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
     # Act 2
-    deck_4_med_env_corridor.on_first_enter = "Act 2"
+    deck_4_med_env_corridor.on_first_enter = "Act 2 - Beneath the Darkness \n\n"
     deck_4_med_env_corridor.on_revisit = "You're back."
     deck_4_med_env_corridor.on_survey = "You survey the room."
     deck_4_med_env_corridor.is_act_event_trigger = True
@@ -485,7 +508,7 @@ def set_rooms_defaults():
     deck_5_aft_utility.on_revisit = "You're back."
     deck_5_aft_utility.on_survey = "You survey the room."
     # Act 3
-    cargo_staging_room.on_first_enter = "The door closes behind you and suddenly the power comes on."
+    cargo_staging_room.on_first_enter = "Act 3 - Arrival \n\nThe door closes behind you and suddenly the power comes on."
     cargo_staging_room.on_revisit = "You're back."
     cargo_staging_room.on_survey = "You survey the room."
     cargo_staging_room.is_act_event_trigger = True
@@ -519,7 +542,7 @@ def set_rooms_defaults():
     service_control_junction_5f.on_revisit = "You're back."
     service_control_junction_5f.on_survey = "You survey the room."
     # Act 4
-    operations_distribution_crossover.on_first_enter = "You've never been here before."
+    operations_distribution_crossover.on_first_enter = "Act 4 - The Outer Decks."
     operations_distribution_crossover.on_revisit = "You're back."
     operations_distribution_crossover.on_survey = "You survey the room."
     operations_distribution_crossover.is_event_trigger = True
@@ -555,7 +578,7 @@ def set_rooms_defaults():
     deck_5_forward_muster_station.on_first_enter = "You've never been here before."
     deck_5_forward_muster_station.on_revisit = "You're back."
     deck_5_forward_muster_station.on_survey = "You survey the room."
-    bridge.on_first_enter = "Act 5"
+    bridge.on_first_enter = "Act 5 - Final Protocol"
     bridge.on_revisit = "a"
     bridge.is_act_event_trigger = True
     bridge.act_number = "5"
@@ -589,13 +612,24 @@ def set_rooms_defaults():
     command_transit_vestibule.on_survey = "You survey the room."
     # Act 5
     vertical_service_shaft.is_event_trigger = True
-    vertical_service_shaft.room_event = vertical_service_shaft_room_event 
+    vertical_service_shaft.room_event = vertical_service_shaft_room_event
     reactor_deck_service_hub.is_event_trigger = True
     reactor_deck_service_hub.room_event = reactor_deck_service_hub_room_event
     auxiliary_reactor_control.is_event_trigger = True
     auxiliary_reactor_control.room_event = auxiliary_reactor_control_room_event
     emergency_launch_compartment.is_event_trigger = True
     emergency_launch_compartment.room_event = emergency_launch_compartment_room_event
+    #Act 6
+    emergency_launch_access_corridor.on_first_enter = "Act 6 - The Exodus"
+    emergency_launch_access_corridor.is_event_trigger = True
+    emergency_launch_access_corridor.room_event = emergency_launch_access_corridor_room_event
+    emergency_launch_access_corridor.is_act_event_trigger = True
+    emergency_launch_access_corridor.act_number = 6
+    emergency_launch_access_corridor.act_subtitle = "The Exodus"
+    emergency_vehicles_bay.is_event_trigger = True
+    emergency_vehicles_bay.room_event = emergency_vehicles_bay_room_event
+    tantalus_ark.is_event_trigger = True
+    tantalus_ark.room_event = tantalus_ark_room_event
 
 def setup_rooms():
     connect_all_initial_rooms()
@@ -804,6 +838,32 @@ def bridge_errors_check():
         bridge_security_terminal.on_look = "The Bridge Security Terminal now glows with a steady, functional green light. The screen displays a single, static message: ACCESS GRANTED. ALL SYSTEMS NOMINAL. The Cypher slot remains empty, indicating your task here is complete."
         if player.cur_room.id == deck_5_forward_muster_station.id:
             player.output = "The amber caution light on the terminal flashes green, and the diagnostic errors vanish. The ICARUS SYSTEMS screen flashes ACCESS GRANTED - MANUAL OVERRIDE DEACTIVATED"
+# Act 5
+def emergency_launch_compartment_hydraulic_pipe_used():
+    emergency_launch_compartment.backward = emergency_launch_access_corridor
+
+    player.output_slow += "You manage to straighten the warped pipe. You can hear softly the fluid flowing inside it.\n"
+    player.output_slow += "You hear crackling on your radio.\n\n"
+    player.output_slow += "Chef: Good one Nat! I'm starting the meltdown sequence.\n\n"
+    player.output_slow += "Before the Chef even finishes speaking, the terrifying, rhythmic clicking begins right outside the door.\n"
+    player.output_slow += "Suddenly, the colossal arachnid creature appears outside of the Auxiliary Reactor Control Room door, its segmented legs scrambling for purchase on the frame.\n"    
+    player.output_slow += "The Chef sees the giant arachnid pierce a corrosive acid pipe above the door. The door instantly begins to melt.\n\n"
+    player.output_slow += "Chef: Aww hell naww!\n\n"
+    player.output_slow += "The spider quickly ducks below the door and enters the room.\n\n"
+    player.output_slow += "Chef: Get back, you ugly**! This ain't my first barbecue!\n\n"
+    player.output_slow += "Chef readies his flamethrower and blasts the arachnid with intense flame.\n"
+    player.output_slow += "The creature takes a few hesitant steps back, as if startled by the heat. Then, it calmly walks straight through the flame and slams the Chef into the wall next to the terminal.\n"
+    player.output_slow += "The immense spider turns its attention to you, looking through the thick glass of your compartment window.\n\n"
+    player.output_slow += "**Reactor Alarm blares: SEQUENCE READY.**\n\n"
+    player.output_slow += "Chef (whispering over the radio, barely alive): Nat... This dinner is served cold.\n\n"
+    player.output_slow += "Chef presses the final purge button. Through the glass you see a torrent of white, freezing gas and liquid nitrogen instantly filling the Reactor Room."
+    player.output_slow += "You realize you can't help your friend..."
+    player.output_slow += "The main reactor alarm blares violently. A synthetic voice screams: **THREE MINUTES UNTIL CORE MELTDOWN.**\n"
+    player.output_slow += "You use the console to activate the lifeboat system. The console confirms the locks are disengaged "
+    player.output_slow += "It's time to move."
+
+# Act 6
+
 
 
 # use_targets data
@@ -873,12 +933,12 @@ initial_use_targets = {
         on_look="It is a thin, reinforced diagnostic panel built into the wall beside the Bridge's main hatch. The screen is active but glows with a frustrated amber caution light. A scrolling list of diagnostic errors is displayed, blocking access: \n\nERROR 01: POWER BUS DISRUPTION\nERROR 02: SECURITY CLEARANCE REQUIRED \n\nYou realize this terminal doesn't open the door, but diagnoses why the door won't open. Beneath the display, a secure interface socket is visible, designed to accept a high-level cryptographic cypher for verification.",
         use_func=bridge_door_console_cypher_used),
     "hydraulic_pipe": UseTarget(
-        id="bridge_security_terminal",
-        name="Bridge Security Terminal",
-        keywords = ["door", "pipe", "pipes", "vent", "hydraulic"],
-        debug_info="Hydraulic pipe inside reactor room.",
-        on_look="",
-        use_func=bridge_door_console_cypher_used),
+        id="hydraulic_pipe",
+        name="Hydraulic Pipe",
+        keywords = ["door", "pipe", "pipes", "vent", "line", "hydraulic"],
+        debug_info="Act 5 hydraulic pipe next to reactor room.",
+        on_look="The thick hydraulic fluid line running along the doorframe is severely buckled and pinched, completely cutting off fluid pressure to the reactor room. You're going to need some kind of leverage to manually fix this.",
+        use_func=emergency_launch_compartment_hydraulic_pipe_used),
 }
 
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
@@ -890,6 +950,7 @@ personal_command_vault_before_weld = initial_use_targets["personal_command_vault
 personal_command_vault_after_weld = initial_use_targets["personal_command_vault_after_weld"]
 data_array_door = initial_use_targets["data_array_door"]
 bridge_security_terminal = initial_use_targets["bridge_security_terminal"]
+hydraulic_pipe = initial_use_targets["hydraulic_pipe"]
 
 def setup_use_targets():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
@@ -900,6 +961,8 @@ def setup_use_targets():
     deck_5_forward_muster_station.use_targets["bridge_security_terminal"] = bridge_security_terminal
     systems_data_access_corridor.use_targets["data_array_door"] = data_array_door
     captains_quarters.use_targets["personal_command_vault_before_weld"] = personal_command_vault_before_weld
+    emergency_launch_compartment.use_targets["hydraulic_pipe"] = hydraulic_pipe
+    
 
 
 def setup_use_targets_usable_items():
@@ -912,6 +975,7 @@ def setup_use_targets_usable_items():
     personal_command_vault_before_weld.usable_items["welder"] = welder
     personal_command_vault_after_weld.usable_items["screwdriver"] = screwdriver
     data_array_door.usable_items["lockpick"] = lockpick
+    hydraulic_pipe.usable_items["maintenance_jack"] = maintenance_jack
 
 # Sceneries
 

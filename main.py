@@ -180,8 +180,8 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.cur_room = rooms["bridge"]
-    player.enter_room(rooms["bridge"])
+    player.cur_room = rooms["emergency_vehicles_bay"]
+    player.enter_room(rooms["emergency_vehicles_bay"])
     get_directions()
 
     clear_screen()

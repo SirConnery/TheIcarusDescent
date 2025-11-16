@@ -54,6 +54,10 @@ class Player:
             self.cur_room.is_event_trigger = False
         self.output += self.cur_room.get_entry_event()
 
+
+
+
+
     def move(self, direction):
         if not self.cur_room:
             self.output_error = "You are nowhere!"
