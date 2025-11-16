@@ -156,7 +156,7 @@ def display_player_outputs():
     (player.output_error, {"style": "red"}),
     (player.output_help, {"style": "white"}),
     (player.output, {}),
-    (player.output_slow, {"delay": 0.05}),
+    (player.output_slow, {"delay": 0.04}),
     (player.output_fast, {"delay": 0.02}),
     (player.output_directions, {"delay": 0.00}),]
 

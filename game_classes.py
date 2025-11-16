@@ -21,6 +21,7 @@ class Player:
 
         self.name = "Natalia Volkov"
         self.nickname = "Nat"
+        self.role = "Field Maintenance Technician"
         self.status = "Healthy"
         self.warmth = "Cold"
         self.heartrate = "Calm"
@@ -245,8 +246,8 @@ class Room:
     def get_entry_event(self):
         if not self.has_been_visited:
             self.has_been_visited = True
-            return self.on_first_enter
-        return self.on_revisit
+            return self.on_first_enter or ""
+        return self.on_revisit or ""
     
     def add_item(self, item):
         id = item.id
