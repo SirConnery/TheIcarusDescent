@@ -203,7 +203,7 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.enter_room(rooms["cryo_bay"])
+    player.enter_room(rooms["msc_2"])
     get_directions()
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")

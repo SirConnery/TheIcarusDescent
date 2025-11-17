@@ -101,9 +101,9 @@ rooms = {
         name="MSC2 Main Service Control 2 (behind power conduit manifold)",
         debug_info="MSC Room 2 behind power conduit manifold.",
     ),
-    "msc_vent": Room(
-        id="msc_vent",
-        name="MSC2 Ventilation Shaft",
+    "msc_service_duct": Room(
+        id="msc_service_duct",
+        name="MSC2 Service Duct",
         debug_info="MSC2 ventilation shaft.",
     ),
     "service_control_junction_5f": Room(
@@ -255,7 +255,7 @@ msc_2 = rooms["msc_2"]
 msc_2_b_storage_drums = rooms["msc_2_b_storage_drums"]
 msc_2_b_console_desk = rooms["msc_2_b_console_desk"]
 msc_2_b_power_conduit = rooms["msc_2_b_power_conduit"]
-msc_vent = rooms["msc_vent"]
+msc_service_duct = rooms["msc_service_duct"]
 service_control_junction_5f = rooms["service_control_junction_5f"]
 # Act 4
 operations_distribution_crossover = rooms["operations_distribution_crossover"]
@@ -306,13 +306,52 @@ def deck_5_secure_pathway_room_event():
     player.output_normal += "Nat: Sure. Lead the way Chef."
 
 def service_access_hatchway_room_event():
-    player.output_slow += "Chef: Hold up. What's that smell? Burnt metal and fried wiring. That from your deck, Nat?\n"
-    player.output_slow += "Nat: Yeah. You know, that smell reminds me of your kitchen.\n"
-    player.output_slow += "Chef: Yeah, yeah, roast my kitchen later. That smell's serious, or you just cooked another conduit?\n"
-    player.output_slow += "Nat: Keep it moving, Chef."
+    player.output_normal += "Chef: Hold up. What's that smell? Burnt metal and fried wiring. That from your deck, Nat?\n"
+    player.output_normal += "Nat: Yeah. You know, that smell reminds me of your kitchen.\n"
+    player.output_normal += "Chef: Yeah, yeah, roast my kitchen later. That smell's serious, or you just cooked another conduit?\n"
+    player.output_normal += "Nat: Keep it moving, Chef."
 
 def msc_1_room_event():
-    player.output_slow += "The air here is frigid and loud, filled with the roar of ventilation fans. Exposed conduits and thick, heavy piping line the reinforced walls. Directly ahead, a single, reinforced window overlooks MSC 2 a mirrored control station.\n"
+    player.output_normal += "The room has only dim lighting, you pull out your flashlight for better vision.\n"
+    player.output_normal += "Exposed conduits and thick, heavy piping line the reinforced walls. Directly ahead, a single, reinforced window overlooks a mirrored control station at Main Service Control 2.\n"
+    player.output_normal += "The air here is noticeably warm, but the relentless roar of ventilation fans makes it hard to even hear your own thoughts. \n\n"    
+    player.output_normal += "Chef: CHECK OUT WHAT'S HAPPENING WITH THE SHIP, NAT!\n"
+    player.output_normal += "Nat: THE POWER SYSTEMS ARE IN MSC 2! I'LL CHECK IT OUT!\n\n"
+    player.output_normal += "Through the window you see Main Service Control 2."
+
+def msc_2_room_event():
+    player.drop("flashlight")
+    player.output_fast +=  "The heavy access door slams shut behind you with a deafening hydraulic screech.\n"
+    player.output_fast +=  "The shock of the impact throws you off balance. Your flashlight slips from your grip, skitters across the floor, and clatters down the maintenance drain near the wall, plunging the room into dim shadow.\n"
+    player.output_fast +=  "Only a few emergency lamps flicker to life, bathing the industrial bay in a weak dim yellow light.\n"
+    player.output_fast +=  "An emergency alarm starts blaring. You're not sure what's caused it.\n\n"
+    player.output_fast +=  "Suddenly your radio crackles into life.\n\n"
+    player.output_fast +=  "Chef (via radio, sounding clearly panicked): **WHAT IS THAT!? NAT, YOU NEED TO HIDE, QUICKLY! MEET ME AT THE BRIDGE!**\n\n"
+    player.output_fast +=  "The broadcast ends instantly, leaving only static and the roar of the fans. You realize your broken radio can still receive broadcasts but not send them.\n"
+    player.output_fast +=  "You hear a clicking sound that can be heard even above the noise of the ventilation. You look up and see something crawling in the vents.\n"
+    player.output_fast +=  "You decide it's time to hide, and fast.\n\n"
+    player.output_fast +=  "You quickly scan the room and see 3 potential hiding places:\n"
+    player.output_fast +=  "— Behind the Power Conduit Manifold\n"
+    player.output_fast +=  "— Under the Operator Console Deck\n"
+    player.output_fast +=  "— Behind the stacked Heavy Industrial Drums"
+
+def msc_2_room_default_hiding_event_end():
+    player.output_fast += "The clicking sound intensifies, growing from a rattle in the ducts to a deafening, metallic percussion. Suddenly, a colossal arachnid creature drops from the vent high above and lands with a heavy, floor-shaking impact in the center of the room.\n\n"
+    player.output_fast += "You take a peek and finally see it clearly: Its main body is easily three meters long, and its spike-like legs stretch another two meters, allowing it to dominate the entire floor space. The creature is segmented and impossibly large.\n\n"
+    player.output_fast += "Near the floor behind you, you spot a small, loose inspection vent. If you can carefully remove the vent cover you should be able to fit through it."
+    player.output_fast += "You hope the sound of the ventilation will mask your escape."
+
+def msc_2_power_conduit_hiding_room_event():
+    player.output_fast +=  "The Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. \n\nYou squeeze into the space.\n\n"
+    msc_2_room_default_hiding_event_end()
+
+def msc_2_b_storage_drums_hiding_room_event():
+    player.output_fast += "A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall.\n\nYou squeeze into the space.\n\n"    
+    msc_2_room_default_hiding_event_end()
+
+def msc_2_b_console_desk_hiding_room_event():
+    player.output_fast += "The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight."
+    msc_2_room_default_hiding_event_end()
 
 
 # Act 4
@@ -436,14 +475,11 @@ def connect_all_initial_rooms():
     cargo_staging_room.right = deck_5_secure_pathway
     deck_5_secure_pathway.forward = service_access_hatchway
     service_access_hatchway.right = msc_1
-    msc_1.forward = msc_2
-    msc_2.left = msc_2_b_storage_drums
-    msc_2.right = msc_2_b_console_desk
-    msc_2.forward = msc_2_b_power_conduit
-    msc_2_b_storage_drums.backward = msc_vent
-    msc_2_b_console_desk.backward = msc_vent
-    msc_2_b_power_conduit.backward = msc_vent
-    msc_vent.forward = service_control_junction_5f
+    msc_1.right = msc_2
+    msc_2.right = msc_2_b_power_conduit
+    msc_2.forward = msc_2_b_storage_drums
+    msc_2.backward = msc_2_b_console_desk
+    msc_service_duct.forward = service_control_junction_5f
     service_control_junction_5f.forward = operations_distribution_crossover
     # Act 4
     operations_distribution_crossover.left = operations_and_cargo_interlink
@@ -558,26 +594,34 @@ def set_rooms_defaults():
     service_access_hatchway.on_survey = "You survey the room."
     service_access_hatchway.is_act_event_trigger = True
     service_access_hatchway.room_event = service_access_hatchway_room_event
-    msc_1.on_first_enter = "You've never been here before."
+    msc_1.on_first_enter = ""
     msc_1.on_revisit = "You're back."
     msc_1.on_survey = "You survey the room."
-    msc_1.is_act_event_trigger = True
+    msc_1.is_event_trigger = True
     msc_1.room_event = msc_1_room_event
-    msc_2.on_first_enter = f"The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight.\n\nThe Power Conduit Manifold is a dense, metallic structure where power lines converge. A narrow, dark pocket of shadow exists behind the thick bundles of cables near the floor. You could squeeze into the space.\n\n A cluster of heavy industrial drums, labeled with faded biohazard symbols, stands near the reinforced wall. They are secured with thick polymer bands, leaving a narrow, dark crevice between them and the wall."
-    msc_2.on_revisit = "You're back."
-    msc_2.on_survey = "You survey the room."
-    msc_2_b_storage_drums.on_first_enter = "You've never been here before."
-    msc_2_b_storage_drums.on_revisit = "You're back."
-    msc_2_b_storage_drums.on_survey = "You survey the room."
-    msc_2_b_console_desk.on_first_enter = "You've never been here before."
-    msc_2_b_console_desk.on_revisit = "You're back."
-    msc_2_b_console_desk.on_survey = "You survey the room."
-    msc_2_b_power_conduit.on_first_enter = "You've never been here before."
-    msc_2_b_power_conduit.on_revisit = "You're back."
-    msc_2_b_power_conduit.on_survey = "You survey the room."
-    msc_vent.on_first_enter = "You've never been here before."
-    msc_vent.on_revisit = "You're back."
-    msc_vent.on_survey = "You survey the room."
+    msc_2.on_first_enter = ""
+    msc_2.on_revisit = ""
+    msc_2.on_survey = "This is no time for sight seeing! You quickly scan the room and see 3 potential hiding places:\n— BEHIND the Power Conduit Manifold\n— UNDER the Operator Console Deck\n— BEHIND the stacked Heavy Industrial Drums"
+    msc_2.is_event_trigger = True
+    msc_2.room_event = msc_2_room_event
+    msc_2_b_storage_drums.on_first_enter = ""
+    msc_2_b_storage_drums.on_revisit = ""
+    msc_2_b_storage_drums.on_survey = "You survey the room from your cover, your eyes darting low across the deck. The room is hot and loud, filled with the intense roar of ventilation fans. \n\nDim yellow emergency lighting casts long, eerie shadows that fluctuate with the failing power.\n\nThe colossal arachnid creature dominates the center of the floor. Its segmented body is approximately three meters long, and its spike-like legs stalk slowly over the deck plating. The rhythmic clicking of its limbs is now the loudest, most terrifying sound in the room.\nNear the floor behind you, you spot a small, loose inspection vent. If you can carefully remove the vent cover you should be able to fit through it."
+    msc_2_b_storage_drums.is_event_trigger = True
+    msc_2_b_storage_drums.room_event = msc_2_b_storage_drums_hiding_room_event
+    msc_2_b_console_desk.on_first_enter = ""
+    msc_2_b_console_desk.on_revisit = ""
+    msc_2_b_console_desk.on_survey = msc_2_b_storage_drums.on_survey
+    msc_2_b_console_desk.is_event_trigger = True
+    msc_2_b_console_desk.room_event = msc_2_b_console_desk_hiding_room_event
+    msc_2_b_power_conduit.on_first_enter = ""
+    msc_2_b_power_conduit.on_revisit = ""
+    msc_2_b_power_conduit.on_survey = msc_2_b_storage_drums.on_survey
+    msc_2_b_power_conduit.is_event_trigger = True
+    msc_2_b_power_conduit.room_event = msc_2_power_conduit_hiding_room_event
+    msc_service_duct.on_first_enter = "You've never been here before."
+    msc_service_duct.on_revisit = "You're back."
+    msc_service_duct.on_survey = "You survey the room."
     service_control_junction_5f.on_first_enter = "You've never been here before."
     service_control_junction_5f.on_revisit = "You're back."
     service_control_junction_5f.on_survey = "You survey the room."
@@ -772,6 +816,8 @@ def setup_items():
     medical_labs.items["engys_keycard"] = engys_keycard
     environmental_controls.items["flashlight"] = flashlight
     deck_5_aft_utility.items["welder"] = welder
+    # Act 3
+
     # Act 4
     eva_gear_lockers.items["screwdriver"] = screwdriver
     eva_gear_lockers.items["sart"] = sart
@@ -780,6 +826,9 @@ def setup_items():
 
 def interacted_cryo_terminal():
     player.output="You interacted with the cryo terminal"
+
+def interacted_msc_2_vent_cover():
+    player.enter_room(msc_service_duct)
 
 def interacted_icarus_systems_terminal():
     sart.can_take = True
@@ -836,6 +885,14 @@ initial_interactables = {
         on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
         on_interact_func=interacted_cryo_terminal
     ),
+     "msc_2_vent_cover": Interactable(
+        id="msc_2_vent_cover",
+        name="Inspection Duct Vent Cover",
+        keywords = ["inspection", "vent", "cover", "duct", "ventilation","hole", "shaft", "escape", "grate"],
+        debug_info="Vent cover that needs to be removed for escape.",
+        on_look="You focus on the vent near the floor. It's a small, square service access point, secured by a heavy metal grille. The frame looks severely warped, and the screws are loose and jutting out due to the structural shock. You realize the cover isn't properly seated. You could likely pry the grille free with effort.",
+        on_interact_func=interacted_msc_2_vent_cover,
+    ),
     "icarus_systems_terminal": Interactable(
         id="icarus_systems_terminal",
         name="ICARUS Systems Terminal",
@@ -857,9 +914,13 @@ initial_interactables = {
 cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
 icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
 tantalus_ark_console = initial_interactables["tantalus_ark_console"]
+msc_2_vent_cover = initial_interactables["msc_2_vent_cover"]
 
 def setup_interactables():
     cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
+    msc_2_b_storage_drums.interactables["msc_2_vent_cover"] = msc_2_vent_cover
+    msc_2_b_power_conduit.interactables["msc_2_vent_cover"] = msc_2_vent_cover
+    msc_2_b_console_desk.interactables["msc_2_vent_cover"] = msc_2_vent_cover
     data_server_array.interactables["icarus_systems_terminal"] = icarus_systems_terminal
     tantalus_ark.interactables["tantalus_ark_console"] = tantalus_ark_console
 
@@ -1088,6 +1149,7 @@ run_all_setups()
 
 
 def debug_stuff():
+    player.inventory["flashlight"] = flashlight
     player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
     player.inventory["screwdriver"] = screwdriver

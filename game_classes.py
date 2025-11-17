@@ -101,7 +101,7 @@ class Player:
             self.output += f"You look at the {obj.name}.\n\n"
             self.output += obj.on_look
         else:
-            self.output_error = f"No interesting {keyword} in this location."
+            self.output_error = f"No interesting {keyword} in this location.\n\n"
 
     def take(self, keyword):
         sources = [self.cur_room.items]
@@ -110,11 +110,11 @@ class Player:
         if item:
             if item.can_take:
                 item.pick_up(self, self.cur_room)
-                self.output_gain_item += f"You have taken {item.name}.\n"
+                self.output_gain_item += f"You have taken {item.name}.\n\n"
             else:
                 self.output += item.locked_description
         else:
-            self.output_error += f"No item named {keyword} in this location.\n"
+            self.output_error += f"No item named {keyword} in this location.\n\n"
     
     def use(self, obj, obj_2):
         source_1 = [self.inventory]
@@ -125,7 +125,7 @@ class Player:
             if use_target:
                 result = use_target.on_use(item)
                 if not result:
-                    self.output_error += f"{item.name} could not be used on {use_target.name}"
+                    self.output_error += f"{item.name} could not be used on {use_target.name}\n\n"
 
 
 
@@ -139,9 +139,9 @@ class Player:
         item = get_object_by_keyword(sources, keyword)
         if item:
             item.drop(self, self.cur_room)
-            self.output_drop += f"You have dropped {item.name}."
+            self.output_error += f"You have dropped {item.name}.\n\n"
         else:
-            self.output_error += f"No item named {keyword} in your inventory."    
+            self.output_lose_item += f"No item named {keyword} in your inventory.\n\n"    
     
     def help(self):
         self.output_help = f"""Use commands like below:
