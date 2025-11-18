@@ -26,9 +26,9 @@ rooms = {
         name="Crew Lockers",
         debug_info="A room with small kitchen and dinner table, some sofas",
     ),
-    "deck_4_mid_aft_passage": Room(
-        id="deck_4_mid_aft_passage",
-        name="Deck 4 Mid-Aft Passage",
+    "cryo_midship_transfer_passageway": Room(
+        id="cryo_midship_transfer_passageway",
+        name="Cryo-Midship Transfer Passage",
         debug_info="A passage connecting Act 1 and Act 2",
     ),
     "deck_4_med_env_corridor": Room(
@@ -238,7 +238,7 @@ cryo_bay = rooms["cryo_bay"]
 cryo_vestibule = rooms["cryo_vestibule"]
 galley = rooms["galley"]
 crew_lockers = rooms["crew_lockers"]
-deck_4_mid_aft_passage = rooms["deck_4_mid_aft_passage"]
+cryo_midship_transfer_passageway = rooms["cryo_midship_transfer_passageway"]
 # Act 2
 deck_4_med_env_corridor = rooms["deck_4_med_env_corridor"]
 medical_labs = rooms["medical_labs"]
@@ -292,6 +292,11 @@ def cryo_bay_intro():
 def crew_lockers_event():
     player.take("backpack")
     player.take("radio")
+    
+    player.warmth = "Warm"
+    player.warmth_color = "green"
+
+    player.output += "This large room is dominated by rows of metal lockers and features two small shower stalls near the back wall. \n\nYou quickly locate your assigned locker. You pull on your utility uniform and pick up your brown canvas backpack, noting the partially broken emergency radio secured to the strap. You really should have fixed it before your shift ended. \n\nAfter putting on some clothes you start to feel warmer and more comfortable. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
 # Act 3
 def deck_5_secure_pathway_room_event():
     player.output_normal += "The dim, failing red lights suddenly give way to stable, normal illumination.\n\n"
@@ -467,11 +472,11 @@ def connect_all_initial_rooms():
     cryo_vestibule.left = galley
     cryo_vestibule.right = crew_lockers
     cryo_vestibule.backward = cryo_bay
-    galley.forward = deck_4_mid_aft_passage
+    galley.forward = cryo_midship_transfer_passageway
     galley.right = cryo_vestibule
     crew_lockers.left = cryo_vestibule
-    deck_4_mid_aft_passage.forward = deck_4_med_env_corridor
-    deck_4_mid_aft_passage.backward = galley
+    cryo_midship_transfer_passageway.forward = deck_4_med_env_corridor
+    cryo_midship_transfer_passageway.backward = galley
     # Act 2
     deck_4_med_env_corridor.forward = upper_aft_lobby
     deck_4_med_env_corridor.left = medical_labs
@@ -553,19 +558,19 @@ def set_rooms_defaults():
     cryo_vestibule.on_first_enter = "The Cryo Vestibule is a short, sterile passage with padded white walls and heavy metallic door frames. The hum of auxiliary systems is steady and consistent. \n\nYou allow your mind to briefly drift:\n\n 'Orbiting SD-4's moon and shipping specialized goods for ICUS Corp... that's the mission. So much routine for such a long journey.'"
     cryo_vestibule.on_revisit = "You are back in the Cryo Vestibule. The passage remains sterile, and the systems continue to hum quietly."
     cryo_vestibule.on_survey = "The Cryo Vestibule is a small, empty passage serving as the air buffer between the Cryo Bay and the main deck area. There are no consoles or utilities here, only the structural doors leading to the Crew Lockers and the Mess Hall."
-    galley.on_first_enter = "You've never been here before."
-    galley.on_revisit = "You're back."
-    galley.on_survey = "You survey the room."
-    crew_lockers.on_first_enter = "You enter the Crew Lockers. This large room is dominated by rows of metal lockers and features two small shower stalls near the back wall. \n\nYou quickly locate your assigned locker. You pull on your utility uniform and pick up your brown canvas backpack, noting the partially broken emergency radio secured to the strap. You really should have fixed it before your shift ended. \n\nAfter putting on some clothes you start to feel warmer and more comfortable. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
-    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but abandoned. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
+    galley.on_first_enter = "This small space is tidy but shows signs of regular use, dominated by heavy stainless steel counters and several polished wooden dining tables. It smells faintly of strong brewed coffee and cooking oil, reflecting recent activity. \n\nThe food preparation area is pristine, but there is no one here."
+    galley.on_revisit = "You are back in the Galley. The space remains clean and quiet, smelling faintly of coffee."
+    galley.on_survey = "This small space is tidy but shows signs of regular use, dominated by heavy stainless steel counters and several polished wooden dining tables. The area smells faintly of strong brewed coffee and cooking oil, reflecting recent activity. The food preparation area is pristine. \n\nThe door leading to the rest of the ship is stuck, maybe you should take a closer look at the door to find a way to open it."
+    crew_lockers.on_first_enter = ""
+    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but empty. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
     crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently.\n\nnNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
     crew_lockers.is_event_trigger = True
     crew_lockers.room_event = crew_lockers_event
-    deck_4_mid_aft_passage.on_first_enter = "You've never been here before."
-    deck_4_mid_aft_passage.on_revisit = "You're back."
-    deck_4_mid_aft_passage.on_survey = "You survey the room."
-    deck_4_mid_aft_passage.is_open = False
-    deck_4_mid_aft_passage.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
+    cryo_midship_transfer_passageway.on_first_enter = "You are now in the Cryo-Midship Transfer Passage. This wide, functional corridor acts as the primary link between the hypothermic systems bay and the ship's main operational areas. The walls are lined with standard utility paneling, and the air hums with the steady rhythm of the ship's functional systems."
+    cryo_midship_transfer_passageway.on_revisit = "This wide, functional corridor acts as the primary link between the hypothermic systems bay and the ship's main operational areas."
+    cryo_midship_transfer_passageway.on_survey = "This wide, functional corridor acts as the primary link between the hypothermic systems bay and the ship's main operational areas. The walls are lined with standard utility paneling, and the air hums with the steady rhythm of the ship's functional systems."
+    cryo_midship_transfer_passageway.is_open = False
+    cryo_midship_transfer_passageway.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
     # Act 2
     deck_4_med_env_corridor.on_first_enter = "Act 2 - Beneath the Darkness \n\n"
     deck_4_med_env_corridor.on_revisit = "You're back."
@@ -745,7 +750,7 @@ def setup_rooms():
 # Item pickup events
 
 def maintenance_jack_picked_up():
-    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but abandoned."
+    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but empty."
     crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently."
 
 
@@ -855,7 +860,12 @@ def setup_items():
 # Interactables functions
 
 def interacted_cryo_terminal():
-    player.output="You interacted with the cryo terminal"
+    player.output +="You know this terminal is just for displaying status reports. You access the terminal's core diagnostics. The screen stabilizes, displaying the ship's operational manifest:\n\n"
+    player.output +="ICARUS SYSTEMS STATUS REPORT VESSEL: The Tantalus Horizon.\n"
+    player.output +="OPERATIONS: All local systems operational.\n"
+    player.output +="POWER DISTRIBUTION REPORT: Multiple minor power fluctuations detected in Midship Sections D4 and D5."
+
+
 
 def interacted_msc_2_vent_cover():
     player.enter_room(msc_service_tunnel)
@@ -907,12 +917,12 @@ def interacted_tantalus_ark_console():
 # Interactables data
 
 initial_interactables = {
-    "cryo_bay_terminal": Interactable(
-        id="cryo_bay_terminal",
-        name="Cryo Bay Terminal",
-        keywords=["terminal", "console", "terminal console", "cryo terminal"],
+    "cryo_bay_diagnostics_terminal": Interactable(
+        id="cryo_bay_diagnostics_terminal",
+        name="Cryo Bay Diagnostics Terminal",
+        keywords=["terminal", "console", "terminal console","diagnostics", "diagnostic", "keyboard"],
         debug_info="Act 1 Broken down door, open with jack",
-        on_look="The terminal console is dark, its screen glowing softly with amber readouts that pulse in quiet rhythm.",
+        on_look="The Cryo Bay Diagnostics Terminal is an embedded panel displaying a faint, steady green light. This unit is active and waiting for a system query.",
         on_interact_func=interacted_cryo_terminal
     ),
      "msc_2_vent_cover": Interactable(
@@ -941,13 +951,13 @@ initial_interactables = {
     ),
 }
 
-cryo_bay_terminal = initial_interactables["cryo_bay_terminal"]
+cryo_bay_diagnostics_terminal = initial_interactables["cryo_bay_diagnostics_terminal"]
 icarus_systems_terminal = initial_interactables["icarus_systems_terminal"]
 tantalus_ark_console = initial_interactables["tantalus_ark_console"]
 msc_2_vent_cover = initial_interactables["msc_2_vent_cover"]
 
 def setup_interactables():
-    cryo_bay.interactables["cryo_bay_terminal"] = cryo_bay_terminal
+    cryo_bay.interactables["cryo_bay_diagnostics_terminal"] = cryo_bay_diagnostics_terminal
     msc_2_b_storage_drums.interactables["msc_2_vent_cover"] = msc_2_vent_cover
     msc_2_b_power_conduit.interactables["msc_2_vent_cover"] = msc_2_vent_cover
     msc_2_b_console_desk.interactables["msc_2_vent_cover"] = msc_2_vent_cover
@@ -959,8 +969,10 @@ def setup_interactables():
 
 # Act 1
 def mess_hall_blast_door_used():
-    player.output = "Mess hall blast door used"
-    deck_4_mid_aft_passage.is_open = True
+    player.output = f"You position the {maintenance_jack.name} against the fused door frame and apply the hydraulics. The metal groans loudly under the increasing pressure. With a final, explosive CRACK of stressed metal, the seized frame bends outward, and the locking mechanism snags free. \n\nThe door pops open, giving you passage forward."
+    galley.on_survey = "This small space is tidy but shows signs of regular use, dominated by heavy stainless steel counters and several polished wooden dining tables. The area smells faintly of strong brewed coffee and cooking oil, reflecting recent activity. The food preparation area is pristine."
+
+    cryo_midship_transfer_passageway.is_open = True
 # Act 2
 def central_freight_bay_blast_door_used():
     player.output = "Freight bay blast door used"
@@ -1052,8 +1064,8 @@ def emergency_launch_compartment_hydraulic_pipe_used():
 # use_targets data
 
 initial_use_targets = {
-    "mess_hall_blast_door": UseTarget(
-        id="mess_hall_blast_door",
+    "galley_blast_door": UseTarget(
+        id="galley_blast_door",
         name="Mess Hall Blast Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
         debug_info="Act 1 Broken down door, open with jack",
@@ -1131,7 +1143,7 @@ initial_use_targets = {
         use_func=emergency_launch_compartment_hydraulic_pipe_used),
 }
 
-mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
+galley_blast_door = initial_use_targets["galley_blast_door"]
 env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
 service_control_junction_5f_door = initial_use_targets["service_control_junction_5f_door"]
@@ -1144,7 +1156,7 @@ bridge_security_terminal = initial_use_targets["bridge_security_terminal"]
 hydraulic_pipe = initial_use_targets["hydraulic_pipe"]
 
 def setup_use_targets():
-    galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
+    galley.use_targets["galley_blast_door"] = galley_blast_door
     deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
     service_control_junction_5f.use_targets["service_control_junction_5f_door"] = service_control_junction_5f_door
@@ -1158,7 +1170,7 @@ def setup_use_targets():
 
 
 def setup_use_targets_usable_items():
-    mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
+    galley_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
     service_control_junction_5f_door.usable_items["welder"] = welder
@@ -1222,11 +1234,12 @@ def run_all_setups():
     setup_use_targets_usable_items()
     setup_sceneries()
     setup_npcs()
+    # add_debug_inventory()
 
 run_all_setups()
 
 
-def debug_stuff():
+def add_debug_inventory():
     player.inventory["flashlight"] = flashlight
     player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
@@ -1234,5 +1247,3 @@ def debug_stuff():
     player.inventory["lockpick"] = lockpick
     player.inventory["sart"] = sart
     player.inventory["bridge_access_cypher"] = bridge_access_cypher
-
-debug_stuff()

@@ -23,9 +23,14 @@ class Player:
         self.name = "Natalia Volkov"
         self.nickname = "Nat"
         self.role = "Field Maintenance Technician"
+        
         self.status = "Healthy"
         self.warmth = "Cold"
         self.heartrate = "Calm"
+        self.status_color = "green"
+        self.warmth_color = "blue"
+        self.heartrate_color = "green"
+
         self.inventory = {}
         self.inventory_names = []
 
