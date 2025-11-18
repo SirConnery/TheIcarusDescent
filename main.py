@@ -42,7 +42,7 @@ def r_text(text, delay=0.00, style="cyan"):
     else:
         r_text("Returned 'None'", style="red")
 
-# Acts title text
+# Acts title text  (Chatgpt used to make this)
 
 def r_text_act_change(
     act_number="",
@@ -93,7 +93,6 @@ def r_text_act_change(
     time.sleep(2.0)
     clear_screen()
     draw_HUD()
-
 
 
 
@@ -179,7 +178,7 @@ def display_player_outputs():
     (player.output, {}),
     (player.output_fast, {"delay": 0.02}),
     (player.output_normal, {"delay": 0.04}),
-    (player.output_slow, {"delay": 0.05}),
+    (player.output_slow, {"delay": 0.045}),
     (player.output_directions, {"delay": 0.00}),]
 
     for text, kwargs in outputs:
@@ -203,7 +202,7 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.enter_room(rooms["msc_2"])
+    player.enter_room(rooms["cryo_bay"])
     get_directions()
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")

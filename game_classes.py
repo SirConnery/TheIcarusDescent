@@ -59,9 +59,6 @@ class Player:
         self.output += self.cur_room.get_entry_event()
 
 
-
-
-
     def move(self, direction):
         if not self.cur_room:
             self.output_error = "You are nowhere!"
@@ -96,6 +93,7 @@ class Player:
         else:
             self.output_error = f"No interactable {keyword} in this room."
 
+
     def look(self, keyword):
         sources = [self.cur_room.interactables, self.cur_room.use_targets, self.cur_room.items, self.cur_room.sceneries, self.inventory, self.cur_room.npcs]
 
@@ -119,6 +117,7 @@ class Player:
         else:
             self.output_error += f"No item named {keyword} in this location.\n\n"
     
+
     def use(self, obj, obj_2):
         source_1 = [self.inventory]
         item = get_object_by_keyword(source_1, obj)
@@ -129,9 +128,6 @@ class Player:
                 result = use_target.on_use(item)
                 if not result:
                     self.output_error += f"{item.name} could not be used on {use_target.name}\n\n"
-
-
-
         else:
             self.output_error += f"{obj} not found in inventory."
 
@@ -297,7 +293,7 @@ class Item:
     def __init__(self, id, name, debug_info, keywords, on_look="", 
                 can_take=True, locked_description = False,
                 can_interact=False, on_interact_func=False,
-                is_item_event_trigger=False, item_event=None,):
+                is_item_pickup_event_trigger=False, item_picked_up_event=None,):
         
         # Descriptions
         self.id = id
@@ -307,8 +303,8 @@ class Item:
         self.on_look = on_look
 
         # Events
-        self.is_item_event_trigger = is_item_event_trigger
-        self.item_event = item_event
+        self.is_item_pickup_event_trigger = is_item_pickup_event_trigger
+        self.item_picked_up_event = item_picked_up_event
 
         # Interact
         self.can_interact = can_interact
@@ -319,6 +315,8 @@ class Item:
         self.locked_description = locked_description
 
     def pick_up(self, player, room):
+        if self.is_item_pickup_event_trigger:
+            self.item_picked_up_event()
         player.add_item(self)
         room.remove_item(self)
     

@@ -544,21 +544,21 @@ def set_rooms_defaults():
     # Act 1
     cryo_bay.on_first_enter = "Act 1 - The Beginning"
     cryo_bay.on_revisit = "The cryochamber lies silent, bathed in pale blue light. A lone terminal hums near the door.."
-    cryo_bay.on_survey = "You survey the room."
+    cryo_bay.on_survey = "You are in the Cryo Bay. The room is dominated by the curving rows of cyan metallic cryochambers arranged around the large white central pillar. Most of the units stand open and empty. \n\nNear the forward door, the Cryo Management Terminal is embedded in the wall, currently displaying a dull, static screen."
     cryo_bay.is_act_event_trigger = True
     cryo_bay.act_number = "1"
     cryo_bay.act_subtitle = "The Beginning"
     cryo_bay.is_event_trigger = True
     cryo_bay.room_event = cryo_bay_intro
-    cryo_vestibule.on_first_enter = "You've never been here before."
-    cryo_vestibule.on_revisit = "You're back."
-    cryo_vestibule.on_survey = "You survey the room."
+    cryo_vestibule.on_first_enter = "The Cryo Vestibule is a short, sterile passage with padded white walls and heavy metallic door frames. The hum of auxiliary systems is steady and consistent. \n\nYou allow your mind to briefly drift:\n\n 'Orbiting SD-4's moon and shipping specialized goods for ICUS Corp... that's the mission. So much routine for such a long journey.'"
+    cryo_vestibule.on_revisit = "You are back in the Cryo Vestibule. The passage remains sterile, and the systems continue to hum quietly."
+    cryo_vestibule.on_survey = "The Cryo Vestibule is a small, empty passage serving as the air buffer between the Cryo Bay and the main deck area. There are no consoles or utilities here, only the structural doors leading to the Crew Lockers and the Mess Hall."
     galley.on_first_enter = "You've never been here before."
     galley.on_revisit = "You're back."
     galley.on_survey = "You survey the room."
-    crew_lockers.on_first_enter = "You've never been here before."
-    crew_lockers.on_revisit = "You're back."
-    crew_lockers.on_survey = "You survey the room."
+    crew_lockers.on_first_enter = "You enter the Crew Lockers. This large room is dominated by rows of metal lockers and features two small shower stalls near the back wall. \n\nYou quickly locate your assigned locker. You pull on your utility uniform and pick up your brown canvas backpack, noting the partially broken emergency radio secured to the strap. You really should have fixed it before your shift ended. \n\nAfter putting on some clothes you start to feel warmer and more comfortable. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
+    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but abandoned. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
+    crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently.\n\nnNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
     crew_lockers.is_event_trigger = True
     crew_lockers.room_event = crew_lockers_event
     deck_4_mid_aft_passage.on_first_enter = "You've never been here before."
@@ -742,6 +742,13 @@ def setup_rooms():
 
 ## Items
 
+# Item pickup events
+
+def maintenance_jack_picked_up():
+    crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but abandoned."
+    crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently."
+
+
 initial_items = {
         "backpack": Item(
         id="backpack",
@@ -762,6 +769,8 @@ initial_items = {
         id="maintenance_jack",
         name="Maintenance Jack",
         keywords=["maintenance jack", "jack", "maintenancejack"],
+        is_item_pickup_event_trigger= True,
+        item_picked_up_event=maintenance_jack_picked_up,
         debug_info="Medium sized maintenance tool for turning things"
     ),
 
@@ -1163,7 +1172,30 @@ def setup_use_targets_usable_items():
 
 # Sceneries
 
-sceneries = {}
+sceneries = {
+    "s_cryo_bay_pillar": Scenery(
+        id = "s_cryo_bay_pillar",
+        name = "Pillar",
+        keywords = ["pillar", "central"],
+        debug_info = "Scenery for cryo bay",
+        on_look = "The central pillar is a wide, reinforced core housing major utility conduits. Its surface is clad in smooth, white, matte plating that feels cold and damp to the touch. You can detect a very faint, low-frequency hum emanating from its interior."
+        ),
+    "s_cryo_bay_hypersleep_unit": Scenery(
+        id = "s_cryo_bay_hypersleep_unit",
+        name = "Hypersleep Unit",
+        keywords = ["cryo", "bay", "cryobay", "cryochamber", "cryochambers", "sleep", "cryogenic", "hyper"],
+        debug_info = "Scenery for cryo bay",
+        on_look = f"You look at your Hypersleep Unit, a single metallic pod still humming with residual energy. The thick glass lid is raised and frosted with condensation, a sign of the rapid thaw-cycle. Its interior is lined with nutrient tubing and monitoring sensors. You notice a slight scorch mark near the main power conduit. A possible cause for the system failure that woke you."
+        )
+}
+
+s_cryo_bay_pillar = sceneries["s_cryo_bay_pillar"]
+s_cryo_bay_hypersleep_unit = sceneries["s_cryo_bay_hypersleep_unit"]
+
+
+def setup_sceneries():
+    cryo_bay.sceneries["s_cryo_bay_pillar"] = s_cryo_bay_pillar
+    cryo_bay.sceneries["s_cryo_bay_hypersleep_unit"] = s_cryo_bay_hypersleep_unit
 
 # NPCS
 def setup_npcs():
@@ -1188,6 +1220,7 @@ def run_all_setups():
     setup_items()
     setup_use_targets()
     setup_use_targets_usable_items()
+    setup_sceneries()
     setup_npcs()
 
 run_all_setups()
