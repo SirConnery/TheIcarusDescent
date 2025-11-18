@@ -35,7 +35,10 @@ class Player:
 
     def add_item(self, item):
         id = item.id
-        self.inventory[id] = item
+        if item.can_take:
+            self.inventory[id] = item
+        else:
+            self.output_error += item.locked_description
     def remove_item(self, item):
         id = item.id
         if id in self.inventory:
@@ -94,7 +97,7 @@ class Player:
             self.output_error = f"No interactable {keyword} in this room."
 
     def look(self, keyword):
-        sources = [self.cur_room.interactables, self.cur_room.use_targets, self.cur_room.items, self.cur_room.sceneries, self.inventory]
+        sources = [self.cur_room.interactables, self.cur_room.use_targets, self.cur_room.items, self.cur_room.sceneries, self.inventory, self.cur_room.npcs]
 
         obj = get_object_by_keyword(sources, keyword)
         if obj:

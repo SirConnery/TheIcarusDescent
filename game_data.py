@@ -101,9 +101,9 @@ rooms = {
         name="MSC2 Main Service Control 2 (behind power conduit manifold)",
         debug_info="MSC Room 2 behind power conduit manifold.",
     ),
-    "msc_service_duct": Room(
-        id="msc_service_duct",
-        name="MSC2 Service Duct",
+    "msc_service_tunnel": Room(
+        id="msc_service_tunnel",
+        name="MSC2 Maintenance Access Tunnel",
         debug_info="MSC2 ventilation shaft.",
     ),
     "service_control_junction_5f": Room(
@@ -255,7 +255,7 @@ msc_2 = rooms["msc_2"]
 msc_2_b_storage_drums = rooms["msc_2_b_storage_drums"]
 msc_2_b_console_desk = rooms["msc_2_b_console_desk"]
 msc_2_b_power_conduit = rooms["msc_2_b_power_conduit"]
-msc_service_duct = rooms["msc_service_duct"]
+msc_service_tunnel = rooms["msc_service_tunnel"]
 service_control_junction_5f = rooms["service_control_junction_5f"]
 # Act 4
 operations_distribution_crossover = rooms["operations_distribution_crossover"]
@@ -321,6 +321,9 @@ def msc_1_room_event():
 
 def msc_2_room_event():
     player.drop("flashlight")
+    flashlight.can_take = False
+    flashlight.locked_description = "Unable to take Flashlight. The flashlight has dropped into a maintenance drain out of your reach."
+
     player.output_fast +=  "The heavy access door slams shut behind you with a deafening hydraulic screech.\n"
     player.output_fast +=  "The shock of the impact throws you off balance. Your flashlight slips from your grip, skitters across the floor, and clatters down the maintenance drain near the wall, plunging the room into dim shadow.\n"
     player.output_fast +=  "Only a few emergency lamps flicker to life, bathing the industrial bay in a weak dim yellow light.\n"
@@ -336,9 +339,9 @@ def msc_2_room_event():
     player.output_fast +=  "— Behind the stacked Heavy Industrial Drums"
 
 def msc_2_room_default_hiding_event_end():
-    player.output_fast += "The clicking sound intensifies, growing from a rattle in the ducts to a deafening, metallic percussion. Suddenly, a colossal arachnid creature drops from the vent high above and lands with a heavy, floor-shaking impact in the center of the room.\n\n"
+    player.output_fast += "\n\nThe clicking sound intensifies, growing from a rattle in the ducts to a deafening, metallic percussion. Suddenly, a colossal arachnid creature drops from the vent high above and lands with a heavy, floor-shaking impact in the center of the room.\n\n"
     player.output_fast += "You take a peek and finally see it clearly: Its main body is easily three meters long, and its spike-like legs stretch another two meters, allowing it to dominate the entire floor space. The creature is segmented and impossibly large.\n\n"
-    player.output_fast += "Near the floor behind you, you spot a small, loose inspection vent. If you can carefully remove the vent cover you should be able to fit through it."
+    player.output_fast += f"Near the floor behind you, you spot a loose inspection vent hatch. If you can carefully remove the heavy cover, you should gain access to the {msc_service_tunnel.name}."
     player.output_fast += "You hope the sound of the ventilation will mask your escape."
 
 def msc_2_power_conduit_hiding_room_event():
@@ -353,6 +356,16 @@ def msc_2_b_console_desk_hiding_room_event():
     player.output_fast += "The heavy operator console is bolted to the floor. Beneath it, a cramped crawlspace is barely visible, filled with exposed wiring and discarded ties. It offers just enough shadow and clearance for you to squeeze out of sight."
     msc_2_room_default_hiding_event_end()
 
+def msc_service_tunnel_room_event():
+    msc_2.is_open = False
+    msc_2.locked_description = "There is no reason to go back with that creature still roaming there..."
+    player.output_fast += f"You carefully remove the vent cover and move through into the {msc_service_tunnel.name}. The passage is dark and smells sharply of ozone and old metal, but it is wide enough for you to traverse without crawling. You can still hear the clicking come through the metal, amplified by the confined space. Since you've been in these utility shafts before, you quickly orient yourself and start making your way forward towards the bridge."
+
+def service_control_junction_5f_room_event():
+    msc_service_tunnel.is_open = False
+    msc_service_tunnel.locked_description = "There is no reason to go back with that creature still roaming there..."
+    player.output_normal += f"You emerge from the dark access tunnel into the {service_control_junction_5f.name}. This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines.\n\n"
+    player.output_normal += f"Your path forward is blocked by a heavy, structural blast door. The door's lock mechanism is completely fused shut, and the frame is covered in thick, hardened polymer sealant. The door resists all manual force; its seams appear to be structurally sealed with material that only intense, sustained heat could liquefy."
 
 # Act 4
 def act_4_lock_starting_door():
@@ -479,8 +492,10 @@ def connect_all_initial_rooms():
     msc_2.right = msc_2_b_power_conduit
     msc_2.forward = msc_2_b_storage_drums
     msc_2.backward = msc_2_b_console_desk
-    msc_service_duct.forward = service_control_junction_5f
+    msc_service_tunnel.forward = service_control_junction_5f
+    msc_service_tunnel.backward = msc_2
     service_control_junction_5f.forward = operations_distribution_crossover
+    service_control_junction_5f.backward = msc_service_tunnel
     # Act 4
     operations_distribution_crossover.left = operations_and_cargo_interlink
     operations_distribution_crossover.right = central_utility_spine_5_f
@@ -606,7 +621,7 @@ def set_rooms_defaults():
     msc_2.room_event = msc_2_room_event
     msc_2_b_storage_drums.on_first_enter = ""
     msc_2_b_storage_drums.on_revisit = ""
-    msc_2_b_storage_drums.on_survey = "You survey the room from your cover, your eyes darting low across the deck. The room is hot and loud, filled with the intense roar of ventilation fans. \n\nDim yellow emergency lighting casts long, eerie shadows that fluctuate with the failing power.\n\nThe colossal arachnid creature dominates the center of the floor. Its segmented body is approximately three meters long, and its spike-like legs stalk slowly over the deck plating. The rhythmic clicking of its limbs is now the loudest, most terrifying sound in the room.\nNear the floor behind you, you spot a small, loose inspection vent. If you can carefully remove the vent cover you should be able to fit through it."
+    msc_2_b_storage_drums.on_survey = f"You survey the room from your cover, your eyes darting low across the deck. The room is hot and loud, filled with the intense roar of ventilation fans. \n\nDim yellow emergency lighting casts long, eerie shadows that fluctuate with the failing power.\n\nThe colossal arachnid creature dominates the center of the floor. Its segmented body is approximately three meters long, and its spike-like legs stalk slowly over the deck plating. The rhythmic clicking of its limbs is now the loudest, most terrifying sound in the room.\n\nNear the floor behind you, you spot a loose inspection vent hatch. If you can carefully remove the heavy cover, you should gain access to the {msc_service_tunnel.name}."
     msc_2_b_storage_drums.is_event_trigger = True
     msc_2_b_storage_drums.room_event = msc_2_b_storage_drums_hiding_room_event
     msc_2_b_console_desk.on_first_enter = ""
@@ -619,16 +634,22 @@ def set_rooms_defaults():
     msc_2_b_power_conduit.on_survey = msc_2_b_storage_drums.on_survey
     msc_2_b_power_conduit.is_event_trigger = True
     msc_2_b_power_conduit.room_event = msc_2_power_conduit_hiding_room_event
-    msc_service_duct.on_first_enter = "You've never been here before."
-    msc_service_duct.on_revisit = "You're back."
-    msc_service_duct.on_survey = "You survey the room."
-    service_control_junction_5f.on_first_enter = "You've never been here before."
-    service_control_junction_5f.on_revisit = "You're back."
-    service_control_junction_5f.on_survey = "You survey the room."
+    msc_service_tunnel.on_first_enter = ""
+    msc_service_tunnel.on_revisit = ""
+    msc_service_tunnel.on_survey = "This wide conduit is pitch dark and smells sharply of ozone and old metal. The clicking of the creature's legs is amplified by the confined space, creating a terrifying percussive echo. The tunnel runs forward toward the ship's center."
+    msc_service_tunnel.is_event_trigger = True
+    msc_service_tunnel.room_event = msc_service_tunnel_room_event
+    service_control_junction_5f.on_first_enter = ""
+    service_control_junction_5f.on_revisit = ""
+    service_control_junction_5f.on_survey = "This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines. \n\n The path to the next door is through a heavy structural blast door. The electronic lock mechanism appears on it appears to be fused shut and inaccessible"
+    service_control_junction_5f.is_event_trigger = True
+    service_control_junction_5f.room_event = service_control_junction_5f_room_event
     # Act 4
     operations_distribution_crossover.on_first_enter = "Act 4 - The Outer Decks."
     operations_distribution_crossover.on_revisit = "You're back."
     operations_distribution_crossover.on_survey = "You survey the room."
+    operations_distribution_crossover.is_open = False
+    operations_distribution_crossover.locked_description = "The electronic lock mechanism on the door appears to be fused shut and inaccessible and the door won't budge."
     operations_distribution_crossover.is_event_trigger = True
     operations_distribution_crossover.room_event = act_4_lock_starting_door
     operations_distribution_crossover.is_act_event_trigger = True
@@ -828,7 +849,7 @@ def interacted_cryo_terminal():
     player.output="You interacted with the cryo terminal"
 
 def interacted_msc_2_vent_cover():
-    player.enter_room(msc_service_duct)
+    player.enter_room(msc_service_tunnel)
 
 def interacted_icarus_systems_terminal():
     sart.can_take = True
@@ -887,10 +908,10 @@ initial_interactables = {
     ),
      "msc_2_vent_cover": Interactable(
         id="msc_2_vent_cover",
-        name="Inspection Duct Vent Cover",
-        keywords = ["inspection", "vent", "cover", "duct", "ventilation","hole", "shaft", "escape", "grate"],
+        name="MSC2 Vent Cover",
+        keywords = ["inspection","vent", "cover", "frame", "duct", "ventilation","hole", "shaft", "escape", "grate", "grille"],
         debug_info="Vent cover that needs to be removed for escape.",
-        on_look="You focus on the vent near the floor. It's a small, square service access point, secured by a heavy metal grille. The frame looks severely warped, and the screws are loose and jutting out due to the structural shock. You realize the cover isn't properly seated. You could likely pry the grille free with effort.",
+        on_look="You focus on the vent near the floor. It's a standard-sized service access hatch, secured by a heavy metal grille. The frame looks severely warped, and the screws are loose and jutting out due to the structural shock. You realize the cover isn't properly seated; you could likely pry the heavy grille free with effort.",
         on_interact_func=interacted_msc_2_vent_cover,
     ),
     "icarus_systems_terminal": Interactable(
@@ -943,6 +964,10 @@ def env_controls_access_panel_use_keypad():
         environmental_controls.is_open = True
     else:
         player.output_error="Code invalid. Access denied."
+# Act 3
+def service_control_junction_5f_door_used():
+    operations_distribution_crossover.is_open = True
+    player.enter_room(operations_distribution_crossover)
 # Act 4
 def operations_and_cargo_interlink_console_used():
     player.output += f"The door next to the console clicks and the lock to {cargo_bay_control_f.name} is open."
@@ -1039,6 +1064,13 @@ initial_use_targets = {
         debug_info="Act 2 Broken down door, open with welder",
         on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
         use_func=central_freight_bay_blast_door_used),
+    "service_control_junction_5f_door": UseTarget(
+        id="service_control_junction_5f_door",
+        name="Heavy Door",
+        keywords = ["door", "blastdoor", "bulk", "electronic", "lock", "frame", "handle", "blast", "structural", "heavy"],
+        debug_info="Heavy door that needs welder to make a hole to get through.",
+        on_look="You examine the heavy, structural blast door. The frame is sound, but the entire electronic lock and manual override are completely fused shut and inaccessible. The metal is thick, making the door impenetrable by force. \n\nYou realize the only way to bypass the mechanism and gain entry is to cut a small, precise hole through the adjacent access panel large enough to reach the manual controls inside.",
+        use_func=service_control_junction_5f_door_used,),
     "logistics_door_console": UseTarget(
         id="logistics_door_console",
         name="Logistics Access Console",
@@ -1093,6 +1125,7 @@ initial_use_targets = {
 mess_hall_blast_door = initial_use_targets["mess_hall_blast_door"]
 env_controls_access_panel = initial_use_targets["env_controls_access_panel"]
 central_freight_bay_bulk_door = initial_use_targets["central_freight_bay_bulk_door"]
+service_control_junction_5f_door = initial_use_targets["service_control_junction_5f_door"]
 logistics_door_console = initial_use_targets["logistics_door_console"]
 power_bus_distribution_panel = initial_use_targets["power_bus_distribution_panel"]
 personal_command_vault_before_weld = initial_use_targets["personal_command_vault_before_weld"]
@@ -1105,6 +1138,7 @@ def setup_use_targets():
     galley.use_targets["mess_hall_blast_door"] = mess_hall_blast_door
     deck_4_med_env_corridor.use_targets["env_controls_access_panel"] = env_controls_access_panel
     upper_aft_lobby.use_targets["central_freight_bay_bulk_door"] = central_freight_bay_bulk_door
+    service_control_junction_5f.use_targets["service_control_junction_5f_door"] = service_control_junction_5f_door
     operations_and_cargo_interlink.use_targets["logistics_door_console"] = logistics_door_console
     cargo_bay_control_f.use_targets["power_bus_distribution_panel"] = power_bus_distribution_panel
     deck_5_forward_muster_station.use_targets["bridge_security_terminal"] = bridge_security_terminal
@@ -1118,6 +1152,7 @@ def setup_use_targets_usable_items():
     mess_hall_blast_door.usable_items["maintenance_jack"] = maintenance_jack
     env_controls_access_panel.usable_items["engys_keycard"] = engys_keycard
     central_freight_bay_bulk_door.usable_items["welder"] = welder
+    service_control_junction_5f_door.usable_items["welder"] = welder
     logistics_door_console.usable_items["sart"] = sart
     power_bus_distribution_panel.usable_items["maintenance_jack"] = maintenance_jack
     bridge_security_terminal.usable_items["bridge_access_cypher"] = bridge_access_cypher
@@ -1133,7 +1168,17 @@ sceneries = {}
 # NPCS
 def setup_npcs():
     medical_labs.npcs["engy"] = engy
+    
     deck_5_secure_pathway.npcs["chef"] = chef
+    service_access_hatchway.npcs["chef"] = chef
+    msc_1.npcs["chef"] = chef
+    vertical_service_shaft.npcs["chef"] = chef
+    reactor_deck_service_hub.npcs["chef"] = chef
+    auxiliary_reactor_control.npcs["chef"] = chef
+
+    msc_2_b_console_desk.npcs["arachnid"] = arachnid
+    msc_2_b_storage_drums.npcs["arachnid"] = arachnid
+    msc_2_b_power_conduit.npcs["arachnid"] = arachnid
 
 ## Run all necessary setups
 

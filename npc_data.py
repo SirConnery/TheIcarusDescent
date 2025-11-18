@@ -24,7 +24,7 @@ arachnids = {
     name="Arachnid Creature",
     debug_info="The alien arachnid.",
     keywords=["arachnid","creature", "arachnid creature", "alien", "spider"],
-    on_look="You stare at the creature, a horrific vision of overwhelming scale. Its body is roughly three meters long, dwarfing the consoles, and its spike-like legs each stretching two meters, give it a terrifying, elevated presence. It is covered in a glistening, chitinous exoskeleton. \n\nThough massive, the legs are composed of dozens of tight, compact segments, allowing for unnerving angles of movement. This jointed structure suggests the creature could compress its bulk or contort itself into surprisingly small accessways, despite its immense size. \n\nIt moves with a deep, rhythmic clicking sound that consumes all surrounding noise.",)
+    on_look="You stare at the creature, a horrific vision of overwhelming scale. Its body is roughly three meters long, and its spike-like legs each stretching two meters, give it a terrifying, elevated presence. It is covered in a glistening, chitinous exoskeleton. \n\nThough massive, the legs are composed of dozens of tight, compact segments, allowing for unnerving angles of movement. This jointed structure suggests the creature could compress its bulk or contort itself into surprisingly small accessways, despite its immense size. \n\nIt moves with a deep, rhythmic clicking sound that consumes all surrounding noise.",)
 }
 
 engy = npcs["engy"]
