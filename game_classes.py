@@ -25,7 +25,7 @@ class Player:
         self.role = "Field Maintenance Technician"
         
         self.status = "Healthy"
-        self.warmth = "Cold"
+        self.warmth = "Warm"
         self.heartrate = "Calm"
         self.status_color = "green"
         self.warmth_color = "blue"
@@ -161,7 +161,7 @@ class Player:
             Example: interact terminal
             Usage: interact [object]
 
-            4. Look: examine objects in the room or inventory.
+            4. Look: examine objects in the room or your inventory.
             Example: look object
             Usage: look [object]
 

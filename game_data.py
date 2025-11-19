@@ -288,6 +288,7 @@ tantalus_ark_final = rooms["tantalus_ark_final"]
 ## Room custom events
 # Act 1
 def cryo_bay_intro():
+    player.warmth = "Cold"
     player.output_slow = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
 def crew_lockers_event():
     player.take("backpack")
@@ -297,10 +298,31 @@ def crew_lockers_event():
     player.warmth_color = "green"
 
     player.output += "This large room is dominated by rows of metal lockers and features two small shower stalls near the back wall. \n\nYou quickly locate your assigned locker. You pull on your utility uniform and pick up your brown canvas backpack, noting the partially broken emergency radio secured to the strap. You really should have fixed it before your shift ended. \n\nAfter putting on some clothes you start to feel warmer and more comfortable. \n\nNear the floor, you spot your trusty old Maintenance Jack, exactly where you left it."
+# Act 2
+def deck_4_med_env_corridor_room_event():
+    cryo_midship_transfer_passageway.is_open = False
+    cryo_midship_transfer_passageway.locked_description = "I should push forward, there is no reason to return now..."
+    player.output_fast += "The air hums faintly, but the lights here are extremely dim, reduced to a weak, hazy glow. Ahead of you, the stairway leading up to Deck 5 is completely shrouded in blackness. \n\n"
+    player.output_fast += "The door to the Medical Bay on your left shows a thin line of bright, steady light beneath its frame, suggesting power is holding in that section.\n"
+    player.output_fast += "On your right, the door to Environmental Controls is secured by a panel featuring both a keycard swipe slot and a digital passcode reader. The heavy security lock is clearly functional."
+
+def medical_labs_room_event():
+    player.output_normal += "The room is squeaky clean as you would expect from a medical room, dominated by two sterile white examination tables. The lights here are working perfectly, but the silence is profound.\n\n"
+    player.output_normal += "You stop, breath seizing in your throat.\n"
+    player.output_normal += "You see a body on the floor. It's Enrique. He is lying motionless on the floor near the exit. \n\nYou try to wake him up, but he is clearly not breathing and has likely been like this for a while.\n\n"
+    player.output_normal += "A sharp, acrid scent of ozone and burnt wiring insulation assaults your nose, confirming the tragedy wasn't natural. You stand there a moment, processing the terrible reality, the first confirmed casualty."
+    player.output_normal += "On the floor next to Enrique you notice a plastic card."
 # Act 3
+def cargo_staging_room_room_event():
+    player.output_normal += "The door closes behind you. Suddenly the dim, failing red lights give way to stable, normal illumination.\n"
+    player.output_normal += "The power and lighting seem to have stabilized.\n\n"
+    player.output_normal += "You hear the heavy crash of metal hitting the deck, followed by a loud screech of stressed metal and a final, dull thud, coming from the next room.\n"    
+
+
 def deck_5_secure_pathway_room_event():
-    player.output_normal += "The dim, failing red lights suddenly give way to stable, normal illumination.\n\n"
+    player.output_normal += "The corridor here has some dim lighting again, it looks like some of the fluorescent ceiling strips have short-circuited and gone black.\n"
     player.output_normal += "In the distance, down the corridor, you see a shape that doesn't belong there... It's coming towards you.\n\n"
+    player.output_normal += "You pull out your flashlight to see what it is.\n\n"
     player.output_normal += "Chef: Hey, girl.\n"
     player.output_normal += "You realize it's your old friend, Chef. A wave of relief goes through your chest.\n"
     player.output_normal += "Chef: Aren't you grease monkeys supposed to keep the lights on here? The power is all kinds of messed up. I think I fixed it for now but you better take a look at it, Nat.\n\n"
@@ -478,9 +500,10 @@ def connect_all_initial_rooms():
     cryo_midship_transfer_passageway.forward = deck_4_med_env_corridor
     cryo_midship_transfer_passageway.backward = galley
     # Act 2
-    deck_4_med_env_corridor.forward = upper_aft_lobby
     deck_4_med_env_corridor.left = medical_labs
     deck_4_med_env_corridor.right = environmental_controls
+    deck_4_med_env_corridor.forward = upper_aft_lobby
+    deck_4_med_env_corridor.backward = cryo_midship_transfer_passageway
     medical_labs.right = deck_4_med_env_corridor
     environmental_controls.left = deck_4_med_env_corridor
     upper_aft_lobby.left = central_freight_bay
@@ -573,46 +596,52 @@ def set_rooms_defaults():
     cryo_midship_transfer_passageway.locked_description = "The Blast Door resists every push; its frame is fused and bolted tight. Only raw, focused force could budge it"
     # Act 2
     deck_4_med_env_corridor.on_first_enter = "Act 2 - Beneath the Darkness \n\n"
-    deck_4_med_env_corridor.on_revisit = "You're back."
-    deck_4_med_env_corridor.on_survey = "You survey the room."
+    deck_4_med_env_corridor.on_revisit = f"The dim, hazy light persists, and the atmosphere feels cold and unnerving."
+    deck_4_med_env_corridor.on_survey = f"The dim, hazy light persists, and the atmosphere feels cold and unnerving. \n\nThe stairway upstairs is bathed in darkness.\n\nThe keypad towards {environmental_controls.name} is awaiting input."
     deck_4_med_env_corridor.is_act_event_trigger = True
     deck_4_med_env_corridor.act_number = "2"
     deck_4_med_env_corridor.act_subtitle = "Beneath the Darkness"
-    medical_labs.on_first_enter = "You've never been here before."
-    medical_labs.on_revisit = "You're back."
-    medical_labs.on_survey = "You survey the room."
-    environmental_controls.on_first_enter = "You've never been here before."
-    environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing."
-    environmental_controls.on_survey = "You survey the room."
+    deck_4_med_env_corridor.is_event_trigger = True
+    deck_4_med_env_corridor.room_event = deck_4_med_env_corridor_room_event
+    medical_labs.on_first_enter = ""
+    medical_labs.on_revisit = "You're back. Enrique is still lying on the floor motionless.\n\nThere is a plastic card on the floor."
+    medical_labs.on_survey = "The space is cold and sterile, equipped with specialized emergency diagnostic machines. \n\nHigh Engineer Enrique's body is lying motionless on the deck. His eyes are open, wide with silent surprise. \n\nYou detect a sharp, acrid scent of ozone and burnt wiring insulation, confirming a severe electrical disaster occurred here. You think it's most likely the air was drained due to some faulty electronics.\n\n You allow yourself a moment of quiet reflection. You remember the crew always called him Engy.\nThough you two didn't know each other well, he seemed like the easy going type who wasn't a stickler for the rules. You remember hearing he had gotten into trouble with the Captain a couple of times...\n\nOn the floor next to Enrique you notice a plastic card."
+    medical_labs.is_event_trigger = True
+    medical_labs.room_event = medical_labs_room_event
+    environmental_controls.on_first_enter = "It's a small, chilly chamber filled with intricate atmospheric monitoring equipment and sealed conduit access panels. The air is very dry. \nThe main consoles are dark, but your eyes are drawn to a faint glint on a central workbench."
+    environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing. \nThe space remains cold, functional.\n\nnSitting on the steel workbench you notice a a small, handheld flashlight."
+    environmental_controls.on_survey = "The walls are covered in dense panels marked with fluid lines and thermal regulators. This room is clearly responsible for the ship's critical HVAC and air-scrubbing systems. All monitoring screens are currently dark, and a faint, high-pitched whine from the equipment indicates the systems are offline or struggling..\n\nSitting on the steel workbench you notice a a small, handheld flashlight."
     environmental_controls.is_open = False
     environmental_controls.locked_description = "The door to Environmental Controls remains sealed. The access panel glows faintly, waiting for a valid code. No amount of pressing or swiping seems to budge it."
-    upper_aft_lobby.on_first_enter = "You've never been here before."
-    upper_aft_lobby.on_revisit = "You're back."
-    upper_aft_lobby.on_survey = "You survey the room."
-    central_freight_bay.on_first_enter = "You've never been here before."
-    central_freight_bay.on_revisit = "You're back."
-    central_freight_bay.on_survey = "You survey the room."
+    upper_aft_lobby.on_first_enter = "It's complete darkness... \n\nYou know the layout of the ship and  can make your way from room to room but you can see nothing."
+    upper_aft_lobby.on_revisit = "You can see nothing in the darkness..."
+    upper_aft_lobby.on_survey = "You can see nothing in the darkness..."
+    central_freight_bay.on_first_enter = "The area is vast and oppressive, dominated by rows of massive, stacked freight containers. The main lights are offline, leaving the space illuminated only by dim emergency lamps.\n\nYour flashlight beam is weak but sufficient to cut through the gloom. The air systems hum steadily, confirming the environment is stable.\n\nYou decide the first priority must be the system failure that caused this darkness. You know the power bus distribution panels are located in the sections accessed via the right corridor."
+    central_freight_bay.on_revisit = "The area remains vast, dark, and oppressive, illuminated by the dim emergency lamps. The air systems continue their steady hum."
+    central_freight_bay.on_survey = "The vast, open space is dominated by rows of massive, stacked freight containers. The main lights are offline, leaving the area illuminated only by weak, intermittent emergency lamps. The air systems hum steadily, confirming the environment is stable\n\You know the power bus distribution panels are located in the sections accessed via the right corridor."
     central_freight_bay.is_open = False
-    central_freight_bay.locked_description = "The door refuses to budge. Its surface is cold and unyielding, and the panel to the side is jammed tight. Whatever shut it down, it won’t open by hand. You’ll need another way in"
-    deck_5_aft_utility.on_first_enter = "You've never been here before."
-    deck_5_aft_utility.on_revisit = "You're back."
-    deck_5_aft_utility.on_survey = "You survey the room."
+    central_freight_bay.locked_description = "The door refuses to budge, but it's too dark to investigate why."
+    deck_5_aft_utility.on_first_enter = "You can see nothing."
+    deck_5_aft_utility.on_revisit = "You can see nothing in the darkness..."
+    deck_5_aft_utility.on_survey = "You can see nothing in the darkness..."
     # Act 3
-    cargo_staging_room.on_first_enter = "Act 3 - Arrival \n\nThe door closes behind you and suddenly the power comes on."
-    cargo_staging_room.on_revisit = "You're back."
-    cargo_staging_room.on_survey = "You survey the room."
+    cargo_staging_room.on_first_enter = "Act 3 - Arrival \n\n"
+    cargo_staging_room.on_revisit = ""
+    cargo_staging_room.on_survey = "This area is narrow and functional, designed for temporary holding and inspection of freight before it enters the main bay.\n\n The lights have turned back to normal."
+    cargo_staging_room.is_event_trigger = True
+    cargo_staging_room.room_event = cargo_staging_room_room_event
     cargo_staging_room.is_act_event_trigger = True
     cargo_staging_room.act_number = "3"
     cargo_staging_room.act_subtitle = "Arrival"
-    deck_5_secure_pathway.on_first_enter = "You've never been here before."
-    deck_5_secure_pathway.on_revisit = "You're back."
-    deck_5_secure_pathway.on_survey = "You survey the room."
-    deck_5_secure_pathway.is_act_event_trigger = True
+    deck_5_secure_pathway.on_first_enter = ""
+    deck_5_secure_pathway.on_revisit = ""
+    deck_5_secure_pathway.on_survey = "The space is largely dim, with several fluorescent ceiling strips short-circuited and gone black, leaving hazy pools of light only near the serviceable areas. The air is cold and quiet, confirming that systems on this deck are still struggling to maintain full power."
+    deck_5_secure_pathway.is_event_trigger = True
     deck_5_secure_pathway.room_event = deck_5_secure_pathway_room_event
-    service_access_hatchway.on_first_enter = "You've never been here before."
+    service_access_hatchway.on_first_enter = ""
     service_access_hatchway.on_revisit = "You're back."
     service_access_hatchway.on_survey = "You survey the room."
-    service_access_hatchway.is_act_event_trigger = True
+    service_access_hatchway.is_event_trigger = True
     service_access_hatchway.room_event = service_access_hatchway_room_event
     msc_1.on_first_enter = ""
     msc_1.on_revisit = "You're back."
@@ -753,6 +782,28 @@ def maintenance_jack_picked_up():
     crew_lockers.on_revisit = "You are back in the Crew Lockers. The room is silent and empty. Your locker is still open, and the rest of the facility remains functional but empty."
     crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently."
 
+def flashlight_picked_up():
+    welder.can_take=True
+    welder.on_look="It is a heavy, industrial-grade plasma torch used for emergency hull breaches and structural repair.\n It features a thick, reinforced handle and a large external coolant tank.\n It feels weighty and powerful, capable of cutting through the thickest metal found on the Tantalus Horizon."
+    
+    environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing. \nThe space remains cold, functional."
+    environmental_controls.on_survey = "The walls are covered in dense panels marked with fluid lines and thermal regulators. This room is clearly responsible for the ship's critical HVAC and air-scrubbing systems. All monitoring screens are currently dark, and a faint, high-pitched whine from the equipment indicates the systems are offline or struggling.."
+    central_freight_bay_bulk_door.on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won't budge without a careful approach.",
+    central_freight_bay.locked_description="The door refuses to budge. Its surface is cold and unyielding, and the panel to the side is jammed tight. Whatever shut it down, it won't open by hand."
+    upper_aft_lobby.on_first_enter = "Your flashlight beam cuts through the gloom, revealing a wide, heavily paneled space. The silence here is profound, broken only by the faint hum of high-voltage systems behind the walls."
+    upper_aft_lobby.on_revisit = "Your flashlight beam cuts through the gloom, revealing a wide, heavily paneled space. The silence here is profound, broken only by the faint hum of high-voltage systems behind the walls."
+    upper_aft_lobby.on_survey = "You sweep your flashlight beam across the lobby. This wide, silent space functions as a waiting area, sparsely furnished with a few wide, bolted-down benches. The silence is broken only by the faint, high-pitched whine of dormant electronics behind the utility panels.\n\n"
+    deck_5_aft_utility.on_first_enter = "It's a small, functional space dedicated to storing maintenance equipment, with heavy cabinets bolted to the walls. \nYour portable welder is sitting exactly where you left it on the central metallic shelf.\n\nYou briefly hear some strange clicking voice likely echoing from the vents above, but then it passes."
+    deck_5_aft_utility.on_revisit = "The cabinets are closed, and the room is quiet.\nYour portable welder is sitting exactly where you left it on the central metallic shelf."
+    deck_5_aft_utility.on_survey = "It's a small, reinforced space for specialized repair equipment. Heavy cabinets line the walls, and a secure floor hatch indicates access to the lower conduits. A central metallic shelf dominates the room, which currently holds only a few spare filters and coiled cables.\n\nYour portable welder is sitting exactly where you left it on the central metallic shelf."
+
+def welder_picked_up():
+    deck_5_aft_utility.on_revisit = "The cabinets are closed, and the room is quiet."
+    deck_5_aft_utility.on_survey = "It's a small, reinforced space for specialized repair equipment. Heavy cabinets line the walls, and a secure floor hatch indicates access to the lower conduits. A central metallic shelf dominates the room, which currently holds only a few spare filters and coiled cables."
+
+def engys_keycard_picked_up():
+    medical_labs.on_revisit = "You're back. Enrique is still lying on the floor motionless."
+    medical_labs.on_survey = "The space is cold and sterile, equipped with specialized emergency diagnostic machines. \n\nHigh Engineer Enrique's body is lying motionless on the deck. His eyes are open, wide with silent surprise. \n\nYou detect a sharp, acrid scent of ozone and burnt wiring insulation, confirming a severe electrical disaster occurred here. You think it's most likely the air was drained due to some faulty electronics.\n\n You allow yourself a moment of quiet reflection. You remember the crew always called him Engy.\nThough you two didn't know each other well, he seemed like the easy going type who wasn't a stickler for the rules. You remember hearing he had gotten into trouble with the Captain a couple of times..."
 
 initial_items = {
         "backpack": Item(
@@ -781,23 +832,34 @@ initial_items = {
 
     "engys_keycard": Item(
         id="engys_keycard",
-        name="High Engineer Enrique's keycard.",
+        name="Engy's keycard.",
         keywords=["keycard", "card", "key", "engy"],
-        debug_info="High Engineer Enrique's keycard."
+        debug_info="High Engineer Enrique's keycard.",
+        on_look="The keycard reads: High Engineer Enrique 4277",
+        is_item_pickup_event_trigger=True,
+        item_picked_up_event=engys_keycard_picked_up
     ),
 
     "flashlight": Item(
         id="flashlight",
         name="Flashlight",
         keywords=["flashlight", "light", "flash"],
-        debug_info="Small non-industrial handheld flashlight with low cone of light."
+        debug_info="Handheld flashlight.",
+        on_look="Small non-industrial handheld flashlight with low cone of light. It offers only limited illumination, but it looks functional and is better than nothing. ",
+        is_item_pickup_event_trigger=True,
+        item_picked_up_event=flashlight_picked_up
     ),
 
     "welder": Item(
         id="welder",
         name="Welder",
-        keywords=["welder"],
-        debug_info="Hand usable welder."
+        keywords=["welder", "portable"],
+        on_look="If there is a welder here, you can't see where it is.",
+        debug_info="Hand usable welder.",
+        can_take=False,
+        locked_description="If there is a welder here, you can't see where it is.",
+        is_item_pickup_event_trigger=True,
+        item_picked_up_event=welder_picked_up
     ),
 
     "lockpick": Item(
@@ -928,7 +990,7 @@ initial_interactables = {
      "msc_2_vent_cover": Interactable(
         id="msc_2_vent_cover",
         name="MSC2 Vent Cover",
-        keywords = ["inspection","vent", "cover", "frame", "duct", "ventilation","hole", "shaft", "escape", "grate", "grille"],
+        keywords = ["inspection","vent", "hatch", "cover", "frame", "duct", "ventilation","hole", "shaft", "escape", "grate", "grille"],
         debug_info="Vent cover that needs to be removed for escape.",
         on_look="You focus on the vent near the floor. It's a standard-sized service access hatch, secured by a heavy metal grille. The frame looks severely warped, and the screws are loose and jutting out due to the structural shock. You realize the cover isn't properly seated; you could likely pry the heavy grille free with effort.",
         on_interact_func=interacted_msc_2_vent_cover,
@@ -977,6 +1039,9 @@ def mess_hall_blast_door_used():
 def central_freight_bay_blast_door_used():
     player.output = "Freight bay blast door used"
     central_freight_bay.is_open = True
+
+    player.output += "The Welder hisses, and the thin metal of the access panel shrieks under the intense heat before falling away in a cascade of molten slag. You quickly aim the torch at the exposed locking mechanism's primary circuit and fuse the seizure point.\n\n"
+    player.output += "With a heavy, mechanical groan, the final mechanism disengages and the lock gives."
 
 def env_controls_access_panel_use_keypad():
     passcode = input("Keycard detected. Please enter passcode")
@@ -1074,16 +1139,16 @@ initial_use_targets = {
     "env_controls_access_panel": UseTarget(
         id="env_controls_access_panel",
         name="Environmental Control Access Panel",
-        keywords = ["access panel", "panel", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
+        keywords = ["access panel", "panel", "door", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
         debug_info="Act 2 keypad to Environmental Controls.",
-        on_look="A compact keypad and card swipe terminal connected to the ship’s security network. Its small green display sits blank, awaiting input.",
+        on_look="A compact keypad and card swipe terminal connected to the ship's security network. Its small green display sits blank, awaiting input.",
         use_func=env_controls_access_panel_use_keypad),
     "central_freight_bay_bulk_door": UseTarget(
         id="central_freight_bay_bulk_door",
         name="Central Freight Bay Bulk Door",
         keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
         debug_info="Act 2 Broken down door, open with welder",
-        on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won’t budge without a careful approach.",
+        on_look="It's too dark to see anything.",
         use_func=central_freight_bay_blast_door_used),
     "service_control_junction_5f_door": UseTarget(
         id="service_control_junction_5f_door",
