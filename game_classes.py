@@ -28,7 +28,7 @@ class Player:
         self.warmth = "Warm"
         self.heartrate = "Calm"
         self.status_color = "green"
-        self.warmth_color = "blue"
+        self.warmth_color = "green"
         self.heartrate_color = "green"
 
         self.inventory = {}

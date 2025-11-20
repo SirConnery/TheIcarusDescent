@@ -177,7 +177,7 @@ def display_player_outputs():
     (player.output_help, {"style": "white"}),
     (player.output, {}),
     (player.output_fast, {"delay": 0.02}),
-    (player.output_normal, {"delay": 0.04}),
+    (player.output_normal, {"delay": 0.03}),
     (player.output_slow, {"delay": 0.045}),
     (player.output_directions, {"delay": 0.00}),]
 
@@ -202,7 +202,7 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.enter_room(rooms["cargo_staging_room"])
+    player.enter_room(rooms["operations_distribution_crossover"])
     get_directions()
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")
