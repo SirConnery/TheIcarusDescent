@@ -16,7 +16,7 @@ npcs ={
     "tanaka":NPC(
     id="tanaka",
     name="Tanaka",
-    debug_info="Japanese Data Systems Analysts")}
+    debug_info="Japanese Data Systems Analyst")}
 
 arachnids = {
     "arachnid":Arachnid(

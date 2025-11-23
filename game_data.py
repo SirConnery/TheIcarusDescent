@@ -289,6 +289,7 @@ tantalus_ark_final = rooms["tantalus_ark_final"]
 # Act 1
 def cryo_bay_intro():
     player.warmth = "Cold"
+    player.warmth_color = "dodger_blue"
     player.output_slow = "\n\nYou awaken to silence… \n\nCold air brushes across your skin, prickling through the thin fabric of your long underwear and undershirt. As you sit up, a faint hiss of the cryochamber releasing the last of its frost escapes from beneath you. Soft, intermittent bleeps echo from the nearby computer panels, a quiet rhythm that pulses through the room. \n\nThe room around you glows faintly in shades of white and pale blue. Rows of cyan metallic cryochambers curve around a white central pillar, their surfaces lit by strips of neon light. The walls are padded with soft, white panels, and bulky computer screens are embedded between them, their glass dim and lifeless. \nEvery other chamber stands open and empty. \n\nMaybe the others awoke before you…"
 def crew_lockers_event():
     player.take("backpack")
@@ -307,6 +308,9 @@ def deck_4_med_env_corridor_room_event():
     player.output_fast += "On your right, the door to Environmental Controls is secured by a panel featuring both a keycard swipe slot and a digital passcode reader. The heavy security lock is clearly functional."
 
 def medical_labs_room_event():
+    player.heartrate = "Elevated"
+    player.heartrate_color = "orange3"
+
     player.output_normal += "The room is squeaky clean as you would expect from a medical room, dominated by two sterile white examination tables. The lights here are working perfectly, but the silence is profound.\n\n"
     player.output_normal += "You stop, breath seizing in your throat.\n"
     player.output_normal += "You see a body on the floor. It's Enrique. He is lying motionless on the floor near the exit. \n\nYou try to wake him up, but he is clearly not breathing and has likely been like this for a while.\n\n"
@@ -316,8 +320,7 @@ def medical_labs_room_event():
 def cargo_staging_room_room_event():
     player.output_normal += "The door closes behind you. Suddenly the dim, failing red lights give way to stable, normal illumination.\n"
     player.output_normal += "The power and lighting seem to have stabilized.\n\n"
-    player.output_normal += "You hear the heavy crash of metal hitting the deck, followed by a loud screech of stressed metal and a final, dull thud, coming from the next room.\n"    
-
+    player.output_normal += "You hear the heavy crash of metal hitting the deck, followed by a loud screech of stressed metal and a final, dull thud, coming from the next room.\n"
 
 def deck_5_secure_pathway_room_event():
     player.output_normal += "The corridor here has some dim lighting again, it looks like some of the fluorescent ceiling strips have short-circuited and gone black.\n"
@@ -339,6 +342,9 @@ def service_access_hatchway_room_event():
     player.output_normal += "Nat: Keep it moving, Chef."
 
 def msc_1_room_event():
+    player.warmth = "Hot"
+    player.warmth_color = "orange3"
+
     player.output_normal += "The room has only dim lighting, you pull out your flashlight for better vision.\n"
     player.output_normal += "Exposed conduits and thick, heavy piping line the reinforced walls. Directly ahead, a single, reinforced window overlooks a mirrored control station at Main Service Control 2.\n"
     player.output_normal += "The air here is noticeably warm, but the relentless roar of ventilation fans makes it hard to even hear your own thoughts. \n\n"    
@@ -347,6 +353,9 @@ def msc_1_room_event():
     player.output_normal += "Through the window you see Main Service Control 2."
 
 def msc_2_room_event():
+    player.heartrate = "High"
+    player.heartrate = "Red"
+
     player.drop("flashlight")
     flashlight.can_take = False
     flashlight.locked_description = "Unable to take Flashlight. The flashlight has dropped into a maintenance drain out of your reach."
@@ -389,6 +398,11 @@ def msc_service_tunnel_room_event():
     player.output_fast += f"You carefully remove the vent cover and move through into the {msc_service_tunnel.name}. The passage is dark and smells sharply of ozone and old metal, but it is wide enough for you to traverse without crawling. You can still hear the clicking come through the metal, amplified by the confined space. Since you've been in these utility shafts before, you quickly orient yourself and start making your way forward towards the bridge."
 
 def service_control_junction_5f_room_event():
+    player.warmth = "Warm"
+    player.warmth_color = "green"
+    player.heartrate = "Calm"
+    player.heartrate_color = "green"
+
     msc_service_tunnel.is_open = False
     msc_service_tunnel.locked_description = "There is no reason to go back with that creature still roaming there..."
     player.output_normal += f"You emerge from the dark access tunnel into the {service_control_junction_5f.name}. This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines.\n\n"
@@ -447,10 +461,16 @@ def meet_panicked_npc_operations_distribution_crossover():
     player.output_slow += "You give yourself a moment to think...\n'He's gone. The system sealed the door right on him. Right now my job is getting the bridge operational.'"
 
 def captains_quarters_room_event():
+    player.heartrate = "Elevated"
+    player.heartrate_color = "orange3"
+
     player.output_normal += "This room is a scene of violent, catastrophic disarray. Furniture is overturned and warped metal streaks across the far wall, where the Captain's body lies. It is immediately clear that he did not die from oxygen loss; the trauma is massive, consistent with being repeatedly pierced and torn by immense, sharp points.\n\nThe room's only untouched feature is the captain's personal command vault, a sturdy, dark gray safe bolted to the rear wall. Its electronic keypad access is completely covered by an emergency metallic blast plate, suggesting a high-level, automated lockdown."
 
 # Act 5
 def bridge_room_enter_event():
+    player.heartrate = "Calm"
+    player.heartrate_color = "green"
+
     chef.on_look =          "He's a broad, imposing Black man in a dark-gray, reinforced utility jumpsuit. The sleeves are rolled up to his biceps, showing a powerful build, and a thick leather belt is cinched tight. He holds a bulky, jury-rigged flamethrower. \nYou know without a doubt he will fight for both of you until the very end."
     player.output_normal =  "\n\nYou step onto the Bridge. The silence is immense, broken only by the cold hum of auxiliary power. The main command console is dark. Before you can even move, the entry door hisses shut.\n\n"
     player.output_normal += "Nat! \n\nYou spin around. The Chef stands framed in the access hatch, looking ready. He's gripping a bulky, jury-rigged flamethrower.\n\n"
@@ -820,6 +840,8 @@ def maintenance_jack_picked_up():
     crew_lockers.on_survey = "The room is large and empty, dominated by rows of metal lockers and two small shower stalls near the back wall. The facility is functional, immaculately clean, and the air is still slightly warm, suggesting it was used very recently."
 
 def flashlight_picked_up():
+    player.heartrate = "Calm"
+    player.heartrate_color = "green"
     welder.can_take=True
     welder.on_look="It is a heavy, industrial-grade plasma torch used for emergency hull breaches and structural repair.\n It features a thick, reinforced handle and a large external coolant tank.\n It feels weighty and powerful, capable of cutting through the thickest metal found on the Tantalus Horizon."
     
@@ -1134,6 +1156,9 @@ def operations_and_cargo_interlink_console_used():
     operations_and_cargo_interlink.on_survey = "The door is open. There is not much of interest here."
 
 def cargo_bay_control_f_power_bus_used():
+    player.heartrate = "Elevated"
+    player.heartrate_color = "orange3"
+
     game.act_4_bridge_powered = True
     cargo_bay_control_f.is_open = False
     player.output_fast += "You finish forcing the lever, and the power bus hums back to life. Just then, you glance out the massive control room window into the Cargo Bay. You spot Tanaka, still in his technician uniform, moving erratically across the deck below. He seems completely lost and disoriented. \n\nA sudden impossibly large shadow stretches across the cargo bay floor, falling from the high ceiling where no shadows should exist. You look up and see the colossal arachnoid creature dropping like a silent anchor, instantly closing the distance to the floor. The terrifying clicking sound begins, sharp and deafening, echoing up from the vast bay. \n\nInstinct takes over and you duck low behind the inert consoles, shielding your eyes. You don't see the impact, but the clicking quickly gives way to a sickening, muffled crunch and a brief, strangled cry that is abruptly cut short. When the silence returns, it is heavy and absolute. You know Tanaka didn't make it..."
@@ -1186,6 +1211,9 @@ def bridge_errors_check():
 
 # Act 5
 def emergency_launch_compartment_hydraulic_pipe_used():
+    player.heartrate = "High"
+    player.heartrate_color = "red"
+
     emergency_launch_compartment.backward = emergency_launch_access_corridor
     emergency_launch_compartment.on_survey = "The confined space is filled with the sharp, sterile scent of ozone and cryogenics, and the air is intensely cold due to the radiation from the neighboring room.\n\nThe small console for the lifeboats is flashing GREEN and shows the running countdown: T-MINUS 03:30 AND COUNTING.\n\nThe reinforced window overlooking the Auxiliary Reactor Control Room is completely obscured by a thick, swirling white cloud of liquid nitrogen fog, confirming the Chef successfully initiated the purge.\n\n"
 

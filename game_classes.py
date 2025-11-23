@@ -36,6 +36,7 @@ class Player:
 
         self.has_flashlight = False
 
+
     # Helpers
 
     def add_item(self, item):
