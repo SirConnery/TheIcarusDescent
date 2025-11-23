@@ -9,6 +9,7 @@ import pyfiglet
 from game_data import rooms, player, game
 
 console = Console()
+reviewer_mode = False
 
 def draw_HUD():
     inventory_names = (", ".join(sorted([item.name for item in player.inventory.values()]))
@@ -118,8 +119,6 @@ def process_input(user_input):
     obj_2 = ""
     if len(filtered) == 2:
         obj = filtered[1]
-        print(filtered)
-        print(obj)
     if len(filtered) == 3:
         obj = filtered[1]
         obj_2 = filtered[2]
@@ -199,10 +198,15 @@ def clear_player_outputs():
     player.output_gain_item = f""
     player.output_lose_item = f""
 
+
 ## Game intro
 
 def game_start():
-    player.enter_room(rooms["operations_distribution_crossover"])
+    if not reviewer_mode:
+        player.enter_room(rooms["cryo_bay"])
+    else:
+        player.enter_room(rooms["operations_distribution_crossover"])
+
     get_directions()
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")

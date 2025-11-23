@@ -1471,15 +1471,11 @@ run_all_setups()
 
 # Debug stuff
 
-def add_debug_inventory():
+def add_act_4_inventory():
     player.inventory["backpack"] = backpack
     player.inventory["radio"] = radio
     player.inventory["flashlight"] = flashlight
     player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
-    # player.inventory["screwdriver"] = screwdriver
-    # player.inventory["lockpick"] = lockpick
-    # player.inventory["sart"] = sart
-    # player.inventory["bridge_access_cypher"] = bridge_access_cypher
 
-add_debug_inventory()
+# add_act_4_inventory()
