@@ -16,7 +16,14 @@ npcs ={
     "tanaka":NPC(
     id="tanaka",
     name="Tanaka",
-    debug_info="Japanese Data Systems Analyst")}
+    debug_info="Japanese Data Systems Analyst"),
+    "captain":NPC(
+    id="captain",
+    name="Captain",
+    debug_info="He is a dead man.",
+    keywords=["captain", "body", "dead"],
+    on_look="The uniform is shredded and the trauma is immediate. He appears to have been pierced and torn repeatedly by immense, sharp points. The injuries are consistent with the attack of a colossal animal, confirming the creature's immense physical lethality.")
+}
 
 arachnids = {
     "arachnid":Arachnid(
@@ -30,5 +37,6 @@ arachnids = {
 engy = npcs["engy"]
 chef = npcs["chef"]
 tanaka = npcs["tanaka"]
+captain = npcs["captain"]
 
 arachnid = arachnids["arachnid"]

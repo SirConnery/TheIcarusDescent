@@ -272,6 +272,11 @@ class Room:
     def add_use_target(self, use_target):
         id = use_target.id
         self.use_targets[id] = use_target
+    
+    def add_scenery(self, scenery):
+        id = scenery.id
+        self.sceneries[id] = scenery
+
 
     def remove_use_target(self, use_target):
         id = use_target.id

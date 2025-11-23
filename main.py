@@ -90,7 +90,7 @@ def r_text_act_change(
     if delay > 0:
         time.sleep(delay)
 
-    time.sleep(2.0)
+    time.sleep(4.0)
     clear_screen()
     draw_HUD()
 
@@ -202,7 +202,7 @@ def clear_player_outputs():
 ## Game intro
 
 def game_start():
-    player.enter_room(rooms["cryo_bay"])
+    player.enter_room(rooms["operations_distribution_crossover"])
     get_directions()
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")

@@ -1,5 +1,5 @@
 from game_classes import Game, Player, NPC, Room, Item, Interactable, UseTarget, Scenery
-from npc_data import engy, chef, tanaka, arachnid
+from npc_data import engy, chef, tanaka, captain, arachnid
 player = Player()
 game = Game()
 
@@ -93,7 +93,7 @@ rooms = {
     ),
     "msc_2_b_console_desk": Room(
         id="msc_2_b_console_desk",
-        name="MSC2 Main Service Control 2 (behind console desk)",
+        name="MSC2 Main Service Control 2 (under console desk)",
         debug_info="MSC Room 2 behind console desk.",
     ),
     "msc_2_b_power_conduit": Room(
@@ -410,6 +410,7 @@ def service_control_junction_5f_room_event():
 
 # Act 4
 def act_4_start():
+    operations_distribution_crossover.is_open = True
     service_control_junction_5f.is_open = False
     service_control_junction_5f.locked_description = "There is no reason to go back with that thing roaming there..."
     player.output_normal += "You are away from danger, for now. \n\nHere the air is cool and clean, and the lights are steady. \n\nThis small access point serves as a clean transition area between the the ship spine and cargo operations."
@@ -484,17 +485,26 @@ def bridge_room_enter_event():
     player.output_normal += "Nat: Right. Blow the station. Open the pods. Let's move."
 
 def vertical_service_shaft_room_event():
+    player.warmth = "Cold"
+    player.warmth_color = "dodger_blue"
+
     player.output_normal = "Chef: Hold up, Nat! This old thing ain't pretty, but it's fast. Remember what I told you: smooth is fast, and fast is life!\n"
     player.output_normal += "Nat: Relax, Chef. I know every weld on this deck better than you know your spice rack.\n"    
     player.output_normal += "Chef: Good. Because where we're going, if we ain't fixing it with muscle and metal, we ain't fixin' it. Keep your eyes peeled, girl. We are running out of time and luck, and baby, I ain't got much of either left!\n"    
 
 def reactor_deck_service_hub_room_event():
+    player.warmth = "Warm"
+    player.warmth_color = "green"
+
     player.output_normal += "Chef: This is it, Nat. The Hub. Control Room is right through that door. This place gives me the creeps.\n"
     player.output_normal += "Nat: Hey, I basically live down here.\n"
     player.output_normal += "Chef: Oh right, you grease monkeys get all the fun.\n"
     player.output_normal += "Nat: It takes more than a greasy apron to fix an entire command network, Chef."
 
 def auxiliary_reactor_control_room_event():
+    player.heartrate = "Elevated"
+    player.heartrate_color = "orange3"
+
     player.output_normal += "Chef: Hold up now... Did you hear that? The clicking.\n"
     player.output_normal += "Nat: Quick! Close the door! I'm hitting the manual meltdown sequence!\n"    
     player.output_normal += "Chef: Forget the purge! That thing got to the hydraulics, the main line is buckled! We can't get the lifeboats out!\n" 
@@ -517,6 +527,9 @@ def emergency_launch_access_corridor_room_event():
     player.output_fast += "The freezing air hits you with the force of a hammer. You bite down on the pain, forcing yourself into a stumbling, desperate run, relying entirely on the left side of your body.\n"
     player.output_fast += "You need to keep moving."
 def emergency_vehicles_bay_room_event():
+    player.warmth = "Cold"
+    player.warmth_color = "dodger_blue"
+
     player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.**\n\n"
     player.output_normal += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive and, thankfully, the ambient temperature is several degrees warmer than the corridor.\n" 
     player.output_normal += "The emergency lighting here is stable, casting the entire area in a warm, steady glow, offering a brief reprieve from the chaos.\n\n"
@@ -592,7 +605,6 @@ def connect_all_initial_rooms():
     central_utility_spine_6_f.left = external_ops_access_way
     central_utility_spine_6_f.forward = deck_5_forward_muster_station
     central_utility_spine_6_f.backward = central_utility_spine_5_f
-    deck_5_forward_muster_station.left = external_ops_access_way
     deck_5_forward_muster_station.right = command_transit_vestibule
     deck_5_forward_muster_station.forward = bridge
     deck_5_forward_muster_station.backward = central_utility_spine_6_f
@@ -688,13 +700,13 @@ def set_rooms_defaults():
     deck_5_secure_pathway.is_event_trigger = True
     deck_5_secure_pathway.room_event = deck_5_secure_pathway_room_event
     service_access_hatchway.on_first_enter = ""
-    service_access_hatchway.on_revisit = "You're back."
-    service_access_hatchway.on_survey = "You survey the room."
+    service_access_hatchway.on_revisit = ""
+    service_access_hatchway.on_survey = "This narrow, brightly lit passage is designed purely for utility transit and entry into secured areas. The walls are seamless and reinforced, with heavy metallic plates lining the floor."
     service_access_hatchway.is_event_trigger = True
     service_access_hatchway.room_event = service_access_hatchway_room_event
     msc_1.on_first_enter = ""
-    msc_1.on_revisit = "You're back."
-    msc_1.on_survey = "You survey the room."
+    msc_1.on_revisit = ""
+    msc_1.on_survey = "The room is intensely hot, and the constant roar of ventilation fans is deafening. The lighting is dim, requiring you to use your flashlight to see clearly.\n\nThe walls are lined with exposed, thick conduits and heavy piping, confirming this area's role as a major utility junction. Ahead, a single, reinforced window overlooks MSC 2, a mirrored control station. The air is thick with the scent of hot metal."
     msc_1.is_event_trigger = True
     msc_1.room_event = msc_1_room_event
     msc_2.on_first_enter = ""
@@ -724,13 +736,15 @@ def set_rooms_defaults():
     msc_service_tunnel.room_event = msc_service_tunnel_room_event
     service_control_junction_5f.on_first_enter = ""
     service_control_junction_5f.on_revisit = ""
-    service_control_junction_5f.on_survey = "This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines. \n\n The path to the next door is through a heavy structural blast door. The electronic lock mechanism appears on it appears to be fused shut and inaccessible"
+    service_control_junction_5f.on_survey = "This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines. \n\n The path to the next room is through a heavy structural blast door. The electronic lock mechanism appears on it appears to be fused shut and inaccessible"
     service_control_junction_5f.is_event_trigger = True
     service_control_junction_5f.room_event = service_control_junction_5f_room_event
     # Act 4
     operations_distribution_crossover.on_first_enter = "Act 4 - The Outer Decks. \n\n"
     operations_distribution_crossover.on_revisit = "The air remains cool and the lighting steady."
     operations_distribution_crossover.on_survey = "The air is cool and clean, and the lights are steady. The walls are lined with sealed maintenance panels, confirming its utility function."
+    operations_distribution_crossover.is_open = False
+    operations_distribution_crossover.locked_description = "The door won't budge..."
     operations_distribution_crossover.is_event_trigger = True
     operations_distribution_crossover.room_event = act_4_start
     operations_distribution_crossover.is_act_event_trigger = True
@@ -739,9 +753,9 @@ def set_rooms_defaults():
     operations_and_cargo_interlink.on_first_enter = "This short, fortified corridor feels heavy and cold. The passage is dominated by three sealed doorways. To your left, a heavy security door has been completely destroyed, its metallic surface ripped and curled as if melted by immense, unnatural force. Right next to it, the door leading to Cargo Bay Control F remains intact but locked. Forward, a door leads to the External Ops Access Way. \n\nA small, specialized diagnostic console is mounted beside the Cargo Bay Control door, indicating the access system has failed and requires a unique technical bypass."
     operations_and_cargo_interlink.on_revisit = "You're back. The destroyed door remains untouched, and the Cargo Bay Control door is still sealed. The diagnostic console next to it is awaiting initiation."
     operations_and_cargo_interlink.on_survey = "This short, fortified corridor feels heavy and cold. The passage is dominated by three sealed doorways. \n\nTo your left, a heavy security door has been completely destroyed, its metallic surface ripped and curled as if melted by immense, unnatural force. Right next to it, the Cargo Bay Control F remains intact but locked.\n\nA small, specialized diagnostic console is mounted beside the Cargo Bay door, indicating the access system has failed and requires a unique technical bypass. \n\nForward, a door leads to the External Ops Access Way"
-    cargo_bay_control_f.on_first_enter = ""
-    cargo_bay_control_f.on_revisit = ""
-    cargo_bay_control_f.on_survey = "You survey the room."
+    cargo_bay_control_f.on_first_enter = "The room is wide and brightly lit. A massive window dominates the forward wall, offering a sweeping view of the vast, silent Cargo Bay below. Below the window, several control consoles are completely dark and inert.\n\nA heavy, cyan panel marked 'POWER BUS DISTRIBUTION PANEL' is bolted to the far right wall."
+    cargo_bay_control_f.on_revisit = "room remains brightly lit and quiet, dominated by the massive window overlooking the Cargo Bay.\n\nThe Power Bus Distribution Panel remains accessible on the far right wall."
+    cargo_bay_control_f.on_survey = "This wide, spacious office room is dedicated to overseeing logistics, with several control consoles currently dark and inert below the window. The lighting is bright and stable.\n\nThe forward wall is dominated by a massive, unreinforced window offering a sweeping view of the Cargo Bay. The bay below is a vast, expansive space, illuminated by stable industrial lamps. It is completely silent.\n\nA heavy, cyan panel marked 'POWER BUS DISTRIBUTION PANEL' is bolted to the far right wall."
     cargo_bay_control_f.is_open = False
     cargo_bay_control_f.locked_description = "The door doesn't budge. The console next to the door is awaiting input."
     external_ops_access_way.on_first_enter = "This short, narrow passage is well-lit and purely functional, serving as a clean link between the main spine and gearing up on EVA equipment."
@@ -772,7 +786,7 @@ def set_rooms_defaults():
     systems_data_access_corridor.on_survey = "This narrow passage is lined with high-capacity data conduits, and the air feels noticeably warm and electrically charged due to the adjacent server bay.\n\nThe electronic access console to the Data Server Array is completely fried: the panel is melted and blackened, emitting a faint smell of burnt ozone.\n\nThe massive blast door leading to the Command Server Array is sealed shut. The door itself cannot be opened electronically, and the emergency mechanical lock beside it is seized.\nIf you could somehow manipulate the door's internal lock tumblers you might get the door open."
     data_server_array.on_first_enter = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input.\n\n"
     data_server_array.on_revisit = "The room is loud, cold, and wide. The central ICARUS terminal remains active.."
-    data_server_array.on_survey = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input."
+    data_server_array.on_survey = "The room is loud and cold, dominated by the relentless hum of the primary cooling systems. Though the ceiling is low, dozens of silent, black server racks stretch across the wide room, many displaying flickering red diagnostic lights. The central ICARUS Systems Terminal stands alone in the center, waiting for input.\n\nAround the terminal are lots of scattered papers and sticky notes."
     data_server_array.is_open = False
     data_server_array.locked_description = "The door is locked as the electronic console that would let you in is completely fried.\n\nThe door's mechanical emergency lock looks fine though."
     executive_access_aisle.on_first_enter = ""
@@ -808,7 +822,7 @@ def set_rooms_defaults():
     auxiliary_reactor_control.on_survey = "This is a large, specialized control deck, approximately twenty meters long and ten meters wide. The air is warm and heavy. A massive, shielded reactor housing dominates the far end of the room. Exposed conduits and thick, heavy piping snake across the high walls.\n\nA single, heavy reinforced window is set into the wall on your left, looking directly into the Emergency Launch Compartment.\n\nIn the center of the room, a console with the Manual Nitrogen Purge Valve stands ready. Beside it, the ICARUS Reactor Terminal is active."
     auxiliary_reactor_control.is_event_trigger = True
     auxiliary_reactor_control.room_event = auxiliary_reactor_control_room_event
-    emergency_launch_compartment.on_survey = "This small, heavily insulated room is designed purely for escape coordination. The console for operating the lifeboats sits prominently against the wall.\n\nYou can see the Chef clearly through the reinforced window, standing near the purge valve in the Auxiliary Reactor Control Room.\n\nnning along the top of the internal access doorframe is the main hydraulic fluid line. You notice the line is severely warped and buckled—it will need some kind of leverage to manually fix the pinch before the launch system receives full pressure."
+    emergency_launch_compartment.on_survey = "This small, heavily insulated room is designed purely for escape coordination. The console for operating the lifeboats sits prominently against the wall.\n\nYou can see the Chef clearly through the reinforced window, standing near the purge valve in the Auxiliary Reactor Control Room.\n\nRunning along the top of the internal access doorframe is the main hydraulic fluid line. You notice the line is severely warped and buckled—it will need some kind of leverage to manually fix the pinch before the launch system receives full pressure."
     emergency_launch_compartment.is_event_trigger = True
     emergency_launch_compartment.room_event = emergency_launch_compartment_room_event
     #Act 6
@@ -847,7 +861,7 @@ def flashlight_picked_up():
     
     environmental_controls.on_revisit = "You enter the keycode and move in. The machines in the room make a continuous soft humming sound that is somehow soothing. \nThe space remains cold, functional."
     environmental_controls.on_survey = "The walls are covered in dense panels marked with fluid lines and thermal regulators. This room is clearly responsible for the ship's critical HVAC and air-scrubbing systems. All monitoring screens are currently dark, and a faint, high-pitched whine from the equipment indicates the systems are offline or struggling.."
-    central_freight_bay_bulk_door.on_look="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won't budge without a careful approach.",
+    central_freight_bay_bulk_door.on_look ="The central freight bay door sits sealed and unyielding. \nA narrow panel clings to its side, warped and jammed, its edges surprisingly thin against the massive door. \n\nInside, you can just make out a tangle of rods and mechanisms. There must be some way to override the locks, if you can reach them. \n\nWhatever caused the door to fail, it won't budge without a careful approach."
     central_freight_bay.locked_description="The door refuses to budge. Its surface is cold and unyielding, and the panel to the side is jammed tight. Whatever shut it down, it won't open by hand."
     upper_aft_lobby.on_first_enter = "Your flashlight beam cuts through the gloom, revealing a wide, heavily paneled space. The silence here is profound, broken only by the faint hum of high-voltage systems behind the walls."
     upper_aft_lobby.on_revisit = "Your flashlight beam cuts through the gloom, revealing a wide, heavily paneled space. The silence here is profound, broken only by the faint hum of high-voltage systems behind the walls."
@@ -864,9 +878,17 @@ def engys_keycard_picked_up():
     medical_labs.on_revisit = "You're back. Enrique is still lying on the floor motionless."
     medical_labs.on_survey = "The space is cold and sterile, equipped with specialized emergency diagnostic machines. \n\nHigh Engineer Enrique's body is lying motionless on the deck. His eyes are open, wide with silent surprise. \n\nYou detect a sharp, acrid scent of ozone and burnt wiring insulation, confirming a severe electrical disaster occurred here. You think it's most likely the air was drained due to some faulty electronics.\n\n You allow yourself a moment of quiet reflection. You remember the crew always called him Engy.\nThough you two didn't know each other well, he seemed like the easy going type who wasn't a stickler for the rules. You remember hearing he had gotten into trouble with the Captain a couple of times..."
 
+def screwdriver_picked_up():
+    eva_gear_lockers.on_revisit = "The room's equipment racks are mostly empty, and the SART locker remains a central point of interest."
+    eva_gear_lockers.on_survey = "The room is quiet and unnervingly cold. It is dedicated to storing external mission gear, though most racks are now empty. \n\nSecured prominently on the wall is a dark, electronic locker with the SART (Systems Analysis and Repair Tool) unit clearly visible."
+
 def lockpick_picked_up():
     operations_distribution_crossover.on_revisit = "The air remains cool and the lighting steady."
     operations_distribution_crossover.on_survey = f"This corridor is narrow and reinforced, designed for limited crew transit between the central spine and the external operation staging areas. The walls are smooth, and the overhead utilities are secured and caged."
+
+def sart_picked_up():
+    sart.on_look="It is the System Analysis and Repair Tool. Can be used for diagnostics, using and repairing consoles."
+
 
 initial_items = {
         "backpack": Item(
@@ -887,17 +909,17 @@ initial_items = {
 
     "maintenance_jack": Item(
         id="maintenance_jack",
-        name="Maintenance Jack",
-        keywords=["maintenance jack", "jack", "maintenancejack"],
+        name="Jack",
+        keywords=["maintenance jack", "maintenance", "jack", "maintenancejack"],
         is_item_pickup_event_trigger= True,
         item_picked_up_event=maintenance_jack_picked_up,
         debug_info="Medium sized maintenance tool for turning things",
-        on_look="It is designed to be carried for field maintenance, capable of applying immense, focused leverage to pry apart seized components."
+        on_look="The maintenace jack is designed to be carried for field maintenance, capable of applying immense, focused leverage to pry apart seized components."
     ),
 
     "engys_keycard": Item(
         id="engys_keycard",
-        name="Engy's keycard.",
+        name="Keycard",
         keywords=["keycard", "card", "key", "engy"],
         debug_info="High Engineer Enrique's keycard.",
         on_look="The keycard reads: High Engineer Enrique 4277",
@@ -942,7 +964,9 @@ initial_items = {
         name="Screwdriver",
         keywords=["screwdriver", "screw", "driver"],
         debug_info="Screwdriver on the floor of EVA room.",
-        on_look="The standard issue tool for disassembling small electronics and fine mechanical parts, like sealed access panels or delicate system boards."
+        on_look="The standard issue tool for disassembling small electronics and fine mechanical parts, like sealed access panels or delicate system boards.",
+        is_item_pickup_event_trigger=True,
+        item_picked_up_event=screwdriver_picked_up
     ),
     "sart": Item(
         id="sart",
@@ -951,11 +975,13 @@ initial_items = {
         debug_info="System Analysis and Repair Tool.",
         on_look="It is the System Analysis and Repair Tool. Can be used for diagnostics, using and repairing consoles.",
         can_take=False,
-        locked_description="It is locked behind a bulletproof glass panel with token identifier next to it."
+        locked_description="It is locked behind a bulletproof glass panel with token identifier next to it.",
+        is_item_pickup_event_trigger=True,
+        item_picked_up_event=sart_picked_up
     ),
     "bridge_access_cypher": Item(
         id="bridge_access_cypher",
-        name="Access Cypher",
+        name="Cypher",
         keywords=["cypher", "bridge", "access", "access cypher", "bridge access cypher"],
         debug_info="Captain's quarters vault you find this.",
         on_look="This is the Bridge Access Cypher, a small, black ceramic token with crystalline edges. It holds the cryptographic key necessary to bypass the ship's primary electronic security."
@@ -1015,7 +1041,7 @@ def interacted_icarus_systems_terminal():
     login = input("Please enter login")
     password = input("Please enter password")
     if login == "admin" and password == "1234":
-        eva_lockers_sars_locker.on_look = "The lockers are open and you can take the SARS equipment."
+        eva_lockers_sars_locker.on_look = "The lockers are open and you can take the SART equipment."
         eva_lockers_sars_locker.use_func = eva_lockers_sars_locker_radio_used_after_server_use
         sart.can_take = True
         sart.on_look = "The lock is open and the sart can be taken."
@@ -1039,7 +1065,7 @@ def interacted_tantalus_ark_console():
         player.output_normal += "The launch cradle screams under the external pressure, and your console flashes: **'LAUNCH RAIL OBSTRUCTION.'** \n\n"
         player.output_normal += "You hope starting the launch sequence again will work."
     elif tantalus_ark_console.amount_interacted_with == 1:
-        tantalus_ark.on_survey = "The violent impact and subsequent pin of the creature caused the vessel to shudder, but the structural integrity is holding. The airlock hydraulics have successfully completed their cycle, readying the final launch stage.\n\nThe main diagnostic screen now glows with a steady GREEN light, confirming: OBSTRUCTION CLEARED.\n\The viewport offers a devastating view of the launch bay: the Chef's industrial lifter is stalled and crushed against the structural rail, pinning the colossal arachnid creature. Both are motionless.\n\nYour focus locks on the countdown: The main control panel flashes T-MINUS THIRTY SECONDS, demanding immediate action. The silence is now the heaviest danger."
+        tantalus_ark.on_survey = "The violent impact and subsequent pin of the creature caused the vessel to shudder, but the structural integrity is holding. The airlock hydraulics have successfully completed their cycle, readying the final launch stage.\n\nThe main diagnostic screen now glows with a steady GREEN light, confirming: OBSTRUCTION CLEARED.\nThe viewport offers a devastating view of the launch bay: the Chef's industrial lifter is stalled and crushed against the structural rail, pinning the colossal arachnid creature. Both are motionless.\n\nYour focus locks on the countdown: The main control panel flashes T-MINUS THIRTY SECONDS, demanding immediate action. The silence is now the heaviest danger."
 
         player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE.**\n\n"
         player.output_fast   += "The main control panel screams: 'LAUNCH ABORTED. EXTERNAL OBSTRUCTION.'\n" 
@@ -1092,7 +1118,7 @@ initial_interactables = {
     "icarus_systems_terminal": Interactable(
         id="icarus_systems_terminal",
         name="ICARUS Systems Terminal",
-        keywords = ["terminal", "console", "icarus", "systems", "data", "note"],
+        keywords = ["terminal", "console", "icarus", "systems", "data", "note", "notes", "sticky", "sticky notes", "paper", "papers"],
         debug_info="Main systems terminal inside Data Server Array.",
         on_look="The ICARUS Systems Terminal is a heavy-duty, reinforced console built directly into the floor. Its primary interface is fully active, displaying a sequence of high-level network protocols demanding authentication. \n\nYou note the massive auxiliary power connection required to run it, hinting at its high signal output capability. \n\nRight next to the interface, a faded yellow sticky note is secured to the console, bearing the text: admin 1234.",
         on_interact_func=interacted_icarus_systems_terminal,
@@ -1146,8 +1172,10 @@ def env_controls_access_panel_use_keypad():
         player.output_error="Code invalid. Access denied."
 # Act 3
 def service_control_junction_5f_door_used():
+    service_control_junction_5f_door.on_look = "You examine the heavy, structural blast door. A rough, smoking hole has been cut through the access panel, bypassing the fused original lock. The door's mechanism is now fully restored and functional."
     operations_distribution_crossover.is_open = True
-    player.enter_room(operations_distribution_crossover)
+    service_control_junction_5f.on_survey = "This wide, functional room is filled with utility access panels and large conduits. You recognize this as a critical nexus for power and communication lines. \n\n The path to the next room is through a heavy structural blast door."
+    player.output += "\nThe Welder screams, and the access panel metal shrieks under the intense heat before melting away. You quickly cut a precise hole, exposing the tangled internal wiring and manual release mechanism of the door lock. The door should open now."
 # Act 4
 def operations_and_cargo_interlink_console_used():
     player.output += f"The door next to the console clicks and the lock to {cargo_bay_control_f.name} is open."
@@ -1176,12 +1204,14 @@ def eva_lockers_sars_locker_radio_used_after_server_use():
     player.output += "The locker is already open."
 
 def personal_command_vault_welder_used():
-    player.output += "You welded the thing open."
+    player.output += "You pull the Welder away as the metal cools. Your hand is shaking from the heat of the torch, and the air smells like ozone. The protective blast plate clangs heavily onto the floor, revealing the electronic lock mechanism.\n\nThe inner access panel is seized shut and secured by four tiny, specialized security screws."
     player.cur_room.remove_use_target(personal_command_vault_before_weld)
     player.cur_room.add_use_target(personal_command_vault_after_weld)
 
 def personal_comand_vault_screwdriver_used():
-    player.output += "You used the screwdriver to open it."
+    player.output += "You manage to carefully remove the four specialized screws with the tip of the tool. The seized access panel pops open, revealing the battery housing and the main solenoid. You quickly bypass the jam, and the lock mechanism whirs back to life with a satisfying click.\n\nInside the small compartment, resting on a velvet cushion, is a small, black ceramic token. You recognize it instantly: the Bridge Access Cypher."
+    player.cur_room.remove_use_target(personal_command_vault_after_weld)
+    player.cur_room.add_scenery(personal_command_vault_complete)
     player.cur_room.add_item(bridge_access_cypher)
     player.take("cypher")
 
@@ -1250,7 +1280,7 @@ initial_use_targets = {
     "galley_blast_door": UseTarget(
         id="galley_blast_door",
         name="Mess Hall Blast Door",
-        keywords = ["door", "blast door", "blastdoor", "broken door", "broken down door"],
+        keywords = ["door", "blast", "blast door", "blastdoor", "broken door", "broken down door"],
         debug_info="Act 1 Broken down door, open with jack",
         on_look="You observe the heavy metallic edge of the Blast Door. The emergency hydraulic bolts are partially retracted, but the frame is visibly seized and fused. There are no electronic panels or keypads visible; the mechanism appears to be locked purely by immense mechanical pressure. This is a job for focused, brute force.",
         use_func=mess_hall_blast_door_used),
@@ -1278,36 +1308,36 @@ initial_use_targets = {
     "logistics_door_console": UseTarget(
         id="logistics_door_console",
         name="Logistics Access Console",
-        keywords = ["console", "terminal", "logistics", "logistics console", "diagnostic", "diagnostics", "diagnostic console", "door"],
+        keywords = ["console", "terminal", "panel", "logistics", "logistics console", "diagnostic", "diagnostics", "diagnostic console", "door"],
         debug_info="Console that needs SART to be used on it.",
-        on_look="It is a small, specialized terminal mounted beside the door. It has an exposed electronic interface port but no keypad or manual override. The screen is dark, confirming the system has failed and requires a high-level diagnostic tool to handshake with the security lock and initiate access.",
+        on_look="It is a small, specialized terminal mounted beside the door. It has an exposed electronic interface port but no keypad or manual override. It is waiting for a high-level diagnostic tool to handshake with the security lock and initiate access.",
         use_func=operations_and_cargo_interlink_console_used),
     "power_bus_distribution_panel": UseTarget(
         id="power_bus_distribution_panel",
         name="Power Bus Distribution Panel",
-        keywords = ["power","bus", "distribution", "panel", "closet"],
+        keywords = ["power","bus", "distribution", "panel", "closet", "cabinet"],
         debug_info="Act 4 power bus unit inside cargo_bay_control_f. Use maintenance jack.",
         on_look="It is a heavy, gray metallic cabinet bolted to the wall, humming loudly with suppressed voltage. The automated controls are dark, but the manual override lever is visible behind a reinforced safety grate. This bus controls the dedicated line feeding the Command Deck and Bridge systems. The lever is clearly seized solid due to immense pressure and heat and will not budge by hand. The only way to restore power is by applying extreme, focused leverage.",
         use_func=cargo_bay_control_f_power_bus_used,),
     "eva_lockers_sars_locker": UseTarget(
         id="eva_lockers_sars_locker",
-        name="EVA SARS Locker",
+        name="EVA SART Locker",
         keywords = ["door", "locker", "lockers"],
-        debug_info="Act 3 locker that holds SARS item. Purely visual. On radio used, just a text prompt.",
-        on_look="This locker holds multiple SARS tools. Usually you would activate it with your radio but the radio transmitter is broken.\n\nThe locker is centrally connected to the data servers that controls id data.",
+        debug_info="Act 3 locker that holds SART item. Purely visual. On radio used, just a text prompt.",
+        on_look="This locker holds multiple SART tools. Usually you would activate it with your radio but the radio transmitter is broken.\n\nThe locker is centrally connected to the data servers that controls id data.",
         use_func=eva_lockers_sars_locker_radio_used_before_server_use),
     "personal_command_vault_before_weld": UseTarget(
         id="personal_command_vault_before_weld",
         name="Personal Command Vault",
         keywords = ["vault", "personal", "personal vault", "safe", "command"],
-        debug_info="Act 2 Broken down door, open with welder",
+        debug_info="Act 4 captains safe",
         on_look="The Personal Command Vault is a sturdy, dark gray safe bolted to the rear wall. The unit itself appears undamaged. The standard electronic keypad access has been completely covered by an emergency metallic blast plate, suggesting a high-level, automated lockdown. This plate is held firmly in place by four heavy, visible structural welds and cannot be removed without cutting the seals.",
         use_func=personal_command_vault_welder_used),
     "personal_command_vault_after_weld": UseTarget(
         id="personal_command_vault_after_weld",
         name="Personal Command Vault",
         keywords = ["vault", "personal", "personal vault", "safe", "command"],
-        debug_info="Act 2 Broken down door, open with welder",
+        debug_info="Act 4 captains safe",
         on_look="The Personal Command Vault is now partially open. The protective blast plate lies on the floor beside it, exposing the inner electronic lock mechanism.\n\nThe mechanism's small access panel is seized shut and secured by four tiny, specialized security screws.\n\nTo get inside, you'll need to find a way past that last, delicate barrier.",
         use_func=personal_comand_vault_screwdriver_used),
     "data_array_door": UseTarget(
@@ -1390,12 +1420,19 @@ sceneries = {
         keywords = ["cryo", "bay", "cryobay", "cryochamber", "cryochambers", "sleep", "cryogenic", "hyper"],
         debug_info = "Scenery for cryo bay",
         on_look = f"You look at your Hypersleep Unit, a single metallic pod still humming with residual energy. The thick glass lid is raised and frosted with condensation, a sign of the rapid thaw-cycle. Its interior is lined with nutrient tubing and monitoring sensors. You notice a slight scorch mark near the main power conduit. A possible cause for the system failure that woke you."
+        ),
+    "personal_command_vault_complete": Scenery(
+        id="personal_command_vault_complete",
+        name="Personal Command Vault",
+        keywords = ["vault", "personal", "personal vault", "safe", "command"],
+        debug_info="Act 4 captains safe.",
+        on_look="The Personal Command Vault now stands open. The electronic lock is bypassed, and the small inner compartment is empty."
         )
 }
 
 s_cryo_bay_pillar = sceneries["s_cryo_bay_pillar"]
 s_cryo_bay_hypersleep_unit = sceneries["s_cryo_bay_hypersleep_unit"]
-
+personal_command_vault_complete = sceneries["personal_command_vault_complete"]
 
 def setup_sceneries():
     cryo_bay.sceneries["s_cryo_bay_pillar"] = s_cryo_bay_pillar
@@ -1411,6 +1448,8 @@ def setup_npcs():
     vertical_service_shaft.npcs["chef"] = chef
     reactor_deck_service_hub.npcs["chef"] = chef
     auxiliary_reactor_control.npcs["chef"] = chef
+
+    captains_quarters.npcs["captain"] = captain
 
     msc_2_b_console_desk.npcs["arachnid"] = arachnid
     msc_2_b_storage_drums.npcs["arachnid"] = arachnid
@@ -1433,12 +1472,14 @@ run_all_setups()
 # Debug stuff
 
 def add_debug_inventory():
+    player.inventory["backpack"] = backpack
+    player.inventory["radio"] = radio
     player.inventory["flashlight"] = flashlight
     player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
-    player.inventory["screwdriver"] = screwdriver
-    player.inventory["lockpick"] = lockpick
-    player.inventory["sart"] = sart
-    player.inventory["bridge_access_cypher"] = bridge_access_cypher
+    # player.inventory["screwdriver"] = screwdriver
+    # player.inventory["lockpick"] = lockpick
+    # player.inventory["sart"] = sart
+    # player.inventory["bridge_access_cypher"] = bridge_access_cypher
 
 add_debug_inventory()
