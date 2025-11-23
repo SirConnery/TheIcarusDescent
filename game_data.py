@@ -493,11 +493,11 @@ def emergency_launch_access_corridor_room_event():
     player.warmth_color=    "blue"
     player.output_fast += "\n\nThis long, narrow passage is a scene of systemic breakdown. The power has mostly failed, and the only illumination comes from flickering, strobe-like emergency lights that cast the path in blinding flashes of red and black shadow.\n"
     player.output_fast += "The air is freezing, biting at your exposed skin and making your breath plume violently. Structural conduits have been torn from the ceiling, confirming this route is extremely unstable.\n\n"
-    player.output_fast += "The main reactor alarm blares violently across the deck. A synthetic voice echoes through the ship: **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.** \n\n"
-    player.output_fast += "The freezing air hits you with the force of a hammer, but you need to keep moving."
-
+    player.output_fast += "The main reactor alarm blares violently across the deck. A synthetic voice echoes through the ship: **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS THREE MINUTES.** \n\n"
+    player.output_fast += "The freezing air hits you with the force of a hammer. You bite down on the pain, forcing yourself into a stumbling, desperate run, relying entirely on the left side of your body.\n"
+    player.output_fast += "You need to keep moving."
 def emergency_vehicles_bay_room_event():
-    player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES.**\n\n"
+    player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES, THIRTY SECONDS.**\n\n"
     player.output_normal += "The freezing run ends as you stumble your way into the Emergency Vehicles Bay. The room is expansive and, thankfully, the ambient temperature is several degrees warmer than the corridor.\n" 
     player.output_normal += "The emergency lighting here is stable, casting the entire area in a warm, steady glow, offering a brief reprieve from the chaos.\n\n"
     player.output_normal += "The Tantalus Ark Cutter Class sits secured in its launch cradle, looking entirely solid and ready. Its main access hatch is currently open.\n"
@@ -506,7 +506,7 @@ def emergency_vehicles_bay_room_event():
     player.output_normal += "You think to yourself: I made it. It's ready."
 
 def tantalus_ark_room_event():
-    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
+    player.output_fast += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS TWO MINUTES.**\n\n"
     player.output_normal += "You rush up the landing struts and run through the open hatch and hit the button besides the door closing the hatch behind you. The internal lighting flickers on, confirming the craft has power.\n\n"
     player.output_normal += "You are in the pilot cabin of The Tantalus Ark. The main diagnostic screen is green, confirming systems are functional. The controls are within easy reach.\n"
     player.output_normal += "The clock is ticking. You must initiate the launch sequence immediately on the console."
@@ -779,25 +779,33 @@ def set_rooms_defaults():
     bridge.on_survey = "This is the nerve center of the Tantalus Horizon and the ship's primary command center, built around a crescent of control stations facing a massive forward viewport. The lights are stable and bright, the central main command console is showing multiple errors.\n\nOther consoles line the walls, displaying diagnostic readouts."
     bridge.is_open = False
     bridge.locked_description = "Next to the bridge door the Bridge Security Terminal screen glows amber. It confirms the access system is blocked critical hardware and security errors."
+    vertical_service_shaft.on_survey = "This is a narrow, heavily armored maintenance chute that bypasses the intermediate decks, providing a direct, high-speed descent. Exposed conduit bundles and thick cable runs line the walls, disappearing into the darkness below.\n\nYou feel the immediate drop in air pressure and temperature, confirming you are leaving the main ship systems far behind. This is not a passage meant for crew comfort, but for rapid transit to the lower systems."    
     vertical_service_shaft.is_event_trigger = True
     vertical_service_shaft.room_event = vertical_service_shaft_room_event
+    reactor_deck_service_hub.on_survey = "This small, heavily shielded room serves as the final buffer zone for the reactor core systems. The air here is noticeably warmer, and the walls are crisscrossed with thick, industrial piping and high-voltage conduits.\n\nStraight ahead, the reinforced door to the Auxiliary Reactor Control Room is visible. The door's lock mechanism is tied to the adjacent hydraulic systems, and you can clearly see the thick hydraulic fluid line running along the doorframe."
     reactor_deck_service_hub.is_event_trigger = True
     reactor_deck_service_hub.room_event = reactor_deck_service_hub_room_event
+    auxiliary_reactor_control.on_survey = "This is a large, specialized control deck, approximately twenty meters long and ten meters wide. The air is warm and heavy. A massive, shielded reactor housing dominates the far end of the room. Exposed conduits and thick, heavy piping snake across the high walls.\n\nA single, heavy reinforced window is set into the wall on your left, looking directly into the Emergency Launch Compartment.\n\nIn the center of the room, a console with the Manual Nitrogen Purge Valve stands ready. Beside it, the ICARUS Reactor Terminal is active."
     auxiliary_reactor_control.is_event_trigger = True
     auxiliary_reactor_control.room_event = auxiliary_reactor_control_room_event
+    emergency_launch_compartment.on_survey = "This small, heavily insulated room is designed purely for escape coordination. The console for operating the lifeboats sits prominently against the wall.\n\nYou can see the Chef clearly through the reinforced window, standing near the purge valve in the Auxiliary Reactor Control Room.\n\nnning along the top of the internal access doorframe is the main hydraulic fluid line. You notice the line is severely warped and buckled—it will need some kind of leverage to manually fix the pinch before the launch system receives full pressure."
     emergency_launch_compartment.is_event_trigger = True
     emergency_launch_compartment.room_event = emergency_launch_compartment_room_event
     #Act 6
+    emergency_launch_access_corridor.on_survey = "The air is bitterly freezing, and the air systems are failing. Illumination is fractured and chaotic. Bright red rotating alarm lights sweep the corridor in blinding flashes, interspersed with rapid yellow strobes from the failing emergency lamps. Exposed structural conduits are torn from the ceiling, confirming the extreme instability of the route."
     emergency_launch_access_corridor.on_first_enter = "Act 6 - The Exodus"
     emergency_launch_access_corridor.is_event_trigger = True
     emergency_launch_access_corridor.room_event = emergency_launch_access_corridor_room_event
     emergency_launch_access_corridor.is_act_event_trigger = True
     emergency_launch_access_corridor.act_number = 6
     emergency_launch_access_corridor.act_subtitle = "The Exodus"
+    emergency_vehicles_bay.on_survey = "The expansive room is dominated by the vast, open structural framework of the launch cradle, which secures the Tantalus Ark in its firing position. The stable, warm lighting here is a sharp contrast to the corridor outside.\n\nThe Cutter Class vessel itself is intact and ready. At the far end of the bay, the massive external airlock door is currently sealed, but its hydraulic system shows a green light, confirming it is ready to cycle once the launch sequence is initiated. Your only objective remaining is to board the Ark and launch the craft."
     emergency_vehicles_bay.is_event_trigger = True
     emergency_vehicles_bay.room_event = emergency_vehicles_bay_room_event
+    tantalus_ark.on_survey = "The cabin is compact and highly functional, built for two primary occupants. The hull plating surrounding the viewport is thick and heavily reinforced, offering reassurance against the dangers outside.\n\nThe main pilot console wraps around the command seat, featuring heavy physical toggles, analog gauges, and thick, matte-screen displays set behind reinforced glass. There are no delicate holographics here—just reliable, tactile controls. Strapped to the wall behind the seats is a sealed emergency provisions unit.\n\nThe main diagnostic screen glows green, confirming all systems are functional and ready for launch."
     tantalus_ark.is_event_trigger = True
     tantalus_ark.room_event = tantalus_ark_room_event
+    tantalus_ark_final.on_survey = "You are asleep safely inside the Cryo unit..."
 
 def setup_rooms():
     connect_all_initial_rooms()
@@ -999,6 +1007,8 @@ def interacted_icarus_systems_terminal():
 
 def interacted_tantalus_ark_console():
     if tantalus_ark_console.amount_interacted_with == 0:
+        tantalus_ark.on_survey = "The structural frame of the vessel is shuddering constantly, and the airlock hydraulics are screaming as the outer hatch fails to seal.\n\nThe creature's immense, scarred form is pressed directly against the viewport, completely filling your forward view. Its spiked legs are visibly anchored to the launch rail structure, creating an insurmountable physical obstruction.\n\nYou have no time to go outside to deal with the problem, it's time to try initiating the launch sequence again."
+        
         player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE, THIRTY SECONDS.**\n\n"
         player.output_normal += "You slam your hand down on the activation switch. The cabin lights surge, and the heavy launch cradle retracts with a deafening hydraulic screech.\n"
         player.output_normal += "The Tantalus Ark shudders violently and begins to slide forward on the magnetic rails. The outer airlock hatch starts to cycle open.\n\n"
@@ -1007,6 +1017,8 @@ def interacted_tantalus_ark_console():
         player.output_normal += "The launch cradle screams under the external pressure, and your console flashes: **'LAUNCH RAIL OBSTRUCTION.'** \n\n"
         player.output_normal += "You hope starting the launch sequence again will work."
     elif tantalus_ark_console.amount_interacted_with == 1:
+        tantalus_ark.on_survey = "The violent impact and subsequent pin of the creature caused the vessel to shudder, but the structural integrity is holding. The airlock hydraulics have successfully completed their cycle, readying the final launch stage.\n\nThe main diagnostic screen now glows with a steady GREEN light, confirming: OBSTRUCTION CLEARED.\n\The viewport offers a devastating view of the launch bay: the Chef's industrial lifter is stalled and crushed against the structural rail, pinning the colossal arachnid creature. Both are motionless.\n\nYour focus locks on the countdown: The main control panel flashes T-MINUS THIRTY SECONDS, demanding immediate action. The silence is now the heaviest danger."
+
         player.output_fast   += "The alarm blares **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS ONE MINUTE.**\n\n"
         player.output_fast   += "The main control panel screams: 'LAUNCH ABORTED. EXTERNAL OBSTRUCTION.'\n" 
         player.output_normal += "Suddenly, the silence is annihilated by the sound of heavy machinery being violently accelerated. A large, dark shape hurtles across the launch bay floor.\n"
@@ -1018,7 +1030,7 @@ def interacted_tantalus_ark_console():
         player.output_normal += "You don't have time to rescue Chef. You have one last chance to initiate the launch sequence.\n"
     elif tantalus_ark_console.amount_interacted_with == 2:
         player.enter_room(tantalus_ark_final)
-        
+
         player.output_fast += "You slam your hand onto the activation switch. The Ark's console immediately blazes with green light, confirming the sequence.\n\n"
         player.output_fast += "**'LAUNCH INTEGRITY 100%.'**\n\n"
         player.output_fast += "The vessel roars to life, and the cabin lights lock down to safety red.\n"
@@ -1175,6 +1187,7 @@ def bridge_errors_check():
 # Act 5
 def emergency_launch_compartment_hydraulic_pipe_used():
     emergency_launch_compartment.backward = emergency_launch_access_corridor
+    emergency_launch_compartment.on_survey = "The confined space is filled with the sharp, sterile scent of ozone and cryogenics, and the air is intensely cold due to the radiation from the neighboring room.\n\nThe small console for the lifeboats is flashing GREEN and shows the running countdown: T-MINUS 03:30 AND COUNTING.\n\nThe reinforced window overlooking the Auxiliary Reactor Control Room is completely obscured by a thick, swirling white cloud of liquid nitrogen fog, confirming the Chef successfully initiated the purge.\n\n"
 
     player.output_normal += "You manage to straighten the warped pipe. You can hear softly the fluid flowing inside it.\n"
     player.output_normal += "You hear crackling on your radio.\n\n"
@@ -1197,8 +1210,10 @@ def emergency_launch_compartment_hydraulic_pipe_used():
     player.output_normal   += "The burn is severe, you can barely put any weight on your right leg without feeling immense pain.\n\n" 
     player.output_normal += "You realize you can't help your friend...\n\n"
 
-    player.output_normal += "The main reactor alarm blares violently. A synthetic voice screams: **THREE MINUTES UNTIL CORE MELTDOWN.**\n"
-    player.output_normal += "You use the console to activate the lifeboat system. The console confirms the locks are disengaged.\n\n"
+    player.output_normal += "The main reactor alarm blares violently. A synthetic voice screams: **FOUR MINUTES UNTIL CORE MELTDOWN.**\n"
+    player.output_normal += "You take a bit of time and use the console to activate the lifeboat system. The console confirms the locks are disengaged.\n\n"
+    player.output_normal += "The main reactor alarm blares again. A synthetic voice screams: **EMERGENCY MELTDOWN SEQUENCE ACTIVE. T-MINUS THREE MINUTES, THIRTY SECONDS.**\n"
+
     player.output_normal += "It's time to move."
 
 # use_targets data
