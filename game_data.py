@@ -508,7 +508,7 @@ def auxiliary_reactor_control_room_event():
     player.output_normal += "Chef: Hold up now... Did you hear that? The clicking.\n"
     player.output_normal += "Nat: Quick! Close the door! I'm hitting the manual meltdown sequence!\n"    
     player.output_normal += "Chef: Forget the purge! That thing got to the hydraulics, the main line is buckled! We can't get the lifeboats out!\n" 
-    player.output_normal += "Nat: I see it. The hydraulic line running along the frame is severely buckled and pinched. That thing cut off all pressure to the feed!\n"
+    player.output_normal += "Nat: I see it. The hydraulic line running along the frame is severely buckled and pinched. All the pressure to the feed is cut off!\n"
     player.output_normal += f"Nat: The final pressure valve is in the {emergency_launch_compartment.name}. I'm going there now to fix the pinch. You take over the terminal and prepare the purge sequence, Chef.\n"
     player.output_normal += "Chef: Get on it, Nat! I ain't gonna be spider food down here!\n"
 
@@ -879,7 +879,7 @@ def engys_keycard_picked_up():
     medical_labs.on_survey = "The space is cold and sterile, equipped with specialized emergency diagnostic machines. \n\nHigh Engineer Enrique's body is lying motionless on the deck. His eyes are open, wide with silent surprise. \n\nYou detect a sharp, acrid scent of ozone and burnt wiring insulation, confirming a severe electrical disaster occurred here. You think it's most likely the air was drained due to some faulty electronics.\n\n You allow yourself a moment of quiet reflection. You remember the crew always called him Engy.\nThough you two didn't know each other well, he seemed like the easy going type who wasn't a stickler for the rules. You remember hearing he had gotten into trouble with the Captain a couple of times..."
 
 def screwdriver_picked_up():
-    eva_gear_lockers.on_revisit = "The room's equipment racks are mostly empty, and the SART locker remains a central point of interest."
+    eva_gear_lockers.on_revisit = "The room's equipment racks are mostly empty, and the locker holding the SART unit remains a central point of interest."
     eva_gear_lockers.on_survey = "The room is quiet and unnervingly cold. It is dedicated to storing external mission gear, though most racks are now empty. \n\nSecured prominently on the wall is a dark, electronic locker with the SART (Systems Analysis and Repair Tool) unit clearly visible."
 
 def lockpick_picked_up():
@@ -920,7 +920,7 @@ initial_items = {
     "engys_keycard": Item(
         id="engys_keycard",
         name="Keycard",
-        keywords=["keycard", "card", "key", "engy"],
+        keywords=["keycard", "card", "key", "engy", "plastic"],
         debug_info="High Engineer Enrique's keycard.",
         on_look="The keycard reads: High Engineer Enrique 4277",
         is_item_pickup_event_trigger=True,
@@ -952,7 +952,7 @@ initial_items = {
     "lockpick": Item(
         id="lockpick",
         name="Lockpick",
-        keywords=["lockpick", "key", "pick", "lock"],
+        keywords=["lockpick", "key", "pick", "lock", "professional", "set"],
         debug_info="Dropped lockpick by Tanaka. Opens Server Array.",
         on_look="It is a Specialized Lockpick Set, secured in a compact, polymer case. It's not designed for standard key locks, but for precision manipulation of complex lock tumblers and override mechanisms. This is exactly the kind of tool needed to bypass the high-security locks found on the Tantalus Horizon.",
         is_item_pickup_event_trigger=True,
@@ -1287,10 +1287,11 @@ initial_use_targets = {
     "env_controls_access_panel": UseTarget(
         id="env_controls_access_panel",
         name="Environmental Control Access Panel",
-        keywords = ["access panel", "panel", "door", "keypad", "keypanel", "console", "terminal", "security", "keylogger"],
+        keywords = ["access panel", "access", "panel", "door", "keypad", "keypanel", "console", "terminal", "security", "keylogger", "environmental"],
         debug_info="Act 2 keypad to Environmental Controls.",
         on_look="A compact keypad and card swipe terminal connected to the ship's security network. Its small green display sits blank, awaiting input.",
-        use_func=env_controls_access_panel_use_keypad),
+        use_func=env_controls_access_panel_use_keypad,
+        can_use_only_once=False),
     "central_freight_bay_bulk_door": UseTarget(
         id="central_freight_bay_bulk_door",
         name="Central Freight Bay Bulk Door",

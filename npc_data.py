@@ -6,7 +6,7 @@ npcs ={
     name="Engy",
     debug_info="Deceased High Engineer Enrique.",
     on_look="The body is that of High Engineer Enrique, also known as Engy. He is a thin man in a white utility suit, slumped against the locker. Though you and Engy didn't know each other well, you vaguely recall his reputation for being a easygoing and quick with a joke who occasionally got into trouble with the Captain.",
-    keywords=["body", "engy", "deceased", "dead"]),
+    keywords=["body", "engy", "deceased", "dead", "enrique"]),
     "chef":NPC(
     id="chef",
     name="Chef",

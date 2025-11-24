@@ -353,7 +353,9 @@ class Interactable:
         self.amount_interacted_with = amount_interacted_with
 
 class UseTarget:
-    def __init__(self, id, name, debug_info, keywords, use_func, on_look="", can_interact=False, on_interact_func=False,):
+    def __init__(self, id, name, debug_info, keywords, use_func, on_look="",
+                 can_use_only_once=True,has_already_been_used=False,  
+                 can_interact=False, on_interact_func=False,):
         
         # Descriptions
         self.id = id
@@ -367,15 +369,21 @@ class UseTarget:
         self.on_interact_func = on_interact_func
 
         # Use
+        self.can_use_only_once = can_use_only_once
+        self.has_already_been_used = has_already_been_used
         self.use_func = use_func
         self.usable_items = {}
 
     def on_use(self, item):
-        if item.id in self.usable_items:
-            self.use_func()
-            return True
-        else:
+        if item.id not in self.usable_items:
             return None
+
+        if self.can_use_only_once and self.has_already_been_used:
+            return None
+
+        self.use_func()
+        self.has_already_been_used = True
+        return True
 
 class Scenery:
     def __init__(self, id, name, keywords, debug_info, on_look=""):

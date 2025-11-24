@@ -119,7 +119,7 @@ def process_input(user_input):
     obj_2 = ""
     if len(filtered) == 2:
         obj = filtered[1]
-    if len(filtered) == 3:
+    if len(filtered) >= 3:
         obj = filtered[1]
         obj_2 = filtered[2]
 
