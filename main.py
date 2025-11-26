@@ -1,3 +1,4 @@
+import sys
 import os
 import time
 from rich.console import Console
@@ -6,7 +7,11 @@ from rich.text import Text
 from rich.align import Align
 import pyfiglet
 
-from game_data import rooms, player, game
+import game_data
+
+game = game_data.game
+player = game_data.player
+rooms = game_data.rooms
 
 console = Console()
 reviewer_mode = False
@@ -201,7 +206,7 @@ def clear_player_outputs():
 
 ## Game intro
 
-def game_start():
+def intro_start():
     if not reviewer_mode:
         player.enter_room(rooms["cryo_bay"])
     else:
@@ -220,20 +225,23 @@ def game_start():
 
 
 # Main loop
-game_start()
-while game.running:
-    command = console.input("[white]\n> [/white]").lower().strip()
-    if command == "quit":
+def game_start():
+    while game.running:
+        command = console.input("[white]\n> [/white]").lower().strip()
+        if command == "quit":
+            clear_screen()
+            r_text("Game has been quit. Your fate remains a mystery...")
+            break
+        
+        process_input(command)
+        get_directions()
+
         clear_screen()
-        r_text("Game has been quit. Your fate remains a mystery...")
-        break
-    
-    process_input(command)
-    get_directions()
+        draw_HUD()
 
-    clear_screen()
-    draw_HUD()
+        display_player_act_outputs()
+        display_player_outputs()
+        clear_player_outputs()
 
-    display_player_act_outputs()
-    display_player_outputs()
-    clear_player_outputs()
+sys.modules["main"] = sys.modules[__name__]
+intro_start()

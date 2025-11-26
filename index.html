@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
-    <py-config> packages = ["rich", "pyfiglet"] </py-config>
+    <py-config>
+      packages = ["rich", "pyfiglet"]
+    </py-config>
 
     <link
       rel="stylesheet"
@@ -15,11 +17,16 @@
       src="https://pyscript.net/releases/2024.2.1/core.js"
     ></script>
   </head>
+
   <body>
-    <script type="py" src="game_data.py"></script>
+    <!-- Terminal for the game -->
     <script type="py" src="game_classes.py"></script>
     <script type="py" src="npc_data.py"></script>
+    <script type="py" src="game_data.py"></script>
 
-    <script type="py" src="main.py"></script>
+    <!-- Main game script using terminal worker -->
+    <script type="py" src="main.py" terminal worker></script>
+
+    <p><strong>NOTE:</strong> Must be served over HTTPS or localhost for terminal worker to work.</p>
   </body>
 </html>

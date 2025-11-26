@@ -1,3 +1,5 @@
+import sys
+
 class Game:
     def __init__(self):
         self.running = True
@@ -404,3 +406,6 @@ def get_object_by_keyword(sources, keyword):
             if hasattr(obj, "keywords") and keyword in obj.keywords:
                 return obj
     return None
+
+# Register for pyscript
+sys.modules["game_classes"] = sys.modules[__name__]

@@ -1,5 +1,22 @@
-from game_classes import Game, Player, NPC, Room, Item, Interactable, UseTarget, Scenery
-from npc_data import engy, chef, tanaka, captain, arachnid
+import sys
+import game_classes
+import npc_data
+
+Game = game_classes.Game
+Player = game_classes.Player
+NPC = game_classes.NPC
+Room = game_classes.Room
+Item = game_classes.Item
+Interactable = game_classes.Interactable
+UseTarget = game_classes.UseTarget
+Scenery = game_classes.Scenery
+
+engy = npc_data.engy
+chef = npc_data.chef
+tanaka = npc_data.tanaka
+captain = npc_data.captain
+arachnid = npc_data.arachnid
+
 player = Player()
 game = Game()
 
@@ -1480,3 +1497,7 @@ def add_act_4_inventory():
     player.inventory["welder"] = welder
 
 # add_act_4_inventory()
+
+
+# Register for pyscript
+sys.modules["game_data"] = sys.modules[__name__]

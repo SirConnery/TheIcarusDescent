@@ -1,4 +1,8 @@
-from game_classes import NPC, Arachnid
+import sys
+import game_classes
+
+NPC = game_classes.NPC
+Arachnid = game_classes.Arachnid
 
 npcs ={
     "engy":NPC(
@@ -40,3 +44,6 @@ tanaka = npcs["tanaka"]
 captain = npcs["captain"]
 
 arachnid = arachnids["arachnid"]
+
+# Register for pyscript
+sys.modules["npc_data"] = sys.modules[__name__]
