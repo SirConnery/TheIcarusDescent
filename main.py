@@ -259,5 +259,5 @@ def game_start():
         clear_player_outputs()
 
 sys.modules["main"] = sys.modules[__name__]
-input("Press enter to start the game.")
-intro_start()
+# input("Press enter to start the game.")
+# intro_start()
