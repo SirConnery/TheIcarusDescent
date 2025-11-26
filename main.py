@@ -30,8 +30,17 @@ def draw_HUD():
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)
 
+import os
+
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    # Try pyscript first, if not then python
+    try:
+        from pyscript import clear  # type: ignore
+        clear()
+    except ImportError:
+        import os
+        os.system('cls' if os.name == 'nt' else 'clear')
+
 
 ## Rich text conversion
 
@@ -244,4 +253,3 @@ def game_start():
         clear_player_outputs()
 
 sys.modules["main"] = sys.modules[__name__]
-intro_start()

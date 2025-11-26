@@ -1,32 +1,49 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
-    <py-config>
-      packages = ["rich", "pyfiglet"]
-    </py-config>
+  <py-config>
+    packages = ["rich", "pyfiglet"]
+  </py-config>
 
-    <link
-      rel="stylesheet"
-      href="https://pyscript.net/releases/2024.2.1/core.css"
-    />
-    <script
-      type="module"
-      src="https://pyscript.net/releases/2024.2.1/core.js"
-    ></script>
-  </head>
+  <link
+    rel="stylesheet"
+    href="https://pyscript.net/releases/2024.2.1/core.css"
+  />
+  <script
+    type="module"
+    src="https://pyscript.net/releases/2024.2.1/core.js"
+  ></script>
+</head>
+<body>
 
-  <body>
-    <!-- Terminal for the game -->
-    <script type="py" src="game_classes.py"></script>
-    <script type="py" src="npc_data.py"></script>
-    <script type="py" src="game_data.py"></script>
+  <button id="start-btn">Start Game</button>
 
-    <!-- Main game script using terminal worker -->
-    <script type="py" src="main.py" terminal></script>
+  <!-- Load game dependencies -->
+  <script type="py" src="game_classes.py"></script>
+  <script type="py" src="npc_data.py"></script>
+  <script type="py" src="game_data.py"></script>
 
-    <p><strong>NOTE:</strong> Must be served over HTTPS or localhost for terminal worker to work.</p>
-  </body>
+  <!-- Main game script without worker -->
+  <script type="py" src="main.py" terminal></script>
+
+  <!-- Button logic to start the game -->
+  <py-script>
+    from main import intro_start
+    from js import document
+    from pyodide.ffi import create_proxy
+
+    button = document.getElementById("start-btn")
+
+    # Wrap the function with create_proxy to avoid proxy errors
+    def on_click(event):
+        intro_start()
+
+    click_proxy = create_proxy(on_click)
+    button.addEventListener("click", click_proxy)
+  </py-script>
+
+</body>
 </html>
