@@ -216,7 +216,6 @@ def clear_player_outputs():
 ## Game intro
 
 def intro_start():
-    input("Press enter to start the game.")
     if not reviewer_mode:
         player.enter_room(rooms["cryo_bay"])
     else:
@@ -254,4 +253,5 @@ def game_start():
         clear_player_outputs()
 
 sys.modules["main"] = sys.modules[__name__]
+input("Press enter to start the game.")
 intro_start()
