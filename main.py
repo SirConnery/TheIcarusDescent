@@ -222,7 +222,6 @@ def game_start():
 # Main loop
 game_start()
 while game.running:
-
     command = console.input("[white]\n> [/white]").lower().strip()
     if command == "quit":
         clear_screen()
