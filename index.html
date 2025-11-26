@@ -16,33 +16,51 @@
     type="module"
     src="https://pyscript.net/releases/2024.2.1/core.js"
   ></script>
+
+  <style>
+    #terminal {
+      font-family: monospace;
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border: 2px solid #0f0;
+      margin-top: 20px;
+    }
+  </style>
 </head>
+
 <body>
 
   <button id="start-btn">Start Game</button>
 
-  <!-- Load game dependencies -->
+  <!-- Terminal output -->
+  <div id="terminal"></div>
+
+  <!-- Game dependencies -->
   <script type="py" src="game_classes.py"></script>
   <script type="py" src="npc_data.py"></script>
   <script type="py" src="game_data.py"></script>
 
-  <!-- Main game script without worker -->
-  <script type="py" src="main.py" terminal></script>
+  <!-- Main game script -->
+  <script type="py" src="main.py"></script>
 
-  <!-- Button logic to start the game -->
+  <!-- Start button logic -->
   <py-script>
+from js import document
+from pyodide.ffi import create_proxy
+
+# Get start button
+button = document.getElementById("start-btn")
+
+def on_click(event):
     from main import intro_start
-    from js import document
-    from pyodide.ffi import create_proxy
+    intro_start()
 
-    button = document.getElementById("start-btn")
-
-    # Wrap the function with create_proxy to avoid proxy errors
-    def on_click(event):
-        intro_start()
-
-    click_proxy = create_proxy(on_click)
-    button.addEventListener("click", click_proxy)
+# Connect button click
+button.addEventListener("click", create_proxy(on_click))
   </py-script>
 
 </body>

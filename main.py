@@ -16,6 +16,12 @@ rooms = game_data.rooms
 console = Console()
 reviewer_mode = False
 
+try:
+    from js import window  # type: ignore
+    input = window.prompt
+except Exception:
+    pass
+
 def draw_HUD():
     inventory_names = (", ".join(sorted([item.name for item in player.inventory.values()]))
     if player.inventory
