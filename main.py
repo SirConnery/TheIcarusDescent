@@ -9,6 +9,9 @@ import pyfiglet
 
 import game_data
 
+import asyncio
+
+
 try:
     from js import document #type:ignore
 except:
@@ -16,14 +19,12 @@ except:
 
 IS_PYSCRIPT = sys.platform == "emscripten"
 
-
-
 game = game_data.game
 player = game_data.player
 rooms = game_data.rooms
 
 console = Console()
-reviewer_mode = False
+reviewer_mode = True
 
 
 def draw_HUD():
@@ -50,7 +51,6 @@ def clear_screen():
             term.innerHTML = ""
     else:
         os.system('cls' if os.name == 'nt' else 'clear')
-
 
 
 
@@ -227,7 +227,7 @@ def clear_player_outputs():
 
 ## Game intro
 
-def intro_start():
+async def intro_start():
     if not reviewer_mode:
         player.enter_room(rooms["cryo_bay"])
     else:
@@ -243,12 +243,26 @@ def intro_start():
     display_player_act_outputs()
     display_player_outputs()
     clear_player_outputs()
+    
+    if IS_PYSCRIPT:
+        await game_start()
+    else:
+        # Check if a loop is already running
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            asyncio.create_task(game_start())
+        else:
+            asyncio.run(game_start())
 
 
 # Main loop
 async def game_start():
     while game.running:
-        command = (await input("[>] ")).lower().strip() if IS_PYSCRIPT else input("[>] ").lower().strip()
+        command = (await input("\n\n[>] ")).lower().strip() if IS_PYSCRIPT else input("\n\n[>] ").lower().strip()
         if command == "quit":
             clear_screen()
             r_text("Game has been quit. Your fate remains a mystery...")
@@ -265,3 +279,6 @@ async def game_start():
         clear_player_outputs()
 
 sys.modules["main"] = sys.modules[__name__]
+
+if not IS_PYSCRIPT:
+    asyncio.run(intro_start())
