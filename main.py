@@ -9,6 +9,15 @@ import pyfiglet
 
 import game_data
 
+try:
+    from js import document #type:ignore
+except:
+    document = None
+
+IS_PYSCRIPT = sys.platform == "emscripten"
+
+
+
 game = game_data.game
 player = game_data.player
 rooms = game_data.rooms
@@ -16,16 +25,13 @@ rooms = game_data.rooms
 console = Console()
 reviewer_mode = False
 
-try:
-    from js import window  # type: ignore
-    input = window.prompt
-except Exception:
-    pass
 
 def draw_HUD():
-    inventory_names = (", ".join(sorted([item.name for item in player.inventory.values()]))
-    if player.inventory
-    else "(empty)")
+    inventory_names = (
+        ", ".join(sorted(item.name for item in player.inventory.values()))
+        if player.inventory
+        else "(empty)"
+    )
 
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
     [grey82]Name:[/grey82][bright cyan]{player.name}[/bright cyan]
@@ -36,16 +42,16 @@ def draw_HUD():
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)
 
-import os
 
 def clear_screen():
-    # Try pyscript first, if not then python
-    try:
-        from pyscript import clear  # type: ignore
-        clear()
-    except ImportError:
-        import os
+    if IS_PYSCRIPT and document:
+        term = document.querySelector(".py-terminal")
+        if term:
+            term.innerHTML = ""
+    else:
         os.system('cls' if os.name == 'nt' else 'clear')
+
+
 
 
 ## Rich text conversion
@@ -240,9 +246,9 @@ def intro_start():
 
 
 # Main loop
-def game_start():
+async def game_start():
     while game.running:
-        command = console.input("[white]\n> [/white]").lower().strip()
+        command = (await input("[>] ")).lower().strip() if IS_PYSCRIPT else input("[>] ").lower().strip()
         if command == "quit":
             clear_screen()
             r_text("Game has been quit. Your fate remains a mystery...")
