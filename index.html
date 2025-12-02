@@ -40,7 +40,7 @@
    <script type="py" src="game_classes.py"></script>
   <script type="py" src="npc_data.py"></script>
   <script type="py" src="game_data.py"></script>
-  <script type="py" src="main.py"></script>
+  <script type="py" src="main.py" terminal></script>
 
   <!-- Input bridge -->
   <py-script>
@@ -75,7 +75,6 @@ __builtins__.input = console_input
   <!-- Start button -->
   <button id="start-btn">Start Game</button>
   <py-script>
-from main import intro_start
 from js import document
 from pyodide.ffi import create_proxy
 import asyncio
