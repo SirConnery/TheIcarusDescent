@@ -23,7 +23,7 @@ game = game_data.game
 player = game_data.player
 rooms = game_data.rooms
 
-console = Console()
+console = Console(file=terminal)
 reviewer_mode = True
 
 
