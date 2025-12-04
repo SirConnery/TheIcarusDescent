@@ -1104,6 +1104,7 @@ def interacted_icarus_systems_terminal():
             game.input_passcodes = []
             game.keypad_func = None
 
+        game.waiting_for_input = False
 
 def interacted_tantalus_ark_console():
     if tantalus_ark_console.amount_interacted_with == 0:
