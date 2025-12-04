@@ -87,7 +87,7 @@ button:active {
 /* Target the PyScript-generated terminal */
 py-terminal {
 	width: 1200px;        /* desired width */
-	height: 800px;        /* desired height */
+	height: 1000px;        /* desired height */
 	border-radius: 8px;
 	box-shadow: inset 0 0 15px #00ffff77;
 	margin-top: 20px;
