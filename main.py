@@ -14,17 +14,16 @@ game = game_data.game
 player = game_data.player
 rooms = game_data.rooms
 
-console = Console()
+console = Console(highlight=False)
 reviewer_mode = False
 
+# Test whether python or pyscript
 try:
     import js                           #type:ignore
     from js import document             #type:ignore
     game.is_python = False
 except Exception:
     game.is_python = True
-
-
 
 async def draw_HUD():
     inventory_names = (
@@ -50,7 +49,6 @@ async def clear_screen():
     else:
         __terminal__.clear()    #type:ignore
 
-
 ## Rich text conversion
 
 async def r_text(text, delay=0.00, style="cyan"):
@@ -70,8 +68,11 @@ async def r_text(text, delay=0.00, style="cyan"):
             console.print(char, style=style, end="")
         else:
             console.print(char, end="")
-        if not game.is_python:
+        if game.is_python:
             await asyncio.sleep(delay*0.5)
+        else:
+            await asyncio.sleep(delay*0.5)
+        
 
 
 # Acts title text  (Chatgpt used to make this)

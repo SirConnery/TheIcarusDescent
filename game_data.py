@@ -1549,7 +1549,7 @@ def add_act_4_inventory():
     player.inventory["welder"] = welder
     player.inventory["keycard"] = engys_keycard
 
-add_act_4_inventory()
+# add_act_4_inventory()
 
 
 # Register for pyscript

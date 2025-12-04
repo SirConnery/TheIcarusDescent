@@ -7,6 +7,7 @@ from main import game_intro, pyscript_gameplay_loop
 start_btn = document.getElementById("start-btn")
 
 async def start_game(event=None):
+    start_btn.style.display = "none"
     await game_intro()
 
 start_game_proxy = create_proxy(start_game)
