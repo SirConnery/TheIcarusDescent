@@ -19,8 +19,9 @@ reviewer_mode = False
 
 # Test whether python or pyscript
 try:
-    import js                           #type:ignore
-    from js import document             #type:ignore
+    import js                               #type:ignore
+    from js import document                 #type:ignore
+    from pyodide.ffi import create_proxy    #type:ignore ,used for pyhooks at bottom of the script
     game.is_python = False
 except Exception:
     game.is_python = True
@@ -331,3 +332,27 @@ sys.modules["main"] = sys.modules[__name__]
 if game.is_python:
     print("Game is in python")
     asyncio.run(game_intro())
+
+## GAMEPLAY CODE ENDS
+
+### Pyscript hooks
+
+start_btn = document.getElementById("start-btn")
+input_box = document.getElementById("user-input")
+submit_btn = document.getElementById("submit-btn")
+
+async def start_game(event=None):
+    start_btn.style.display = "none"
+    await game_intro()
+
+async def handle_submit(event=None):
+    await pyscript_gameplay_loop()
+
+def enter_key_handler(event):
+    if event.key == "Enter":
+        import asyncio
+        asyncio.create_task(pyscript_gameplay_loop())
+
+start_btn.addEventListener("click", create_proxy(start_game))
+submit_btn.addEventListener("click", create_proxy(handle_submit))
+input_box.addEventListener("keypress", create_proxy(enter_key_handler))
