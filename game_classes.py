@@ -3,8 +3,20 @@ import sys
 class Game:
     def __init__(self):
         self.running = True
+        self.is_python = False
+
+        # Event handler variables for replacing input() for pyscript 
+        self.waiting_for_input = False
+        self.input_passcodes = []
+        self.keypad_func = None
+            
+
+        # Story elements
         self.act_4_bridge_powered = False
         self.act_4_bridge_authorized = False
+
+        # Pyscript addition
+        terminal = None
 
 class Player:
     def __init__(self):
@@ -14,6 +26,7 @@ class Player:
         self.output_fast = ""
         self.output_slow = ""
         self.output_debug = ""
+        self.output_terminal = ""
         self.output_error = ""
         self.output_help = ""
         self.output_act_number = ""

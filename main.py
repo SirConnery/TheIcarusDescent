@@ -6,33 +6,30 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.align import Align
 import pyfiglet
-
-import game_data
-
 import asyncio
 
-
-try:
-    from js import document #type:ignore
-except:
-    document = None
-
-IS_PYSCRIPT = sys.platform == "emscripten"
+import game_data
 
 game = game_data.game
 player = game_data.player
 rooms = game_data.rooms
 
 console = Console()
-reviewer_mode = True
+reviewer_mode = False
 
+try:
+    import js   #type:ignore
+    game.is_python = False
+except Exception:
+    game.is_python = True
 
 def draw_HUD():
     inventory_names = (
-        ", ".join(sorted(item.name for item in player.inventory.values()))
+        ", ".join(sorted([item.name for item in player.inventory.values()]))
         if player.inventory
         else "(empty)"
     )
+
 
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
     [grey82]Name:[/grey82][bright cyan]{player.name}[/bright cyan]
@@ -43,14 +40,12 @@ def draw_HUD():
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
     console.print(hud_panel)
 
-
 def clear_screen():
-    if IS_PYSCRIPT and document:
-        term = document.querySelector(".py-terminal")
-        if term:
-            term.innerHTML = ""
-    else:
+    if game.is_python:  
         os.system('cls' if os.name == 'nt' else 'clear')
+    else:
+        __terminal__.clear()    #type:ignore
+
 
 
 
@@ -58,16 +53,30 @@ def clear_screen():
 
 # All normal text
 
-def r_text(text, delay=0.00, style="cyan"):
-    if text:
-        for char in text:
-            if style:
-                console.print(char, style=style, end="")
-            else:
-                console.print(char, end="")
-            time.sleep(delay)
-    else:
-        r_text("Returned 'None'", style="red")
+# def r_text(text, delay=0.00, style="cyan"):
+#     if text:
+#         for char in text:
+#             if style:
+#                 console.print(char, style=style, end="")
+#             else:
+#                 console.print(char, end="")
+#             time.sleep(delay)
+#     else:
+#         r_text("Returned 'None'", style="red")
+
+async def r_text(text, delay=0.05, style="cyan"):
+    if not text:
+        # Recursively call with error message
+        await r_text("Returned 'None'", style="red")
+        return
+
+    for char in text:
+        if style:
+            console.print(char, style=style, end="")
+        else:
+            console.print(char, end="")
+        await asyncio.sleep(delay)  # non-blocking in PyScript
+
 
 # Acts title text  (Chatgpt used to make this)
 
@@ -192,10 +201,11 @@ def display_player_act_outputs():
     if player.output_act_number and player.output_act_subtitle:
         r_text_act_change(player.output_act_number, player.output_act_subtitle)
 
-def display_player_outputs():
+async def display_player_outputs():
     # Does not display act text
     outputs = [
     (player.output_debug, {"style": "yellow"}),
+    (player.output_terminal, {"style": "yellow"}),
     (player.output_gain_item, {"style": "green"}),
     (player.output_lose_item, {"style": "red"}),
     (player.output_error, {"style": "red"}),
@@ -208,9 +218,10 @@ def display_player_outputs():
 
     for text, kwargs in outputs:
         if text:
-            r_text(text, **kwargs)
+            asyncio.create_task(r_text(text, **kwargs))
 
 def clear_player_outputs():
+    player.output_terminal = f""
     player.output = f""
     player.output_fast = f""
     player.output_normal = f""
@@ -224,12 +235,28 @@ def clear_player_outputs():
     player.output_gain_item = f""
     player.output_lose_item = f""
 
+def redraw_screen_and_show_outputs():
+    clear_screen()
+    draw_HUD()
+
+    display_player_act_outputs()
+    asyncio.create_task(display_player_outputs())
+    clear_player_outputs()
+
+
+# Run main loop in python or pyscript
+
+async def game_mode_chooser():
+    if game.is_python:
+        python_gameplay_loop()
+    else:
+        await pyscript_gameplay_loop()
 
 ## Game intro
 
-async def intro_start():
+async def game_intro():
     if not reviewer_mode:
-        player.enter_room(rooms["cryo_bay"])
+        player.enter_room(rooms["data_server_array"])
     else:
         player.enter_room(rooms["operations_distribution_crossover"])
 
@@ -237,48 +264,65 @@ async def intro_start():
     
     r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")
     
-    clear_screen()
-    draw_HUD()
-
-    display_player_act_outputs()
-    display_player_outputs()
-    clear_player_outputs()
-    
-    if IS_PYSCRIPT:
-        await game_start()
-    else:
-        # Check if a loop is already running
-        try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            loop = None
-
-        if loop and loop.is_running():
-            asyncio.create_task(game_start())
-        else:
-            asyncio.run(game_start())
+    redraw_screen_and_show_outputs()
+    await game_mode_chooser()
 
 
 # Main loop
-async def game_start():
-    while game.running:
-        command = (await input("\n\n[>] ")).lower().strip() if IS_PYSCRIPT else input("\n\n[>] ").lower().strip()
-        if command == "quit":
-            clear_screen()
-            r_text("Game has been quit. Your fate remains a mystery...")
-            break
-        
-        process_input(command)
-        get_directions()
 
+async def main_loop(command):
+    command = command.lower().strip()
+
+    if command == "quit":
         clear_screen()
-        draw_HUD()
+        r_text("Game has been quit. Your fate remains a mystery...")
+        game.running = False
+        return
 
-        display_player_act_outputs()
-        display_player_outputs()
-        clear_player_outputs()
+    process_input(command)
+    get_directions()
 
+    redraw_screen_and_show_outputs()
+
+
+# Normal Python gameplay. Connects to main loop.
+def python_gameplay_loop():
+        while game.running:
+            
+            if game.waiting_for_input:
+                    answer = input("\n\n> ")
+                    game.input_passcodes.append(answer)
+                    game.keypad_func()
+
+                    get_directions()
+                    redraw_screen_and_show_outputs()
+                    
+            else:
+                command = input("\n\n> ")
+                main_loop(command)
+
+# Pyscript version gameplay for browser. Connects to main loop.
+async def pyscript_gameplay_loop(event=None):
+    from js import document #type:ignore
+    cmd_box = document.getElementById("user-input")
+    command = cmd_box.value
+    cmd_box.value = ""
+
+    if game.waiting_for_input:
+        game.input_passcodes.append(command)
+        if game.keypad_func:
+            game.keypad_func()
+        get_directions()
+        redraw_screen_and_show_outputs()
+    else:
+        await main_loop(command)
+
+
+
+
+# Module for pyscript
 sys.modules["main"] = sys.modules[__name__]
 
-if not IS_PYSCRIPT:
-    asyncio.run(intro_start())
+# Autostart for python
+if game.is_python:
+    game_intro()

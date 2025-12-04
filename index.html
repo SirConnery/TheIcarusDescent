@@ -30,62 +30,20 @@
 </head>
 
 <body>
-  <py-terminal id="game-terminal" style="height: 500px; width: 100%; overflow:auto;"></py-terminal>
+  <py-terminal id="game-terminal" style="height: 800px; width: 100%; overflow:auto;"></py-terminal>
 
   <h3>Type your command:</h3>
-  <input id="user-input" type="text" placeholder="forward, left, etc." />
+  <input id="user-input" type="text" placeholder="w,a,s,d etc." />
   <button id="submit-btn">Send</button>
+  <button id="start-btn">Start Game</button>
+
 
   <!-- Load game -->
-   <script type="py" src="game_classes.py"></script>
+  <script type="py" src="game_classes.py"></script>
   <script type="py" src="npc_data.py"></script>
   <script type="py" src="game_data.py"></script>
   <script type="py" src="main.py" terminal></script>
-
-  <!-- Input bridge -->
-  <py-script>
-from js import document
-from pyodide.ffi import create_proxy
-import asyncio
-
-input_box = document.getElementById("user-input")
-submit_btn = document.getElementById("submit-btn")
-
-_future = None
-
-def _on_submit(event):
-    global _future
-    if _future and not _future.done():
-        _future.set_result(input_box.value)
-        input_box.value = ""
-
-submit_btn.addEventListener("click", create_proxy(_on_submit))
-input_box.addEventListener("keydown", create_proxy(lambda e: _on_submit(e) if e.key=="Enter" else None))
-
-async def console_input(prompt=""):
-    print(prompt, end="")  # optional, you can print prompt elsewhere
-    global _future
-    _future = asyncio.Future()
-    return await _future
-
-# Override built-in input so main.py can just call input()
-__builtins__.input = console_input
-  </py-script>
-
-  <!-- Start button -->
-  <button id="start-btn">Start Game</button>
-  <py-script>
-from js import document
-from pyodide.ffi import create_proxy
-import asyncio
-
-button = document.getElementById("start-btn")
-
-async def on_click(event):
-    await intro_start()  # can now call input() and it will await the textbox
-
-button.addEventListener("click", create_proxy(on_click))
-  </py-script>
+  <script type="py" src="pyscript_hooks.py"></script>
 
 </body>
 </html>

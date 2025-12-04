@@ -1044,31 +1044,66 @@ def interacted_msc_2_vent_cover():
     player.enter_room(msc_service_tunnel)
 
 def interacted_icarus_systems_terminal():
-    print("--------------------------------------------------")
-    print(">>> ICARUS SYSTEMS V6.1.4: PRIMARY ACCESS CONSOLE <<<")
-    print("--------------------------------------------------")
-    print("INIT: Power Bus Tie [STATUS: NOMINAL]")
-    print("INIT: Command Data Link [STATUS: ONLINE]")
-    print("DIAG: Reactor Core Telemetry . . . . . . . . . . [PASS]")
-    print("DIAG: Life Support HVAC . . . . . . . . . . . . [PASS]")
-    print("CHECK: Airlock Regulator Lockouts . . . . . . . [WARNING]")
-    print("CHECK: External Communications Module. . . . . . [FAILURE]")
-    print("SYSTEMS: Access protocol engaged. Awaiting input.")
-    print("--------------------------------------------------")
-    login = input("Please enter login")
-    password = input("Please enter password")
-    if login == "admin" and password == "1234":
-        eva_lockers_sars_locker.on_look = "The lockers are open and you can take the SART equipment."
-        eva_lockers_sars_locker.use_func = eva_lockers_sars_locker_radio_used_after_server_use
-        sart.can_take = True
-        sart.on_look = "The lock is open and the sart can be taken."
-        
-        player.output += "You gain root access to the terminal. It seems like Tanaka was less concerned with breaches and more concerned with remembering the code before their coffee wore off.\n\n"
-        player.output += "Using your credentials, you manually overload the transmission array and inject a high-power, one-time authorization token directed specifically at the EVA Prep Room.\n"
-        player.output += "The terminal flashes a final confirmation: TOKEN INJECTED. TARGET LOCK OVERRIDDEN.\n"
-        player.output += "You log out of the terminal."
-    else:
-        player.output_error = "Incorrect login or password."
+    game.keypad_func = interacted_icarus_systems_terminal
+
+    if not game.waiting_for_input:
+        player.output_terminal += (
+            "--------------------------------------------------\n"
+            ">>> ICARUS SYSTEMS V: PRIMARY ACCESS CONSOLE <<<\n"
+            "--------------------------------------------------\n"
+            "INIT: Power Bus Tie [STATUS: NOMINAL]\n"
+            "INIT: Command Data Link [STATUS: ONLINE]\n"
+            "DIAG: Reactor Core Telemetry . . . . . . . . . . [PASS]\n"
+            "DIAG: Life Support HVAC . . . . . . . . . . . . [PASS]\n"
+            "CHECK: Airlock Regulator Lockouts . . . . . . . [WARNING]\n"
+            "CHECK: External Communications Module. . . . . . [FAILURE]\n"
+            "SYSTEMS: Access protocol engaged. Awaiting input.\n"
+            "--------------------------------------------------\n"
+            "\n"
+            "Please enter login."
+        )
+
+        game.waiting_for_input = True
+        return
+    
+    if len(game.input_passcodes) == 1:
+        player.output_terminal += (
+            "--------------------------------------------------\n"
+            ">>> ICARUS SYSTEMS V: PRIMARY ACCESS CONSOLE <<<\n"
+            "--------------------------------------------------\n"
+            "INIT: Power Bus Tie [STATUS: NOMINAL]\n"
+            "INIT: Command Data Link [STATUS: ONLINE]\n"
+            "DIAG: Reactor Core Telemetry . . . . . . . . . . [PASS]\n"
+            "DIAG: Life Support HVAC . . . . . . . . . . . . [PASS]\n"
+            "CHECK: Airlock Regulator Lockouts . . . . . . . [WARNING]\n"
+            "CHECK: External Communications Module. . . . . . [FAILURE]\n"
+            "SYSTEMS: Access protocol engaged. Awaiting input.\n"
+            "--------------------------------------------------\n"
+            "\n"
+            "Please enter password."
+        )
+
+        return
+    
+    elif len(game.input_passcodes) >= 2:
+        login, password = game.input_passcodes[:2]
+
+        if login == "admin" and password == "1234":
+            eva_lockers_sars_locker.on_look = "The lockers are open and you can take the SART equipment."
+            eva_lockers_sars_locker.use_func = eva_lockers_sars_locker_radio_used_after_server_use
+            sart.can_take = True
+            sart.on_look = "The lock is open and the sart can be taken."
+            
+            player.output += "You gain root access to the terminal. It seems like Tanaka was less concerned with breaches and more concerned with remembering the code before their coffee wore off.\n\n"
+            player.output += "Using your credentials, you manually overload the transmission array and inject a high-power, one-time authorization token directed specifically at the EVA Prep Room.\n"
+            player.output += "The terminal flashes a final confirmation: TOKEN INJECTED. TARGET LOCK OVERRIDDEN.\n"
+            player.output += "You log out of the terminal."
+        else:
+            player.output_error = "Incorrect login or password."
+            game.waiting_for_input = False
+            game.input_passcodes = []
+            game.keypad_func = None
+
 
 def interacted_tantalus_ark_console():
     if tantalus_ark_console.amount_interacted_with == 0:
@@ -1181,12 +1216,24 @@ def central_freight_bay_blast_door_used():
     player.output += "With a heavy, mechanical groan, the final mechanism disengages and the lock gives."
 
 def env_controls_access_panel_use_keypad():
-    passcode = input("Keycard detected. Please enter passcode")
-    if passcode == "4277":
-        player.output="Code verified. Access granted."
-        environmental_controls.is_open = True
-    else:
-        player.output_error="Code invalid. Access denied."
+    game.keypad_func = env_controls_access_panel_use_keypad
+
+    if not game.waiting_for_input:
+        player.output = "Keycard detected. Please enter passcode\n"
+        game.waiting_for_input = True
+        return
+
+    if game.waiting_for_input:
+        if game.input_passcodes[0] == "4277":
+            player.output="Code verified. Access granted.\n"
+            environmental_controls.is_open = True
+        else:
+            player.output_error="Code invalid. Access denied.\n"
+    
+        game.waiting_for_input = False
+        game.input_passcodes = []
+        game.keypad_func = None
+
 # Act 3
 def service_control_junction_5f_door_used():
     service_control_junction_5f_door.on_look = "You examine the heavy, structural blast door. A rough, smoking hole has been cut through the access panel, bypassing the fused original lock. The door's mechanism is now fully restored and functional."
@@ -1487,6 +1534,11 @@ def run_all_setups():
 run_all_setups()
 
 
+
+## Input handler
+
+
+
 # Debug stuff
 
 def add_act_4_inventory():
@@ -1495,8 +1547,9 @@ def add_act_4_inventory():
     player.inventory["flashlight"] = flashlight
     player.inventory["maintenance_jack"] = maintenance_jack
     player.inventory["welder"] = welder
+    player.inventory["keycard"] = engys_keycard
 
-# add_act_4_inventory()
+add_act_4_inventory()
 
 
 # Register for pyscript
