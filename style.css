@@ -5,7 +5,7 @@ body {
 	align-items: center;
 	justify-content: flex-start;
 	margin: 0;
-	height: 100vh;
+	height: 850px;
 	background-color: #0a0a0a; /* dark terminal background */
 	color: #e0f7ff; /* cyan-ish text */
 	font-family: "Courier New", Courier, monospace; /* retro/terminal font */
@@ -88,9 +88,9 @@ button:active {
 py-terminal {
 	width: 1200px;        /* desired width */
 	height: 1000px;        /* desired height */
-	border-radius: 8px;
+	border-radius: 10px;
 	box-shadow: inset 0 0 15px #00ffff77;
-	margin-top: 20px;
+	margin-top: 30px;
 	overflow-y: auto;
 	background-color: #101010;
 	color: #e0f7ff;
