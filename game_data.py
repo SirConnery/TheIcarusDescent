@@ -1511,6 +1511,7 @@ def setup_npcs():
     deck_5_secure_pathway.npcs["chef"] = chef
     service_access_hatchway.npcs["chef"] = chef
     msc_1.npcs["chef"] = chef
+    bridge.npcs["chef"] = chef
     vertical_service_shaft.npcs["chef"] = chef
     reactor_deck_service_hub.npcs["chef"] = chef
     auxiliary_reactor_control.npcs["chef"] = chef
