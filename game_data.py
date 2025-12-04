@@ -585,7 +585,7 @@ def connect_all_initial_rooms():
     deck_4_med_env_corridor.backward = cryo_midship_transfer_passageway
     medical_labs.right = deck_4_med_env_corridor
     environmental_controls.left = deck_4_med_env_corridor
-    upper_aft_lobby.left = central_freight_bay
+    upper_aft_lobby.forward = central_freight_bay
     upper_aft_lobby.right = deck_5_aft_utility
     upper_aft_lobby.backward = deck_4_med_env_corridor
     central_freight_bay.right = cargo_staging_room
