@@ -41,6 +41,7 @@ async def draw_HUD():
     [grey82]Commands:[/grey82] Move, Survey, Interact, Look, Take, Use, Help, Quit"""
 
     hud_panel = Panel(hud_text, title="STATUS", style="bright_cyan", border_style="cyan")
+    console.print("")
     console.print(hud_panel)
 
 async def clear_screen():
@@ -50,27 +51,18 @@ async def clear_screen():
         __terminal__.clear()    #type:ignore
 
 
-
-
 ## Rich text conversion
-
-# All normal text
-
-# def r_text(text, delay=0.00, style="cyan"):
-#     if text:
-#         for char in text:
-#             if style:
-#                 console.print(char, style=style, end="")
-#             else:
-#                 console.print(char, end="")
-#             time.sleep(delay)
-#     else:
-#         r_text("Returned 'None'", style="red")
 
 async def r_text(text, delay=0.00, style="cyan"):
     if not text:
-        # Recursively call with error message
         await r_text("Returned 'None'", style="red")
+        return
+
+    if delay <= 0:
+        if style:
+            console.print(text, style=style, end="")
+        else:
+            console.print(text, end="")
         return
 
     for char in text:
@@ -78,8 +70,8 @@ async def r_text(text, delay=0.00, style="cyan"):
             console.print(char, style=style, end="")
         else:
             console.print(char, end="")
-        await asyncio.sleep(delay)  # non-blocking in PyScript
-
+        if not game.is_python:
+            await asyncio.sleep(delay*0.5)
 
 
 # Acts title text  (Chatgpt used to make this)
@@ -97,6 +89,7 @@ async def r_text_act_change(
     line_delay=0.0,
     return_only=False,
 ):
+    # Clear screen first
     await clear_screen()
 
     panel = None
@@ -116,24 +109,29 @@ async def r_text_act_change(
             for line in subtitle_text.splitlines()
         ]
 
+    # Return only panel + subtitle without printing
     if return_only:
         return panel, subtitle_render
 
+    # Print panel if exists
     if panel:
         console.print(Align.center(panel, vertical="middle"))
 
+    # Print subtitle lines with async line_delay
     if subtitle_render:
         for line in subtitle_render:
             console.print(Align.center(line))
-            time.sleep(line_delay)
+            if line_delay > 0:
+                await asyncio.sleep(line_delay)
 
+    # Optional overall delay
     if delay > 0:
-        time.sleep(delay)
+        await asyncio.sleep(delay)
 
-    time.sleep(4.0)
+    # Wait a little before clearing
+    await asyncio.sleep(4.0)
     await clear_screen()
     await draw_HUD()
-
 
 
 ## Command Parser
@@ -189,8 +187,8 @@ def process_input(user_input):
 
 ## Get directions and print
 
-def get_directions():
-    player.output_directions = f""
+async def get_directions():
+    player.output_directions = f"\n\n"
     cur_room = player.cur_room
 
     if cur_room.forward:
@@ -215,11 +213,14 @@ async def display_player_outputs():
     (player.output_lose_item, {"style": "red"}),
     (player.output_error, {"style": "red"}),
     (player.output_help, {"style": "white"}),
+    (player.output_enter, {}),
     (player.output, {}),
     (player.output_fast, {"delay": 0.02}),
     (player.output_normal, {"delay": 0.03}),
     (player.output_slow, {"delay": 0.045}),
-    (player.output_directions, {"delay": 0.00}),]
+    (player.output_directions, {}),
+    (player.output_pyscript_flush_do_not_clear, {}),]
+
 
     for text, kwargs in outputs:
         if text:
@@ -227,6 +228,7 @@ async def display_player_outputs():
 
 async def clear_player_outputs():
     player.output_terminal = f""
+    player.output_enter = f""
     player.output = f""
     player.output_fast = f""
     player.output_normal = f""
@@ -240,7 +242,7 @@ async def clear_player_outputs():
     player.output_gain_item = f""
     player.output_lose_item = f""
 
-async def redraw_screen_and_show_outputs():
+async def redraw_screen_and_show_outputs():    
     await clear_screen()
     await draw_HUD()
 
@@ -253,7 +255,9 @@ async def redraw_screen_and_show_outputs():
 
 async def game_mode_chooser():
     if game.is_python:
-        python_gameplay_loop()
+        await get_directions()
+        await redraw_screen_and_show_outputs()
+        await python_gameplay_loop()
     else:
         await pyscript_gameplay_loop()
 
@@ -261,15 +265,12 @@ async def game_mode_chooser():
 
 async def game_intro():
     if not reviewer_mode:
-        player.enter_room(rooms["data_server_array"])
+        player.enter_room(rooms["cryo_bay"])
     else:
         player.enter_room(rooms["operations_distribution_crossover"])
-
-    get_directions()
     
     await r_text_act_change(show_panel=False, subtitle="Icarus Descent", subtitle_font="big")
     
-    await redraw_screen_and_show_outputs()
     await game_mode_chooser()
 
 
@@ -285,28 +286,26 @@ async def main_loop(command):
         return
 
     process_input(command)
-    player.output_directions = f"\n\n"
 
-    get_directions()
+    await get_directions()
 
     await redraw_screen_and_show_outputs()
 
 
 # Normal Python gameplay. Connects to main loop.
-def python_gameplay_loop():
-        while game.running:
-            
-            if not game.waiting_for_input:
-                command = input("\n\n> ")
-                main_loop(command)
-
-            else:
-                answer = input("\n\n> ")
-                game.input_passcodes.append(answer)
+async def python_gameplay_loop():
+    while game.running:
+        if not game.waiting_for_input:
+            command = await asyncio.to_thread(input, "\n\n> ")
+            await main_loop(command)
+        else:
+            answer = await asyncio.to_thread(input, "\n\n> ")
+            game.input_passcodes.append(answer)
+            if game.keypad_func:
                 game.keypad_func()
+            await get_directions()
+            await redraw_screen_and_show_outputs()
 
-                get_directions()
-                redraw_screen_and_show_outputs()
 
 # Pyscript version gameplay for browser. Connects to main loop.
 async def pyscript_gameplay_loop(event=None):
@@ -321,15 +320,13 @@ async def pyscript_gameplay_loop(event=None):
         game.input_passcodes.append(command)
         if game.keypad_func:
             game.keypad_func()
-        get_directions()
+        await get_directions()
         await redraw_screen_and_show_outputs()
-
-
-
 
 # Module for pyscript
 sys.modules["main"] = sys.modules[__name__]
 
 # Autostart for python
-# if game.is_python:
-#     game_intro()
+if game.is_python:
+    print("Game is in python")
+    asyncio.run(game_intro())

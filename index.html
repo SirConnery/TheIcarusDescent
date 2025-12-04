@@ -12,31 +12,25 @@
     rel="stylesheet"
     href="https://pyscript.net/releases/2024.2.1/core.css"
   />
+      <link rel="stylesheet" href="style.css">
   <script
     type="module"
     src="https://pyscript.net/releases/2024.2.1/core.js"
   ></script>
-
-  <style>
-    #user-input {
-      width: 300px;
-      padding: 5px;
-      margin-right: 5px;
-    }
-    #submit-btn {
-      padding: 5px 10px;
-    }
-  </style>
 </head>
 
 <body>
-  <py-terminal id="game-terminal" style="height: 800px; width: 100%; overflow:auto;"></py-terminal>
+  <div id="all_container">
+  <div id="ui_container">
+  <div id="terminal_container"> 
+    <py-terminal id="game-terminal"></py-terminal>
+  </div>
 
-  <h3>Type your command:</h3>
+  <div id="buttons_container"><h3>Type your command:</h3>
   <input id="user-input" type="text" placeholder="w,a,s,d etc." />
   <button id="submit-btn">Send</button>
-  <button id="start-btn">Start Game</button>
-
+  <button id="start-btn">Start Game</button></div></div>
+  </div>
 
   <!-- Load game -->
   <script type="py" src="game_classes.py"></script>

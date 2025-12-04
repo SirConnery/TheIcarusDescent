@@ -1,0 +1,16 @@
+body {
+    display: flex;
+    flex-direction: column; /* stack top-down */
+    align-items: center;    /* center horizontally */
+    justify-content: flex-start; /* start from top */
+    margin: 0;
+    height: 100vh;
+    background-color: #000;
+}
+
+#all_container {
+    display: flex;
+    flex-direction: column; /* terminal on top, buttons below */
+    align-items: center;
+    gap: 20px;
+}

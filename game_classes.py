@@ -15,13 +15,12 @@ class Game:
         self.act_4_bridge_powered = False
         self.act_4_bridge_authorized = False
 
-        # Pyscript addition
-        terminal = None
 
 class Player:
     def __init__(self):
         self.cur_room = None
         self.output = ""
+        self.output_enter = ""
         self.output_normal = ""
         self.output_fast = ""
         self.output_slow = ""
@@ -34,6 +33,7 @@ class Player:
         self.output_directions = f"\n\n"
         self.output_gain_item = f"\n\n"
         self.output_lose_item = f"\n\n"
+        self.output_pyscript_flush_do_not_clear = f"\n"
 
         self.name = "Natalia Volkov"
         self.nickname = "Nat"
@@ -88,7 +88,7 @@ class Player:
         new_room = self.cur_room.get_exits(direction)
         if new_room:
             if new_room.is_open:
-                self.output += f"You enter {new_room.name}. \n\n"
+                self.output_enter = f"You enter {new_room.name}. \n\n"
                 self.enter_room(new_room)
             else:
                 self.output += new_room.locked_description
