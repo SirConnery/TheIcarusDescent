@@ -1,3 +1,4 @@
+import sys
 from js import document                 # type:ignore
 from pyodide.ffi import create_proxy    # type:ignore
 import asyncio
@@ -32,3 +33,5 @@ def enter_key_handler(event):
 
 enter_key_proxy = create_proxy(enter_key_handler)
 input_box.addEventListener("keypress", enter_key_proxy)
+
+sys.modules["pyscript_hooks"] = sys.modules[__name__]
