@@ -35,7 +35,7 @@ class Player:
         self.output_lose_item = f"\n\n"
         self.output_pyscript_flush_do_not_clear = f"\n"
 
-        self.name = "Natalia Volkov"
+        self.name = "Natalia Volkova"
         self.nickname = "Nat"
         self.role = "Field Maintenance Technician"
         
