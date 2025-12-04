@@ -36,7 +36,8 @@ async def draw_HUD():
 
     hud_text= f"""[bright cyan]ICARUS SYSTEMS[/bright cyan]
     [grey82]Name:[/grey82][bright cyan]{player.name}[/bright cyan]
-    [grey82]Status:[/grey82][{player.status_color}] {player.status}[/{player.status_color}], [grey82]Warmth:[/grey82] [{player.warmth_color}]{player.warmth}[/{player.warmth_color}], [grey82]Heartrate:[/grey82] [{player.heartrate_color}]{player.heartrate}[/{player.heartrate_color}], [grey82]Location:[/grey82] [yellow]{player.cur_room.name}[/yellow]
+    [grey82]Status:[/grey82][{player.status_color}] {player.status}[/{player.status_color}], [grey82]Warmth:[/grey82] [{player.warmth_color}]{player.warmth}[/{player.warmth_color}], [grey82]Heartrate:[/grey82] [{player.heartrate_color}]{player.heartrate}[/{player.heartrate_color}], 
+    [grey82]Location:[/grey82] [yellow]{player.cur_room.name}[/yellow]
     [grey82]Inventory:[/grey82][light_steel_blue] {inventory_names}[/light_steel_blue]
     [grey82]Commands:[/grey82] Move, Survey, Interact, Look, Take, Use, Help, Quit"""
 
