@@ -100,6 +100,8 @@ py-terminal {
 
 /* Only apply on mobile devices */
 body.mobile py-terminal {
+	position:relative;
+	left: 100px;
     width: 1000px;          /* use viewport height as width for rotated content */
     height: 400px;         /* use viewport width as height */
     transform: rotate(-90deg);
@@ -108,7 +110,7 @@ body.mobile py-terminal {
 
 body.mobile #ui_container {
 	position:relative;
-	left: -250px;
+	left: -150px;
 	top: 300px;
 	height:50px;
 	width:300px;
