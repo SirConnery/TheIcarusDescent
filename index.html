@@ -17,6 +17,16 @@
     type="module"
     src="https://pyscript.net/releases/2024.2.1/core.js"
   ></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const isMobile = /Windows|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent)
+                    || window.innerWidth < 700;
+
+      if (isMobile) {
+          document.body.classList.add("mobile");
+    }
+});
+</script>
 </head>
 
 <body>

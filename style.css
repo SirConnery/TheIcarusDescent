@@ -98,3 +98,8 @@ py-terminal {
 	padding: 10px;
 }
 
+body.mobile py-terminal {
+    width: 740px !important;
+    height: 1200px !important;
+    overflow-x: auto !important;
+}
