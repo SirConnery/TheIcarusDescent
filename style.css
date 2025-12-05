@@ -86,7 +86,7 @@ button:active {
 
 /* Target the PyScript-generated terminal */
 py-terminal {
-	width: 1200px;        /* desired width */
+	width: 1000px;        /* desired width */
 	height: 1000px;        /* desired height */
 	border-radius: 10px;
 	box-shadow: inset 0 0 15px #00ffff77;
@@ -98,8 +98,21 @@ py-terminal {
 	padding: 10px;
 }
 
+/* Only apply on mobile devices */
 body.mobile py-terminal {
-    width: 400px !important;
-    height: 1200px !important;
-    overflow-x: auto !important;
+    width: 1000px;          /* use viewport height as width for rotated content */
+    height: 400px;         /* use viewport width as height */
+    transform: rotate(-90deg);
+    overflow: auto;        /* allow scrolling if content is bigger than viewport */
+}
+
+body.mobile #ui_container {
+	position:relative;
+	left: -250px;
+	top: 300px;
+	height:50px;
+	width:300px;
+	transform: rotate(-90deg);
+    overflow: auto;        /* allow scrolling if content is bigger than viewport */
+	z-index: 1;
 }
