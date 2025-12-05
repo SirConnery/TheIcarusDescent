@@ -30,66 +30,58 @@ py-terminal {
 	margin-top: 30px;
 }
 
-/* --- Style the internal panel/output parts (shadow DOM parts) --- */
-/* Default (desktop/large screens): prefer large max sizes but allow shrinking */
+/* Ensure host fills the available width but doesn't force tiny sizes */
+py-terminal {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Best-effort to style internal parts (panel/output/container are common names) */
 py-terminal::part(panel),
 py-terminal::part(output),
-py-terminal::part(container) {
-	/* make internal terminal fill host but cap at a large size */
-	width: 100%;
-	max-width: 1200px;   /* largest we want on desktop */
-	height: auto;
-	max-height: 1000px;  /* max height on desktop */
-	min-height: 400px;   /* reasonable minimum on desktop */
-	border-radius: 10px;
-	box-shadow: inset 0 0 15px #00ffff77;
-	background-color: #101010;
-	color: #e0f7ff;
-	font-family: "Courier New", monospace;
-	padding: 10px;
-	overflow: auto;
-}
-
-/* If the terminal's internal part names differ, try these too (fallbacks) */
+py-terminal::part(container),
 py-terminal::part(term),
 py-terminal::part(screen) {
-	width: 100%;
-	max-width: 1200px;
-	max-height: 1000px;
+	box-sizing: border-box;     /* include padding in width calculations */
+	width: 100% !important;     /* always match host width */
+	max-width: 100% !important; /* never exceed viewport width */
+	padding: 12px !important;   /* internal breathing room so text doesn't touch edge */
+	overflow-x: auto !important; /* allow horizontal scroll if something cannot wrap */
+	overflow-y: auto !important;
 }
 
-/* --- Mobile rules: ONLY apply when viewport is narrow --- */
-@media (max-width: 600px) {
-	/* limit the host so the internal parts can fill it naturally */
-	py-terminal {
-		width: 95vw;
-	}
+/* Make preformatted terminal text wrap instead of overflowing */
+py-terminal::part(output) pre,
+py-terminal::part(output) code,
+py-terminal::part(output) .terminal,
+py-terminal::part(output) .xterm-rows {
+	white-space: pre-wrap !important;     /* allow wrapped lines while mostly preserving formatting */
+	overflow-wrap: anywhere !important;   /* break long words/URLs if needed */
+	word-break: break-word !important;
+}
 
-	/* reduce the internal terminal size for phones */
+/* Mobile-specific: reduce font size and ensure proper height */
+@media (max-width: 600px) {
 	py-terminal::part(panel),
 	py-terminal::part(output),
-	py-terminal::part(container),
-	py-terminal::part(term),
-	py-terminal::part(screen) {
+	py-terminal::part(container) {
 		width: 95vw !important;
 		max-width: 95vw !important;
-		height: 50vh !important;       /* half the screen height */
-		max-height: 50vh !important;
-		min-height: 30vh !important;
-		font-size: 0.85rem !important;
-		padding: 8px !important;
+		height: 50vh !important;
+		max-height: 60vh !important;
+		font-size: 0.82rem !important;
+		padding: 10px !important;
 	}
 }
 
-/* Very small phones */
+/* Extra safety for very narrow devices */
 @media (max-width: 400px) {
 	py-terminal::part(panel),
 	py-terminal::part(output),
-	py-terminal::part(container),
-	py-terminal::part(term),
-	py-terminal::part(screen) {
-		height: 60vh !important;
-		max-height: 60vh !important;
+	py-terminal::part(container) {
 		font-size: 0.75rem !important;
+		padding-left: 8px !important;
+		padding-right: 8px !important;
 	}
 }
